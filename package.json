@@ -1,20 +1,16 @@
 {
-  "name": "electron-quick-start",
+  "name": "stock",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
-  "main": "main.js",
+  "description": "A animation CSS3 designer",
+  "main": "src/main.js",
   "scripts": {
     "start": "electron ."
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "",
   "keywords": [
-    "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "Electron"
   ],
-  "author": "GitHub",
+  "author": "Jeremy Alvarez",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^1.8.4"
