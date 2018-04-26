@@ -7,15 +7,23 @@ let openedMenu = false;
 
 window.addEventListener("load",function()
 {
-    document.querySelector(".top").addEventListener("mouseleave",function()
+    document.querySelector(".top ul").addEventListener("mouseleave",function()
     {
-        openedMenu = false;
-        let lista = document.querySelectorAll(".top ul li ul");
-        for(let item of lista)
+        var evento = function()
         {
-            item.parentNode.className = "";
-            item.style.display = "none";
+            if(this.nodeName != "LI")
+            {
+                let lista = document.querySelectorAll(".top ul li ul");
+                for(let item of lista)
+                {
+                    item.parentNode.className = "";
+                    item.style.display = "none";
+                }
+                openedMenu = false;
+                window.removeEventListener("click",evento,false);
+            }
         }
+        window.addEventListener("click",evento);
     })
     let listLI = document.querySelectorAll(".top ul li");
 
@@ -45,7 +53,6 @@ window.addEventListener("load",function()
             let visible = this.querySelector("ul").style.display == "block";
             if(openedMenu)
             {
-                openedMenu = false;
                 for(let item of lista)
                 {
                     item.parentNode.className = "";

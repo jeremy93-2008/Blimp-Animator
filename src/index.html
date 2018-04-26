@@ -53,6 +53,7 @@
           <div id="menu" class="row bg-dark">
              <button class="selected" title="Selecciona los elementos"><i class="fa fa-mouse-pointer"></i></button>
              <button title="Mueve los elementos"><i class="fa fa-hand-paper-o"></i></button>
+             <button title="Rotar los elementos"><i class="fa fa-arrows-alt"></i></button>
              <div class="separator"></div>
              <button title="Crear un circulo"><i class="fa fa-circle-thin"></i></button>
              <button title="Crear un cuadrado"><i class="fa fa-square-o"></i></button>
@@ -63,12 +64,28 @@
             <div id="renderer" class="col-sm">
               Renderer
             </div>
-            <div id="inspector" class="col-sm-3">
+            <div id="inspector" class="col-sm-3 back-black">
               Inspector
               </div>
           </div>
           <div id="timeline" class="row back-black">
-            Timeline
+            <div id="timeline-option">
+              <span>Tiempo de la animación:</span>
+              <input id="anim-duration" type="number" min="1" max="9999" value="3" />
+              <span>segundos</span>
+            </div>
+            <div id="menu-timeline" class="row bg-dark">
+              <button><i title="Quitar Captura" class="fa fa-minus"></i></button>
+              <button><i title="Agregar Captura" class="fa fa-plus"></i></button>
+            </div>
+            <div id="timeline-control">
+              <div class="circle">
+                <div class="info-circle">
+                  FROM<br />
+                  Comentario: <i>Este es el punto de entrada de tu animación</i>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
   </body>

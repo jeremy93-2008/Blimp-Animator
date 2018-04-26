@@ -15,10 +15,10 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow(
     {
-      width: 640, 
-      height: 480,
-      minWidth: 640,
-      minHeight: 480,
+      width: 800, 
+      height: 600,
+      minWidth: 800,
+      minHeight: 600,
       backgrounColor: "#333",
       nativeWindowOpen: true
     })
