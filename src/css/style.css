@@ -1,0 +1,106 @@
+body
+{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+ul li
+{
+    display:inline-block;
+}
+.top
+{
+    border-bottom:solid 1px #111;
+    color:white;
+}
+.top ul
+{
+    margin: 0;
+    padding-left: 0;
+}
+.top ul li
+{
+    display:inline-block;
+    padding: 4px 5px 4px 10px;
+    font-size: 12px;
+    cursor:default;
+    min-width: 48px;
+}
+.top ul li ul
+{
+    display:none;
+    position: absolute;
+    margin-top: 4px;
+    margin-left: -10px;
+    border: solid 1px #222;
+    padding: 0;
+    z-index: 6;
+}
+.top ul li ul li
+{
+    display: block;
+    width: 100%;
+}
+.top ul li ul li.separator
+{
+    border-top: solid 1px #555;
+    margin-left: 0px;
+    padding:0;
+    width: 100%;
+    margin-bottom:3px;
+}
+.top ul li ul li:hover,.top .selected
+{
+    background: #555;
+    cursor:default;
+}
+.top ul li ul li span
+{
+    padding: 2px 46px 2px 25px;
+    display: block;
+}
+.top ul li ul li:last-child
+{
+    border-bottom: none;
+}
+#menu
+{
+    height:36px;
+}
+#menu button
+{
+    border:solid 1px transparent;
+    background: none;
+    border-radius: 5px;
+    color: white;
+    padding: 0px 10px 0px 10px;
+    margin: 3px 0px 3px 4px;
+}
+#menu button:hover
+{
+    border: solid 1px #bbb;
+    cursor: pointer;
+}
+#menu button:focus
+{
+    outline:none;
+}
+.separator
+{
+    border-right: solid 1px #ccc;
+    height: 80%;
+    margin-left: 8px;
+    margin-top: 3px;
+}
+#timeline
+{
+    height:35%;
+}
+.back-black
+{
+    background-color: #343a40!important;
+}

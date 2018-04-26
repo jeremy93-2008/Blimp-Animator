@@ -3,15 +3,73 @@
   <head>
     <meta charset="UTF-8">
     <title>Stock</title>
-    <style>body{margin:0;background-color: #333;}</style>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="renderer.js"></script>
+    <link rel="stylesheet" href="css/style.css"/>
+    <style>
+    html,body
+    {
+      height:100%;
+    }
+    </style>
   </head>
   <body>
-
-    <button onclick="rend.Hola()">Inicio</button>
-    <script>
-      // You can also require other files to run in this process
-      var dialog = require('electron');
-      var rend = require('./renderer.js')
-    </script>
+      <div class="container-fluid" style="height:100%;overflow: hidden;">
+        <div class="row top bg-dark">
+          <ul>
+            <li>
+              <span>Archivo</span>
+              <ul class="bg-dark">
+                <li><span>Nuevo</span></li>
+                <li><span>Abrir</span></li>
+                <li class="separator"></li>
+                <li><span>Cerrar</span></li>
+              </ul>
+            </li>
+            <li>
+                <span>Editar</span>
+                <ul class="bg-dark">
+                  <li><span>Cortar</span></li>
+                  <li><span>Copiar</span></li>
+                  <li><span>Pegar</span></li>
+                  <li class="separator"></li>
+                  <li><span>Buscar</span></li>
+                  <li><span>Reemplazar</span></li>
+                </ul>
+            </li>
+            <li>
+                <span>Ventana</span>
+                <ul class="bg-dark">
+                  <li><span>Minimizar</span></li>
+                  <li><span>Maximizar</span></li>
+                </ul>
+              </li>
+          </ul>
+        </div>
+          <div id="menu" class="row bg-dark">
+             <button class="selected" title="Selecciona los elementos"><i class="fa fa-mouse-pointer"></i></button>
+             <button title="Mueve los elementos"><i class="fa fa-hand-paper-o"></i></button>
+             <div class="separator"></div>
+             <button title="Crear un circulo"><i class="fa fa-circle-thin"></i></button>
+             <button title="Crear un cuadrado"><i class="fa fa-square-o"></i></button>
+             <button title="Importar una imagen"><i class="fa fa-picture-o"></i></button>
+             <button title="Insertar una caja de texto"><i class="fa fa-font"></i></button>
+          </div>
+          <div class="row" style="height:60%;">
+            <div id="renderer" class="col-sm">
+              Renderer
+            </div>
+            <div id="inspector" class="col-sm-3">
+              Inspector
+              </div>
+          </div>
+          <div id="timeline" class="row back-black">
+            Timeline
+          </div>
+        </div>
   </body>
 </html>
