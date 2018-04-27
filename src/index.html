@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="renderer.js"></script>
+    <script type="text/javascript" src="js/renderer.js"></script>
+    <script type="text/javascript" src="js/webview.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
     <style>
     html,body
@@ -18,13 +19,14 @@
     </style>
   </head>
   <body>
+    <div class="bg-opa-bl"></div>
       <div class="container-fluid" style="height:100%;overflow: hidden;">
         <div class="row top bg-dark">
           <ul>
             <li>
               <span>Archivo</span>
               <ul class="bg-dark">
-                <li><span>Nuevo</span></li>
+                <li onclick="NuevoArchivo()"><span>Nuevo</span></li>
                 <li><span>Abrir</span></li>
                 <li class="separator"></li>
                 <li><span>Cerrar</span></li>
@@ -51,22 +53,75 @@
           </ul>
         </div>
           <div id="menu" class="row bg-dark">
-             <button class="selected" title="Selecciona los elementos"><i class="fa fa-mouse-pointer"></i></button>
-             <button title="Mueve los elementos"><i class="fa fa-hand-paper-o"></i></button>
-             <button title="Rotar los elementos"><i class="fa fa-arrows-alt"></i></button>
+             <button id="seleccionar" class="stay selected" title="Selecciona los elementos"><i class="fa fa-mouse-pointer"></i></button>
+             <button id="mover" class="stay" title="Mueve los elementos"><i class="fa fa-hand-paper-o"></i></button>
+             <button id="rotar" class="stay" title="Rotar los elementos"><i class="fa fa-arrows-alt"></i></button>
              <div class="separator"></div>
-             <button title="Crear un circulo"><i class="fa fa-circle-thin"></i></button>
-             <button title="Crear un cuadrado"><i class="fa fa-square-o"></i></button>
-             <button title="Importar una imagen"><i class="fa fa-picture-o"></i></button>
-             <button title="Insertar una caja de texto"><i class="fa fa-font"></i></button>
+             <button onclick="circleView()" title="Crear un circulo"><i class="fa fa-circle-thin"></i></button>
+             <button onclick="rectangleView()" title="Crear un cuadrado"><i class="fa fa-square-o"></i></button>
+             <button onclick="imageView()" title="Importar una imagen"><i class="fa fa-picture-o"></i></button>
+             <button onclick="textView()" title="Insertar una caja de texto"><i class="fa fa-font"></i></button>
+             <div class="separator"></div>
+             <button title="Reproduce la animación"><i class="fa fa-play"></i></button>
+             <button title="Construye la animación en HTML/CSS"><i class="fa fa-cog"></i></button>
           </div>
           <div class="row" style="height:60%;">
             <div id="renderer" class="col-sm">
-              Renderer
-            </div>
-            <div id="inspector" class="col-sm-3 back-black">
-              Inspector
+              <div id="webview">
+
               </div>
+            </div>
+            <div id="inspector" style="max-width:222px;" class="col-sm-3 back-black">
+              <div class="nothing">No hay ningún elemento seleccionado</div>
+              <div class="elemento">
+                <span class="nombre">div#nombre.espacio</span>
+                <span>ID</span><input class="elm id_elm" type="text" />
+                <span>Clase</span><input class="elm class_elm" class="end" type="text" />
+                <span>Visible</span>
+                <select>
+                  <option class="elm visibility_elm">visible</option>
+                  <option class="elm visibility_elm">hidden</option>
+                  <option class="elm display_elm">none</option>
+                </select>
+                <span class="nombre small">Dimensiones</span>
+                <span>Ancho</span><input class="elm width_elm" min="0" type="number" />
+                <select class="hidden">
+                  <option class="elm width_elm post">%</option>
+                  <option class="elm width_elm post">px</option>
+                </select>
+                <span>Alto</span><input class="elm height_elm" min="0" type="number" />
+                <select class="hidden">
+                  <option class="elm height_elm post">%</option>
+                  <option class="elm height_elm post">px</option>
+                </select>
+                <span class="nombre small">Fondo</span>
+                <span>Color</span><input class="elm background-color_elm" type="color" />
+                <span>Imagen</span><input class="elm background-image_elm" type="text" />
+                <button class="smallbtn" onclick="PonerImagen('.background-image_elm')">...</button>
+                <span class="nombre small">Bordes</span>
+                <span>Estilo</span>
+                <select>
+                  <option class="elm border-style_elm">none</option>
+                  <option class="elm border-style_elm">solid</option>
+                  <option class="elm border-style_elm">dotted</option>
+                  <option class="elm border-style_elm">dashed</option>
+                  <option class="elm border-style_elm">double</option>
+                </select>
+                <span>Grosor</span>
+                <input min="0" post="px" class="elm border-width_elm" type="number" /><span style="width:12px;">px</span>
+                <span>Color</span>
+                <input class="elm border-color_elm" type="color" />
+                <span>Curva</span>
+                <input class="elm border-radius_elm" min="0" type="number" />
+                <select class="hidden">
+                  <option class="elm border-radius_elm post">%</option>
+                  <option class="elm border-radius_elm post">px</option>
+                </select>
+                <span class="nombre small">Efectos</span>
+                <span>Sombra</span>
+                <input class="elm box-shadow_elm" min="0" type="number" />
+              </div>
+            </div>
           </div>
           <div id="timeline" class="row back-black">
             <div id="timeline-option">
@@ -75,8 +130,8 @@
               <span>segundos</span>
             </div>
             <div id="menu-timeline" class="row bg-dark">
-              <button><i title="Quitar Captura" class="fa fa-minus"></i></button>
-              <button><i title="Agregar Captura" class="fa fa-plus"></i></button>
+              <button title="Quitar Captura"><i class="fa fa-minus"></i></button>
+              <button title="Agregar Captura"><i class="fa fa-plus"></i></button>
             </div>
             <div id="timeline-control">
               <div class="circle">
