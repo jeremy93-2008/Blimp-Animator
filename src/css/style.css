@@ -53,12 +53,12 @@ ul li
     width: 100%;
     margin-bottom:3px;
 }
-.top ul li ul li:hover,.top .selected,#menu .selected
+.top ul li ul li:hover,.top .selected,#menu .selected,#menu .right .selected
 {
     background: #555;
     cursor:default;
 }
-#menu .selected
+#menu .selected,#menu .right .selected
 {
     border: solid 1px #bbb;
 }
@@ -75,7 +75,7 @@ ul li
 {
     height:36px;
 }
-#menu button,#menu-timeline button
+#menu button,#menu-timeline button,#menu .right button
 {
     border:solid 1px transparent;
     background: none;
@@ -84,12 +84,12 @@ ul li
     padding: 0px 10px 0px 10px;
     margin: 3px 0px 3px 4px;
 }
-#menu button:hover,#menu-timeline button:hover,#inspector .elemento .smallbtn:hover
+#menu button:hover,#menu-timeline button:hover,#inspector .elemento .smallbtn:hover,#menu .right button:hover
 {
     border: solid 1px #bbb;
     cursor: pointer;
 }
-#menu button:focus,#menu-timeline button:focus,#inspector .elemento .smallbtn:focus
+#menu button:focus,#menu-timeline button:focus,#inspector .elemento .smallbtn:focus,#menu .right button:focus
 {
     outline:none;
 }
@@ -264,6 +264,7 @@ ul li
 #inspector .elemento .nombre
 {
     font-size: 11px;
+    width: 110px;
     display: block;
     font-weight: bold;
     text-align: center;
@@ -272,7 +273,7 @@ ul li
 #inspector .elemento input
 {
     display: inline-block;
-    width: 75px;
+    width: 74px;
     font-size: 11px;
     background: transparent;
     border: none;
@@ -293,10 +294,12 @@ ul li
 }
 #inspector .elemento span
 {
-    width: 34px;
+    width: 46px;
+    overflow: hidden;
     display: inline-block;
     text-align: right;
     font-size: 11px;
+    margin-left: -10px;
 }
 #inspector .elemento select
 {
@@ -312,11 +315,13 @@ ul li
 #inspector .elemento .nombre.small
 {
     font-size:11px;
+    margin-left: -7px;
+    text-align: left;
 }
 #inspector .elemento  select.hidden
 {
     display: block;
-    width: 33px;
+    width: 35px;
     margin-top: -20px;
     margin-left: 118px;
     border-color:lightgray;
@@ -330,5 +335,18 @@ ul li
     border: none;
     width: 20px;
     margin-left: -10px;
+    padding-right: 7px;
     background: transparent;
 }  
+#menu .right
+{
+    position: absolute;
+    right: 45px;
+    margin-top: 2px;
+    height: 36px;
+}
+#webview
+{
+    width: 100%;
+    height: 100%;
+}

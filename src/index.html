@@ -64,6 +64,11 @@
              <div class="separator"></div>
              <button title="Reproduce la animación"><i class="fa fa-play"></i></button>
              <button title="Construye la animación en HTML/CSS"><i class="fa fa-cog"></i></button>
+             <div class="right" style="display:none;">
+                <button id="elm-relative" title="Posición relativa al cuerpo del documento"><i class="fa fa-th" aria-hidden="true"></i></button>
+                <button id="elm-absolute" title="Posición absoluta al cuerpo del documento"><i class="fa fa-dot-circle-o" aria-hidden="true"></i></button>
+                <button id="elm-fixed" title="Posición fija a la ventana del documento"><i class="fa fa-thumb-tack" aria-hidden="true"></i></button>
+             </div>
           </div>
           <div class="row" style="height:60%;">
             <div id="renderer" class="col-sm">
@@ -71,32 +76,43 @@
 
               </div>
             </div>
-            <div id="inspector" style="max-width:222px;" class="col-sm-3 back-black">
-              <div class="nothing">No hay ningún elemento seleccionado</div>
-              <div class="elemento">
-                <span class="nombre">div#nombre.espacio</span>
+            <div id="inspector" style="max-width:214px;" class="col-sm-3 back-black">
+              <div class="nothing" style="display:block;">No hay ningún elemento seleccionado</div>
+              <div class="elemento" style="display: none;">
+                <span id="titulo" class="nombre">div#nombre.espacio</span>
                 <span>ID</span><input class="elm id_elm" type="text" />
                 <span>Clase</span><input class="elm class_elm" class="end" type="text" />
                 <span>Visible</span>
                 <select>
                   <option class="elm visibility_elm">visible</option>
                   <option class="elm visibility_elm">hidden</option>
-                  <option class="elm display_elm">none</option>
+                  <option value="hidden" class="elm visibility_elm">none</option>
+                </select>
+                <span class="nombre small">Posición</span>
+                <span>Eje X</span><input class="elm left_elm" min="0" type="number" />
+                <select class="hidden">
+                  <option class="elm left_elm post">px</option>
+                  <option class="elm left_elm post">%</option>
+                </select>
+                <span>Eje Y</span><input class="elm top_elm" min="0" type="number" />
+                <select class="hidden">
+                  <option class="elm top_elm post">px</option>
+                  <option class="elm top_elm post">%</option>
                 </select>
                 <span class="nombre small">Dimensiones</span>
                 <span>Ancho</span><input class="elm width_elm" min="0" type="number" />
                 <select class="hidden">
-                  <option class="elm width_elm post">%</option>
                   <option class="elm width_elm post">px</option>
+                  <option class="elm width_elm post">%</option>
                 </select>
                 <span>Alto</span><input class="elm height_elm" min="0" type="number" />
                 <select class="hidden">
-                  <option class="elm height_elm post">%</option>
                   <option class="elm height_elm post">px</option>
+                  <option class="elm height_elm post">%</option>
                 </select>
                 <span class="nombre small">Fondo</span>
                 <span>Color</span><input class="elm background-color_elm" type="color" />
-                <span>Imagen</span><input class="elm background-image_elm" type="text" />
+                <span>Imagen</span><input pre="url('" post="')" class="elm background-image_elm" type="text" />
                 <button class="smallbtn" onclick="PonerImagen('.background-image_elm')">...</button>
                 <span class="nombre small">Bordes</span>
                 <span>Estilo</span>
@@ -114,12 +130,43 @@
                 <span>Curva</span>
                 <input class="elm border-radius_elm" min="0" type="number" />
                 <select class="hidden">
-                  <option class="elm border-radius_elm post">%</option>
                   <option class="elm border-radius_elm post">px</option>
+                  <option class="elm border-radius_elm post">%</option>
                 </select>
+                <span class="nombre small">Tipografía</span>
+                <span>Fuente</span>
+                <select>
+                  <option class="elm font-family_elm">Arial</option>
+                  <option class="elm font-family_elm">Verdana</option>
+                  <option class="elm font-family_elm">Helvetica</option>
+                  <option class="elm font-family_elm">Georgia</option>
+                  <option class="elm font-family_elm">sans-serif</option>
+                  <option class="elm font-family_elm">serif</option>
+                </select>
+                <span>Tamaño</span>
+                <input post="px" class="elm font-size_elm" min="1" type="number" />
+                <span style="width:12px;">px</span>
+                <span>Color</span>
+                <input class="elm color_elm" type="color" />
+                <span>Negrita</span>
+                <select>
+                  <option value="400" class="elm font-weight_elm">No</option>
+                  <option value="700" class="elm font-weight_elm">Sí</option>
+                </select>
+                <span>Itálica</span>
+                <select>
+                  <option value="normal" class="elm font-style_elm">No</option>
+                  <option value="italic" class="elm font-style_elm">Sí</option>
+                </select>                              
                 <span class="nombre small">Efectos</span>
                 <span>Sombra</span>
-                <input class="elm box-shadow_elm" min="0" type="number" />
+                <input pre="0 0 " post="px black" class="elm box-shadow_elm" min="0" type="number" />
+                <span style="width:12px;">px</span>
+                <span>Texto Sombra</span>
+                <input pre="0 0 " post="px black" class="elm text-shadow_elm" min="0" type="number" />
+                <span style="width:12px;">px</span>
+                <span>Opacidad</span>
+                <input class="elm opacity_elm" min="0" max="1" step="0.1" type="number" />
               </div>
             </div>
           </div>
