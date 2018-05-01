@@ -4,6 +4,7 @@ const dialog = remote.dialog;
 const app = remote.app;
 const fs = require("fs");
 const vue = require("vue");
+let refListenerBinding = {};
 
 function NuevoArchivo()
 {
@@ -51,6 +52,7 @@ function circleView()
     circle.id = "elm-"+parseInt((Math.random()*1000));
     circle.style.border = "solid 2px black"; 
     circle.style.display = "inline-block";
+    circle.style.backgroundSize = "cover";
     circle.style.borderRadius = "50%"
     circle.style.width = "50px";
     circle.style.height = "50px";
@@ -65,6 +67,7 @@ function rectangleView()
     circle.className = "default";
     circle.id = "elm-"+parseInt((Math.random()*1000));
     circle.style.display = "inline-block";
+    circle.style.backgroundSize = "cover";
     circle.style.border = "solid 2px black";
     circle.style.width = "100px";
     circle.style.height = "50px";
@@ -110,6 +113,7 @@ function textView()
     text.style.display = "inline-block";
     text.style.width = "150px";
     text.style.minHeight = "25px";
+    text.style.backgroundSize = "cover";
     text.className = "default";
     text.style.position = "relative";
     text.id = "elm-"+parseInt((Math.random()*1000));
@@ -132,7 +136,9 @@ function PonerImagen(pathToElm)
         {
             if(pathFiles != undefined && pathFiles[0] != "")
             {
-                document.querySelector(pathToElm).value = pathFiles[0];
+                var evento = new Event("input");
+                document.querySelector(pathToElm).value = "file:///"+pathFiles[0].replace(/\\/g,"/");
+                document.querySelector(pathToElm).dispatchEvent(evento);
             }
         })
 }
@@ -156,11 +162,19 @@ function GenerarInspector(that,list)
     for(let elm of list_elm)
     {
         let clase = elm.className.replace("_elm","").replace("elm","").trim();
+        // Le quitamos los Eventattach que podian tener antes
+        elm.removeEventListener("input",refListenerBinding[clase]);
+        elm.removeEventListener("change",refListenerBinding[clase]);
+        refListenerBinding[clase] = null;
+
         if(elm.nodeName == "INPUT")
         {
             if(clase != "id" && clase != "class")
                 if(elm.type == "number")
-                    elm.value = parseInt(computed.getPropertyValue(clase).replace("px","").replace("%","").trim()) || 0;
+                    if(clase == "box-shadow" || clase == "text-shadow")
+                        elm.value = parseInt(computed.getPropertyValue(clase).replace("rgb(0, 0, 0) 0px 0px ","").replace(" 0px","").replace("px","").trim()) || 0;
+                    else
+                        elm.value = parseInt(computed.getPropertyValue(clase).replace("px","").replace("%","").trim()) || 0;
                 else if(elm.type == "color")
                     elm.value = colorEnHex(computed.getPropertyValue(clase).replace("px","").replace("%","").trim());
                 else
@@ -170,7 +184,8 @@ function GenerarInspector(that,list)
                     elm.value = that.id;
                 else
                     elm.value = that.className;
-            elm.addEventListener("input",function(evt){newInfoToHTMLElement(elm,that,evt)});
+            refListenerBinding[clase] = function(){newInfoToHTMLElement(elm,that)};
+            elm.addEventListener("input",refListenerBinding[clase]);
         }else if(elm.nodeName == "OPTION")
         {
             let valor = elm.value;
@@ -184,7 +199,11 @@ function GenerarInspector(that,list)
                 if(valor.toString().toLowerCase() == valorObj.toLowerCase())
                     elm.selected = true;
             }
-            elm.parentNode.addEventListener("change",function(evt){newInfoToHTMLElement(elm,that,evt)});
+            if(refListenerBinding[clase] == null)
+            {
+                refListenerBinding[clase] = function(){newInfoToHTMLElement(elm,that)};
+                elm.parentNode.addEventListener("change",refListenerBinding[clase]);                
+            }
         }
     }
 }
@@ -244,5 +263,4 @@ function newInfoToHTMLElement(that,HTMLobj,evt)
         HTMLobj.setAttribute(clase,valor);
     else
         HTMLobj.style[clase] = valor;
-    evt.stopPropagation();
 }
