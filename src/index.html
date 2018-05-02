@@ -10,6 +10,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/renderer.js"></script>
     <script type="text/javascript" src="js/webview.js"></script>
+    <script type="text/javascript" src="js/main.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
     <style>
     html,body
@@ -19,9 +20,8 @@
     </style>
   </head>
   <body>
-    <div class="bg-opa-bl"></div>
       <div class="container-fluid" style="height:100%;overflow: hidden;">
-        <div class="row top bg-dark">
+        <div class="row top bg-dark" style="position: relative;z-index:3;">
           <ul>
             <li>
               <span>Archivo</span>
@@ -52,7 +52,12 @@
               </li>
           </ul>
         </div>
-          <div id="menu" class="row bg-dark">
+        <div class="inspector_menu">
+          <button class="selected" id="btn-inspector">Propiedades</button>
+          <button id="btn-outline">Elementos</button>
+          <button id="btn-libreria">Librería</button>
+        </div>
+          <div id="menu" class="row bg-dark" style="position: relative;z-index:2">
              <button id="seleccionar" class="stay selected" title="Selecciona los elementos"><i class="fa fa-mouse-pointer"></i></button>
              <button id="mover" class="stay" title="Mueve los elementos"><i class="fa fa-hand-paper-o"></i></button>
              <button id="rotar" class="stay" title="Rotar los elementos"><i class="fa fa-arrows-alt"></i></button>
@@ -61,10 +66,11 @@
              <button onclick="rectangleView()" title="Crear un cuadrado"><i class="fa fa-square-o"></i></button>
              <button onclick="imageView()" title="Importar una imagen"><i class="fa fa-picture-o"></i></button>
              <button onclick="textView()" title="Insertar una caja de texto"><i class="fa fa-font"></i></button>
+             <button onclick="htmlView()" title="Insertar un trzo de código personalizado"><i class="fa fa-code"></i></button>
              <div class="separator"></div>
              <button title="Reproduce la animación"><i class="fa fa-play"></i></button>
              <button title="Construye la animación en HTML/CSS"><i class="fa fa-cog"></i></button>
-             <div class="right" style="display:none;">
+             <div class="right">
                 <button id="elm-relative" title="Posición relativa al cuerpo del documento"><i class="fa fa-th" aria-hidden="true"></i></button>
                 <button id="elm-absolute" title="Posición absoluta al cuerpo del documento"><i class="fa fa-dot-circle-o" aria-hidden="true"></i></button>
                 <button id="elm-fixed" title="Posición fija a la ventana del documento"><i class="fa fa-thumb-tack" aria-hidden="true"></i></button>
@@ -72,13 +78,13 @@
           </div>
           <div class="row" style="height:60%;">
             <div id="renderer" class="col-sm">
-              <div id="webview">
+              <div id="webview" style="position: relative;z-index:1">
 
               </div>
             </div>
-            <div id="inspector" style="max-width:214px;" class="col-sm-3 back-black">
+            <div id="inspector" style="max-width:262px;position: relative;z-index:5;" class="col-sm-3 back-black">
               <div class="nothing" style="display:block;">No hay ningún elemento seleccionado</div>
-              <div class="elemento" style="display: none;">
+              <div class="elemento" style="display: none;padding: 0 16%;">
                 <span id="titulo" class="nombre">div#nombre.espacio</span>
                 <span>ID</span><input class="elm id_elm" type="text" />
                 <span>Clase</span><input class="elm class_elm" class="end" type="text" />
@@ -169,8 +175,14 @@
                 <input class="elm opacity_elm" min="0" max="1" step="0.1" type="number" />
               </div>
             </div>
+            <div id="outline" style="max-width:262px;position: relative;z-index:5;display:none" class="col-sm-3 back-black">
+              <ul style="padding: 0;font-size: 12px;list-style-type: circle;"></ul>
+            </div>
+            <div id="libreria" style="max-width:262px;position: relative;z-index:5;display:none;border-top:solid 1px black" class="col-sm-3 back-black">
+              <ul style="padding: 0;font-size: 12px;list-style-type: circle;"></ul>
+            </div>
           </div>
-          <div id="timeline" class="row back-black">
+          <div id="timeline" class="row back-black" style="position: relative;z-index:5;">
             <div id="timeline-option">
               <span>Tiempo de la animación:</span>
               <input id="anim-duration" type="number" min="1" max="9999" value="3" />

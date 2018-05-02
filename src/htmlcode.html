@@ -1,0 +1,93 @@
+<html>
+<head>
+    <title>Añadir Código HTML Personalizado</title>
+    <meta charset="utf-8" />
+    <style>
+        html,body
+        {
+            height:100%;
+            overflow:hidden;
+            background: #3a3e3e;
+        }
+        .bottom
+        {
+            padding: 4px 10px;
+            float: right;
+            margin-right: -9px;
+        }
+        button
+        {
+            background: linear-gradient(to top,#2c2d2d,#444);
+            border: solid 1px #7b7b7b;
+            padding: 3px 20px;
+            border-radius: 10px;
+            color: white;  
+            outline:none;   
+        }
+        button:hover
+        {
+            background: linear-gradient(to bottom,#2c2d2d,#444);       
+            cursor: pointer;     
+        }
+    </style>
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
+</head>
+<body>
+    <div id="container" style="width:100%;height:90%;border:1px solid grey"></div>
+    <div class="bottom">
+        <button id="Aceptar">Aceptar</button>
+        <button onclick="localStorage.codigo = 'null';window.close();">Cancelar</button>
+    </div>
+    <script>
+        // require node modules before loader.js comes in
+        var path = require('path');
+        var remote = require("electron").remote;
+        var {BrowserWindow} = remote;
+        </script>
+        <script>
+        // Monaco uses a custom amd loader that over-rides node's require.
+        // Keep a reference to node's require so we can restore it after executing the amd loader file.
+        var nodeRequire = global.require;
+        </script>
+        <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+        <script>
+        // Save Monaco's amd require and restore Node's require
+        var amdRequire = global.require;
+        global.require = nodeRequire;
+        </script>
+        <script>
+        function uriFromPath(_path) {
+            var pathName = path.resolve(_path).replace(/\\/g, '/');
+            if (pathName.length > 0 && pathName.charAt(0) !== '/') {
+                pathName = '/' + pathName;
+            }
+            return encodeURI('file://' + pathName);
+        }
+        
+        amdRequire.config({
+            baseUrl: uriFromPath(path.join(__dirname, '../node_modules/monaco-editor/min'))
+        });
+        
+        // workaround monaco-css not understanding the environment
+        self.module = undefined;
+        // workaround monaco-typescript not understanding the environment
+        self.process.browser = true;
+        amdRequire(['vs/editor/editor.main'], function() {
+            var editor = monaco.editor.create(document.getElementById('container'), {
+                value: [
+                    '<h1>Hello Word!</h1>',
+                    'Pon aqui el código HTML que quiere añadir'
+                ].join('\n'),
+                language: 'html'
+            });
+            document.getElementById("Aceptar").addEventListener("click",function()
+            {
+                localStorage.codigo = editor.getValue();
+                console.log(editor.getValue());
+                window.close();
+            })
+        });
+    </script>
+</body>
+
+</html>

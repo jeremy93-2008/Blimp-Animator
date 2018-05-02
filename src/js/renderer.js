@@ -73,4 +73,22 @@ window.addEventListener("load",function()
         if(webview.innerHTML.trim() != "")
             InspectorEsconder(false);
     })
+    const menuInspector = document.querySelectorAll(".inspector_menu button");
+    for(let btn of menuInspector)
+    {
+        btn.addEventListener("click",function()
+        {
+            let btnS = this.parentNode.querySelectorAll("button");
+            for(let btn of btnS)
+            {
+                let identificador = btn.id.replace("btn-","");
+                btn.className = "";
+                document.querySelector("#"+identificador).style.display = "none";
+            }
+            document.querySelector("#menu .right").style.display = (this.id.indexOf("inspector")!=-1?"block":"none")
+            let identificador = this.id.replace("btn-","");
+            this.className = "selected";
+            document.querySelector("#"+identificador).style.display = "block";
+        })
+    }
 })
