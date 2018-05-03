@@ -8,6 +8,7 @@ const extra = require("fs-extra");
 const path = require("path");
 const vue = require("vue");
 let refListenerBinding = {};
+let seleccionado = null;
 
 function NuevoArchivo()
 {
@@ -103,13 +104,17 @@ function imageView()
         {
             if(pathFiles != undefined && pathFiles[0] != "")
             {
+                let annadir = true;
+                if(document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(pathFiles[0])) != -1)
+                    annadir = false;
                 extra.copySync(pathFiles[0],__dirname+"/img/client/"+path.win32.basename(pathFiles[0]));
                 image.src = "./img/client/"+path.win32.basename(pathFiles[0]);
                 image.style.width = "150px";
                 image.style.position = "relative";
                 image.addEventListener("click",function(evt){ActivaInspector(image,evt);});
                 webview.appendChild(image);
-                annadirALibreria(image);
+                if(annadir)
+                    annadirALibreria(image);
                 Creacion(image);
             }
         })
@@ -131,6 +136,41 @@ function textView()
     text.addEventListener("click",function(evt){ActivaInspector(text,evt);});
     webview.appendChild(text);
     Creacion(text);
+}
+function multimediaView(name)
+{
+    const webview = document.querySelector("#webview")
+    let tag = document.createElement(name);
+    tag.className = "default";
+    tag.id = "elm-"+parseInt((Math.random()*1000));
+    tag.style.position = "relative";
+    tag.style.backgroundCover = "relative";
+    tag.controls = "true";
+    dialog.showOpenDialog(
+        {
+            "title":"Elija un "+name,
+            "defaultPath":app.getPath("documents"),
+            "filters":[{
+                name: 'Multimedia',
+                extensions: ['mp4','ovg','ogg','mp3','wma','wav']
+             }
+            ],
+            "properties":["openFile"]
+        },function(pathFiles,bmk)
+        {
+            if(pathFiles != undefined && pathFiles[0] != "")
+            {
+                let annadir = true;
+                if(document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(pathFiles[0])) != -1)
+                    annadir = false;
+                tag.src = __dirname+"/img/client/"+path.win32.basename(pathFiles[0]);
+                tag.addEventListener("click",function(evt){ActivaInspector(tag,evt);});
+                webview.appendChild(tag);
+                if(annadir)
+                    annadirALibreria(tag);
+                Creacion(tag);
+            }
+        })
 }
 function htmlView()
 {
@@ -168,15 +208,22 @@ function htmlView()
         CodeWindow = null
       })
 }
-function PonerImagen(pathToElm)
+function PonerImagen(pathToElm,video)
 {
+    let filtro = ['png','jpg','gif','bmp','svg','jpeg'];
+    if(video == "video")
+        filtro = ['mp4','ovg','ogg','mp3','wma','wav']
+    else if(video == "todo")
+        filtro = ['mp4','ovg','ogg','mp3','wma','wav','png','jpg','gif','bmp','svg','jpeg']
+    else
+        filtro = ['png','jpg','gif','bmp','svg','jpeg']
     dialog.showOpenDialog(
         {
-            "title":"Elija una imagen",
+            "title":"Elija un Contenido",
             "defaultPath":app.getAppPath()+"\\src\\img\\client",
             "filters":[{
-                name: 'Imagen',
-                extensions: ['png','jpg','gif','bmp','svg','jpeg']
+                name: 'Contenido',
+                extensions: filtro
              }
             ],
             "properties":["openFile"]
@@ -185,11 +232,18 @@ function PonerImagen(pathToElm)
             if(pathFiles != undefined && pathFiles[0] != "")
             {
                 var evento = new Event("input");
+                let annadir = true;
+                if(document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(pathFiles[0])) != -1)
+                    annadir = false;
                 extra.copySync(pathFiles[0],__dirname+"/img/client/"+path.win32.basename(pathFiles[0]));
                 let ruta = "./img/client/"+path.win32.basename(pathFiles[0]);
                 let image = document.createElement("img");
-                image.src = "./img/client/"+path.win32.basename(pathFiles[0]);
-                annadirALibreria(image);
+                if(document.querySelector(".elemento #titulo").innerHTML.indexOf("img") == -1)
+                    image.src = "./img/play-button.png";
+                else
+                    image.src = "./img/client/"+path.win32.basename(pathFiles[0]);
+                if(annadir)    
+                    annadirALibreria(image,path.win32.basename(pathFiles[0]));
                 document.querySelector(pathToElm).value = ruta;
                 document.querySelector(pathToElm).dispatchEvent(evento);
             }
@@ -213,7 +267,7 @@ function ActivaInspector(that,evt)
 {
     let inspector = document.getElementById("inspector");
     let elementos = inspector.querySelector(".elemento");
-    InspectorEsconder(true);
+    InspectorEsconder(true,false);
     seleccionarObjInspector(that);
     elementos.querySelector("#titulo").innerHTML = that.nodeName.toLowerCase()+"#"+that.id+"."+that.className;
     GenerarInspector(that,elementos);
@@ -229,6 +283,17 @@ function GenerarInspector(that,list)
 
     let anteriorClase = "";
 
+    // Enseñamos la fuente de imagen si es un objeto img
+    if(that.nodeName == "IMG" || that.nodeName == "VIDEO" | that.nodeName == "AUDIO")
+        document.querySelector(".elm-imagen").style.display = "block";
+    else
+        document.querySelector(".elm-imagen").style.display = "none";
+    
+    if(that.nodeName == "VIDEO" | that.nodeName == "AUDIO")
+        document.querySelector(".elm-video").style.display = "block";
+    else
+        document.querySelector(".elm-video").style.display = "none";
+
     for(let elm of list_elm)
     {
         let clase = elm.className.replace("_elm","").replace("elm","").trim();
@@ -242,7 +307,7 @@ function GenerarInspector(that,list)
 
         if(elm.nodeName == "INPUT")
         {
-            if(clase != "id" && clase != "class")
+            if(clase != "id" && clase != "class" && clase != "src")
                 if(elm.type == "number")
                     if(clase == "box-shadow" || clase == "text-shadow")
                         elm.value = parseFloat(computed.getPropertyValue(clase).replace("rgb(0, 0, 0) 0px 0px ","").replace(" 0px","").replace("px","").trim()) || 0;
@@ -258,21 +323,38 @@ function GenerarInspector(that,list)
             else
                 if(clase == "id")
                     elm.value = that.id;
+                else if(clase == "src")
+                    elm.value = that.src;
                 else
                     elm.value = that.className;
             refListenerBinding[clase] = function(){newInfoToHTMLElement(elm,that)};
             elm.addEventListener("input",refListenerBinding[clase],true);
         }else if(elm.nodeName == "OPTION")
         {
+            //elm option this elemento
             let valor = elm.value;
             let valorObj = computed.getPropertyValue(clase.replace(" post",""));
+            if(clase == "autoplay")
+            {
+                if(that.getAttribute("autoplay") == null)
+                    valorObj = false;
+                else
+                    valorObj = true;
+            }
+            if(clase == "controls")
+            {
+                if(that.getAttribute("controls") == null)
+                    valorObj = false;
+                else
+                    valorObj = true;
+            }
             if(elm.className.indexOf("post") != -1)
             {
                 if(valorObj.toString().indexOf(valor) != -1)
                     elm.selected = true;
             }else
             {
-                if(valor.toString().toLowerCase() == valorObj.toLowerCase())
+                if(valor.toString().toLowerCase() == valorObj.toString().toLowerCase())
                     elm.selected = true;
             }
             if(refListenerBinding[clase] == null)
@@ -305,6 +387,40 @@ function SetPosicionBoton(computed,that)
     }    
     document.querySelector("#elm-"+computed.getPropertyValue("position")).className = "selected"
 }
+function VisibleInvisible(that,valor)
+{
+    let computed = window.getComputedStyle(that,null);
+    let visible = computed.getPropertyValue("visibility");
+    if(valor != null)
+        visible = valor;
+    let btn = document.querySelector("#menu .right-elemento button");
+    if(that != null)
+    {
+        let texto = document.createElement("input");
+        texto.className = "elm visibility_elm"
+        if(visible == "visible" )
+        {
+            btn.querySelector("i").className = "fa fa-eye";
+            texto.value = "hidden";
+        }else
+        {
+            btn.querySelector("i").className = "fa fa-eye-slash";
+            texto.value = "visible";            
+        }
+        if(refListenerBinding["visibility-button"] != null)
+        {
+            btn.removeEventListener("click",refListenerBinding["visibility-button"])
+            delete refListenerBinding["visibility-button"]
+        }
+        refListenerBinding["visibility-button"] = function(evt)
+        {
+            newInfoToHTMLElement(texto,that);
+            VisibleInvisible(that);
+            ActivaInspector(that,evt);
+        }
+        btn.addEventListener("click",refListenerBinding["visibility-button"])
+    }
+}
 function componentToHex(c) {
     var hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;
@@ -318,15 +434,69 @@ function colorEnHex(texto)
     let tabla = texto.replace("rgb(","").replace("rgba(","").replace(")","").trim().split(",");
     return rgbToHex(parseInt(tabla[0].trim()),parseInt(tabla[1].trim()),parseInt(tabla[2].trim()));
 }
-function annadirALibreria(img)
+function annadirALibreria(img,texto)
 {
     const list = document.querySelector("#libreria ul");
     let new_img = document.createElement("li");
     new_img.style.padding = "8px 35px";
     new_img.style.color = "white";
     new_img.style.fontSize = "12px";
-    new_img.innerHTML = "<div ondblclick='AbrirImagen(\""+img.src+"\")'><img src='"+img.src+"' style='height: 24px;margin-right: 5px;border: solid 3px #868585;border-radius: 10px;' ><b>"+img.src.split("/")[img.src.split("/").length-1]+"</b><button title='Eliminar esta imagen' class='deleteImg'><i class='fa fa-times' aria-hidden='true'></i></button></div>";
+    let textoImg = img.src.split("/")[img.src.split("/").length-1];
+    if(texto != undefined)
+        textoImg = texto;
+    if(textoImg.length > 10)
+    {
+        let long = textoImg.length;
+        textoImg = textoImg.substring(0,4)+"..."+textoImg.substring(long-3,long);
+    }
+    let ruta = img.src;
+    if(img.nodeName != "IMG")
+    {
+        ruta = "img/play-button.png";
+    }
+    new_img.innerHTML = "<div ondblclick='AbrirImagen(\""+img.src+"\")'><img fuente='"+img.src.replace(/\//g,"\\").replace(__dirname,".").replace("file:\\\\\\","")+"' class='library' src='"+ruta+"' style='width: 35px;margin-right: 5px;border: solid 3px #868585;border-radius: 10px;' ><b style='display: inline-block;width: 71px;max-width:71px;'>"+textoImg+"</b><button onclick='AnnadirContenido(this.parentNode)' title='Añadir este contenido' class='deleteImg'><i class=\"fa fa-plus\" aria-hidden=\"true\"></i></button><button onclick='EliminarContenido(this.parentNode)' title='Eliminar este contenido' class='deleteImg'><i class='fa fa-times' aria-hidden='true'></i></button></div>";
     list.appendChild(new_img);
+}
+function EliminarContenido(that)
+{
+    let ruta = that.querySelector("img").getAttribute("fuente");
+    let objLigados = document.querySelectorAll("*[src*='"+ruta.split("\\")[ruta.split("\\").length-1]+"']:not(.library)");
+    if(objLigados.length > 0)
+    {
+        dialog.showMessageBox(BrowserWindow.getAllWindows()[0],
+                {
+                    "title":"Atención",
+                    "type":"warning",
+                    "buttons":["Aceptar","Cancelar"],
+                    "defaultId":1,
+                    "cancelId":1,
+                    "noLink":true,
+                    "message":"Si borra este contenido multimedia, los objetos relacionados pueden dejar de funcionar. ¿Desea eliminar este contenido?"
+                },function(num)
+                {
+                    if(num==0)
+                    {
+                        let fichero = __dirname + "\\img\\client\\" + ruta.split("\\")[ruta.split("\\").length-1];
+                        if(extra.existsSync(fichero))
+                        {
+                            extra.removeSync(fichero);
+                            that.parentNode.remove();
+                            for(let obj of objLigados)
+                                obj.src = obj.src+"#";
+                        }                   
+                    }
+
+                });        
+    }else
+    {
+        let fichero = __dirname + "\\img\\client\\" + ruta.split("\\")[ruta.split("\\").length-1];
+        if(extra.existsSync(fichero))
+        {
+            extra.removeSync(fichero);
+            that.parentNode.remove();
+        }                
+    }
+
 }
 function AbrirImagen(ruta)
 {
@@ -354,6 +524,18 @@ function AbrirImagen(ruta)
 function seleccionarObjInspector(that)
 {
     let tituloEnObj = that.nodeName.toLowerCase()+"#"+that.id+"."+that.className;
+
+    let lista = document.querySelectorAll("#webview *");
+    for(let obj of lista)
+    {
+        obj.style.outline = "none";
+        obj.style.zIndex = "initial";
+    }
+    that.style.outline = "solid 2px #0a80c4";
+    that.style.zIndex = "10";
+
+    VisibleInvisible(that);
+
     let list = document.querySelectorAll("#outline ul li");
     for(let line of list)
     {
@@ -362,7 +544,7 @@ function seleccionarObjInspector(that)
             line.className = "selected"
     }
 }
-function InspectorEsconder(elemento)
+function InspectorEsconder(elemento,bool)
 {
     document.querySelector("#btn-inspector").style.animation = "";
     let elementos = inspector.querySelector(".elemento");
@@ -370,6 +552,15 @@ function InspectorEsconder(elemento)
     inspector.querySelector(".nothing").style.display = (elemento?"none":"block");
     setTimeout(function()
     {
+        if(bool == undefined)
+        {
+            const list = document.querySelectorAll("#webview *");
+            for(obj of list)
+            {
+                obj.style.zIndex = "initial";
+                obj.style.outline = "none";
+            }
+        }
         if(elementos.style.display == "block")
             document.querySelector("#btn-inspector").style.animation = "orange 1s linear";
     },50)
@@ -400,8 +591,12 @@ function newInfoToHTMLElement(that,HTMLobj,evt)
         }
     }
     valor = (that.getAttribute("pre")||"") + valor + (that.getAttribute("post")||""); 
-    if(clase == "id" || clase == "class")
+    if(clase == "id" || clase == "class" || clase == "src")
         HTMLobj.setAttribute(clase,valor);
+    else if(clase == "autoplay" || clase == "controls")
+        (valor=="true")?HTMLobj.setAttribute(clase,valor):HTMLobj.removeAttribute(clase);
     else
         HTMLobj.style[clase] = valor;
+
+    VisibleInvisible(that,valor);
 }

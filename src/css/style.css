@@ -250,7 +250,7 @@ ul li
 #inspector .elemento .nombre
 {
     font-size: 11px;
-    width: 110px;
+    width: 130px;
     display: block;
     font-weight: bold;
     text-align: center;
@@ -324,12 +324,20 @@ ul li
     padding-right: 7px;
     background: transparent;
 }  
-#menu .right
+#inspector .elemento .elm-imagen
+{
+    display:none;
+}
+#menu .right,#menu .right-elemento,#menu .right-library
 {
     position: absolute;
     right: 72px;
     margin-top: 2px;
     height: 36px;
+}
+#menu .right-elemento
+{
+    right:115px;
 }
 #webview
 {

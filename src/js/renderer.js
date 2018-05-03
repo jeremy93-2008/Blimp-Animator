@@ -86,6 +86,8 @@ window.addEventListener("load",function()
                 document.querySelector("#"+identificador).style.display = "none";
             }
             document.querySelector("#menu .right").style.display = (this.id.indexOf("inspector")!=-1?"block":"none")
+            document.querySelector("#menu .right-elemento").style.display = (this.id.indexOf("outline")!=-1?"block":"none")
+            document.querySelector("#menu .right-library").style.display = (this.id.indexOf("libreria")!=-1?"block":"none")
             let identificador = this.id.replace("btn-","");
             this.className = "selected";
             document.querySelector("#"+identificador).style.display = "block";
