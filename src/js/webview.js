@@ -668,9 +668,9 @@ function Mover(elm,evt)
     }
     elm.style.outline = "solid 2px #0a80c4";
     elm.style.zIndex = "10";
-    if(!evt.ctrlKey && !evt.altKey)
+    if(!evt.ctrlKey && !evt.shiftKey)
         Movimiento(elm,evt);
-    else if(evt.ctrlKey && evt.altKey)
+    else if(evt.ctrlKey && evt.shiftKey)
     {
         Rotar(elm,evt);
     }else
@@ -740,4 +740,34 @@ function elementRotate(evt)
     var boxCenter = [elmnt.offsetLeft+parseFloat(elmnt.style.width.replace("px",""))/2, elmnt.offsetTop+parseFloat(elmnt.style.height.replace("px",""))/2];
     var angle = Math.atan2(evt.pageX - boxCenter[0], - (evt.pageY - boxCenter[1]) )*(180/Math.PI);      
     elmnt.style.transform = "rotate("+angle+"deg)";
+}
+// Redimensionar de los elementos
+function Redimensionar(elm,evt)
+{
+    let btnstay = document.querySelectorAll("button.stay");
+    for(let item of btnstay)
+    {
+        item.className = "stay";
+    }
+    btnstay[2].className = "stay selected";
+
+    evt = evt || window.event;
+    // get the mouse cursor position at startup:
+    pos3 = evt.clientX;
+    pos4 = evt.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementRedimensionar;
+}
+function elementRedimensionar(e)
+{
+    e = e || window.event;
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.width = (elmnt.offsetTop - pos3) + "px";
+    elmnt.style.height = (elmnt.offsetLeft - pos4) + "px";
 }
