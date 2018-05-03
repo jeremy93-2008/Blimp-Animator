@@ -56,17 +56,7 @@ window.addEventListener("load",function()
         })
     }
     let btnstay = document.querySelectorAll("button.stay");
-    for(let item of btnstay)
-    {
-        item.addEventListener("click",function()
-        {
-            for(let btn of btnstay)
-            {
-                btn.className = "stay";
-            }
-            this.className = "stay selected";
-        })
-    }
+    btnstay[0].className = "stay selected";
     const webview = document.querySelector("#webview")
     webview.addEventListener("click",function()
     {

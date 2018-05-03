@@ -84,13 +84,15 @@ function rectangleView()
     webview.appendChild(circle);
     Creacion(circle);
 }
-function imageView()
+function imageView(src)
 {
     const webview = document.querySelector("#webview")
     let image = document.createElement("img");
     image.className = "default";
     image.id = "elm-"+parseInt((Math.random()*1000));
-    dialog.showOpenDialog(
+    if (src == null)
+    {
+        dialog.showOpenDialog(
         {
             "title":"Elija una imagen",
             "defaultPath":app.getPath("pictures"),
@@ -117,7 +119,22 @@ function imageView()
                     annadirALibreria(image);
                 Creacion(image);
             }
-        })
+        })       
+    }else
+    {
+        let annadir = true;
+        if(document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(src)) != -1)
+            annadir = false;
+        image.src = "./img/client/"+path.win32.basename(src);
+        image.style.width = "150px";
+        image.style.position = "relative";
+        image.addEventListener("click",function(evt){ActivaInspector(image,evt);});
+        webview.appendChild(image);
+        if(annadir)
+            annadirALibreria(image);
+        Creacion(image);
+    }
+    
 }
 function textView()
 {
@@ -137,7 +154,7 @@ function textView()
     webview.appendChild(text);
     Creacion(text);
 }
-function multimediaView(name)
+function multimediaView(name,src)
 {
     const webview = document.querySelector("#webview")
     let tag = document.createElement(name);
@@ -146,31 +163,46 @@ function multimediaView(name)
     tag.style.position = "relative";
     tag.style.backgroundCover = "relative";
     tag.controls = "true";
-    dialog.showOpenDialog(
-        {
-            "title":"Elija un "+name,
-            "defaultPath":app.getPath("documents"),
-            "filters":[{
-                name: 'Multimedia',
-                extensions: ['mp4','ovg','ogg','mp3','wma','wav']
-             }
-            ],
-            "properties":["openFile"]
-        },function(pathFiles,bmk)
-        {
-            if(pathFiles != undefined && pathFiles[0] != "")
+    if(src == undefined)
+    {
+        dialog.showOpenDialog(
             {
-                let annadir = true;
-                if(document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(pathFiles[0])) != -1)
-                    annadir = false;
-                tag.src = __dirname+"/img/client/"+path.win32.basename(pathFiles[0]);
-                tag.addEventListener("click",function(evt){ActivaInspector(tag,evt);});
-                webview.appendChild(tag);
-                if(annadir)
-                    annadirALibreria(tag);
-                Creacion(tag);
-            }
-        })
+                "title":"Elija un "+name,
+                "defaultPath":app.getPath("documents"),
+                "filters":[{
+                    name: 'Multimedia',
+                    extensions: ['mp4','ovg','ogg','mp3','wav','webm']
+                 }
+                ],
+                "properties":["openFile"]
+            },function(pathFiles,bmk)
+            {
+                if(pathFiles != undefined && pathFiles[0] != "")
+                {
+                    let annadir = true;
+                    if(document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(pathFiles[0])) != -1)
+                        annadir = false;
+                    extra.copySync(pathFiles[0],__dirname+"/img/client/"+path.win32.basename(pathFiles[0]));
+                    tag.src = __dirname+"/img/client/"+path.win32.basename(pathFiles[0]);
+                    tag.addEventListener("click",function(evt){ActivaInspector(tag,evt);});
+                    webview.appendChild(tag);
+                    if(annadir)
+                        annadirALibreria(tag);
+                    Creacion(tag);
+                }
+            })
+    }else
+    {
+        let annadir = true;
+        if(document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(src)) != -1)
+            annadir = false;
+        tag.src = __dirname+"/img/client/"+path.win32.basename(src);
+        tag.addEventListener("click",function(evt){ActivaInspector(tag,evt);});
+        webview.appendChild(tag);
+        if(annadir)
+            annadirALibreria(tag);
+        Creacion(tag);
+    }
 }
 function htmlView()
 {
@@ -212,9 +244,9 @@ function PonerImagen(pathToElm,video)
 {
     let filtro = ['png','jpg','gif','bmp','svg','jpeg'];
     if(video == "video")
-        filtro = ['mp4','ovg','ogg','mp3','wma','wav']
+        filtro = ['mp4','ovg','ogg','mp3','wav','webm']
     else if(video == "todo")
-        filtro = ['mp4','ovg','ogg','mp3','wma','wav','png','jpg','gif','bmp','svg','jpeg']
+        filtro = ['mp4','ovg','ogg','mp3','wav','png','jpg','gif','bmp','svg','jpeg']
     else
         filtro = ['png','jpg','gif','bmp','svg','jpeg']
     dialog.showOpenDialog(
@@ -237,11 +269,15 @@ function PonerImagen(pathToElm,video)
                     annadir = false;
                 extra.copySync(pathFiles[0],__dirname+"/img/client/"+path.win32.basename(pathFiles[0]));
                 let ruta = "./img/client/"+path.win32.basename(pathFiles[0]);
-                let image = document.createElement("img");
-                if(document.querySelector(".elemento #titulo").innerHTML.indexOf("img") == -1)
-                    image.src = "./img/play-button.png";
-                else
-                    image.src = "./img/client/"+path.win32.basename(pathFiles[0]);
+                let image = "";
+                let imageArray = ['.png','.jpg','.gif','.bmp','.svg','.jpeg'];
+                let ext = ruta.substring(ruta.lastIndexOf("."));
+                if(imageArray.indexOf(ext) == -1){
+                    image = document.createElement("audio");
+                }else{
+                    image = document.createElement("img");
+                }
+                image.src = "./img/client/"+path.win32.basename(pathFiles[0]);
                 if(annadir)    
                     annadirALibreria(image,path.win32.basename(pathFiles[0]));
                 document.querySelector(pathToElm).value = ruta;
@@ -251,6 +287,7 @@ function PonerImagen(pathToElm,video)
 }
 function Creacion(elm)
 {
+    elm.addEventListener("mousedown",function(evt){Mover(elm,evt);})
     let lista_elm = document.querySelector("#outline ul");
     var newLine = document.createElement("li");
     newLine.setAttribute("identificador",elm.nodeName.toLowerCase()+"#"+elm.id+"."+elm.className);
@@ -262,6 +299,20 @@ function Creacion(elm)
     });
     newLine.innerHTML = "<div style='width: 8px;height: 8px;display: inline-block;margin-right: 5px;background: #868585;border-radius:50%;'></div><b>"+elm.nodeName.toLowerCase()+"#"+elm.id+"."+elm.className+"</b>";
     lista_elm.appendChild(newLine)
+}
+function AnnadirContenido(that)
+{
+    let imagen = ['.png','.jpg','.gif','.bmp','.svg','.jpeg'];
+    let video = ['.mp4','.ovg','.webm'];
+    let audio = ['.ogg','.mp3','.wav'];
+    let ruta = that.querySelector("img").getAttribute("fuente");
+    let extension = ruta.substring(ruta.lastIndexOf("."));
+    if(imagen.indexOf(extension) != -1)
+        imageView(ruta);
+    else if(video.indexOf(extension) != -1)
+        multimediaView('video',ruta);
+    else
+        multimediaView('audio',ruta);
 }
 function ActivaInspector(that,evt)
 {
@@ -454,7 +505,7 @@ function annadirALibreria(img,texto)
     {
         ruta = "img/play-button.png";
     }
-    new_img.innerHTML = "<div ondblclick='AbrirImagen(\""+img.src+"\")'><img fuente='"+img.src.replace(/\//g,"\\").replace(__dirname,".").replace("file:\\\\\\","")+"' class='library' src='"+ruta+"' style='width: 35px;margin-right: 5px;border: solid 3px #868585;border-radius: 10px;' ><b style='display: inline-block;width: 71px;max-width:71px;'>"+textoImg+"</b><button onclick='AnnadirContenido(this.parentNode)' title='Añadir este contenido' class='deleteImg'><i class=\"fa fa-plus\" aria-hidden=\"true\"></i></button><button onclick='EliminarContenido(this.parentNode)' title='Eliminar este contenido' class='deleteImg'><i class='fa fa-times' aria-hidden='true'></i></button></div>";
+    new_img.innerHTML = "<div ondblclick='AbrirImagen(\""+img.src+"\")'><img fuente='"+img.src.replace(/\//g,"\\").replace(__dirname,".").replace("file:\\\\\\","")+"' class='library' src='"+ruta+"' style='width: 35px;margin-right: 5px;border: solid 3px #868585;border-radius: 10px;' ><b style='display: inline-block;width: 71px;max-width:71px;'>"+textoImg+"</b><button onclick='AnnadirContenido(this.parentNode)' title='Añadir este contenido al lienzo' class='deleteImg'><i class=\"fa fa-plus\" aria-hidden=\"true\"></i></button><button onclick='EliminarContenido(this.parentNode)' title='Eliminar este contenido' class='deleteImg'><i class='fa fa-times' aria-hidden='true'></i></button></div>";
     list.appendChild(new_img);
 }
 function EliminarContenido(that)
@@ -507,7 +558,7 @@ function AbrirImagen(ruta)
           minWidth: 480,
           minHeight: 320,
           modal:true,
-          title:"Imagen",
+          title:"Medio",
           icon:"img/logo-32.png",
           resizable:false,
           minimizable:false,
@@ -599,4 +650,94 @@ function newInfoToHTMLElement(that,HTMLobj,evt)
         HTMLobj.style[clase] = valor;
 
     VisibleInvisible(that,valor);
+}
+// Movimiento de los elementos
+let movimientoView = null;
+let detenerMovimiento = null;
+let elmnt = null;
+// OnMouseDown
+function Mover(elm,evt)
+{
+    elmnt = elm;
+
+    let lista = document.querySelectorAll("#webview *");
+    for(let obj of lista)
+    {
+        obj.style.outline = "none";
+        obj.style.zIndex = "initial";
+    }
+    elm.style.outline = "solid 2px #0a80c4";
+    elm.style.zIndex = "10";
+    if(!evt.ctrlKey && !evt.altKey)
+        Movimiento(elm,evt);
+    else if(evt.ctrlKey && evt.altKey)
+    {
+        Rotar(elm,evt);
+    }else
+    {
+        Redimensionar(elm,evt);
+    }
+}
+function Movimiento(elm,evt)
+{
+    let btnstay = document.querySelectorAll("button.stay");
+    for(let item of btnstay)
+    {
+        item.className = "stay";
+    }
+    btnstay[1].className = "stay selected";
+
+    evt = evt || window.event;
+    // get the mouse cursor position at startup:
+    pos3 = evt.clientX;
+    pos4 = evt.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+}
+function elementDrag(e) {
+    e = e || window.event;
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+function closeDragElement() {
+    let btnstay = document.querySelectorAll("button.stay");
+    for(let item of btnstay)
+    {
+        item.className = "stay";
+    }
+    btnstay[0].className = "stay selected";
+    /* stop moving when mouse button is released:*/
+    document.onmouseup = null;
+    document.onmousemove = null;
+}
+// Rotación de los elementos
+function Rotar(elm,evt)
+{
+    let btnstay = document.querySelectorAll("button.stay");
+    for(let item of btnstay)
+    {
+        item.className = "stay";
+    }
+    btnstay[3].className = "stay selected";
+
+    evt = evt || window.event;
+    // get the mouse cursor position at startup:
+    pos3 = evt.clientX;
+    pos4 = evt.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementRotate;
+}
+function elementRotate(evt)
+{
+    var boxCenter = [elmnt.offsetLeft+parseFloat(elmnt.style.width.replace("px",""))/2, elmnt.offsetTop+parseFloat(elmnt.style.height.replace("px",""))/2];
+    var angle = Math.atan2(evt.pageX - boxCenter[0], - (evt.pageY - boxCenter[1]) )*(180/Math.PI);      
+    elmnt.style.transform = "rotate("+angle+"deg)";
 }

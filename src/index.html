@@ -59,7 +59,8 @@
           <div id="menu" class="row bg-dark" style="position: relative;z-index:2">
              <button id="seleccionar" class="stay selected" title="Selecciona los elementos"><i class="fa fa-mouse-pointer"></i></button>
              <button id="mover" class="stay" title="Mueve los elementos"><i class="fa fa-hand-paper-o"></i></button>
-             <button id="rotar" class="stay" title="Rotar los elementos"><i class="fa fa-arrows-alt"></i></button>
+             <button id="redimensionar" class="stay" title="Redimensiona los elementos"><i class="fa fa-arrows-alt"></i></button>
+             <button id="rotar" class="stay" title="Rota los elementos"><i class="fa fa-repeat" aria-hidden="true"></i></button>
              <div class="separator"></div>
              <button onclick="circleView()" title="Crear un circulo"><i class="fa fa-circle-thin"></i></button>
              <button onclick="rectangleView()" title="Crear un cuadrado"><i class="fa fa-square-o"></i></button>
@@ -81,7 +82,8 @@
               <button id="elm-visible" title="Visible/Invisible el elemento"><i class="fa fa-eye" aria-hidden="true"></i></button>
              </div>
              <div class="right-library" style="display:none;">
-               <button id="elm-import" title="Importar un contenido multimedia"><i class="fa fa-upload" aria-hidden="true"></i><span style="font-size:11px;margin-left:5px;">Importar Medio</span></button>
+               <input type="hidden" id="import_media" />
+               <button id="elm-import" title="Importar un contenido multimedia" onclick="PonerImagen('#import_media','todo');"><i class="fa fa-upload" aria-hidden="true"></i><span style="font-size:11px;margin-left:5px;">Importar Medio</span></button>
              </div>
           </div>
           <div class="row" style="height:60%;">
