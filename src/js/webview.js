@@ -89,6 +89,7 @@ function imageView(src)
     const webview = document.querySelector("#webview")
     let image = document.createElement("img");
     image.className = "default";
+    image.draggable = false;
     image.id = "elm-"+parseInt((Math.random()*1000));
     if (src == null)
     {
@@ -689,6 +690,7 @@ function Movimiento(elm,evt)
 
     evt = evt || window.event;
     // get the mouse cursor position at startup:
+    elm.style.position = "absolute";
     pos3 = evt.clientX;
     pos4 = evt.clientY;
     document.onmouseup = closeDragElement;
@@ -763,11 +765,11 @@ function elementRedimensionar(e)
 {
     e = e || window.event;
     // calculate the new cursor position:
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
+    pos1 = e.clientX - pos3;
+    pos2 = e.clientY - pos4;
     pos3 = e.clientX;
     pos4 = e.clientY;
     // set the element's new position:
-    elmnt.style.width = (elmnt.offsetTop - pos3) + "px";
-    elmnt.style.height = (elmnt.offsetLeft - pos4) + "px";
+    elmnt.style.width = (elmnt.offsetWidth + pos1) + "px";
+    elmnt.style.height = (elmnt.offsetHeight + pos2) + "px";
 }

@@ -10,6 +10,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script type="text/javascript" src="js/renderer.js"></script>
     <script type="text/javascript" src="js/webview.js"></script>
+    <script type="text/javascript" src="js/timeline.js"></script>
+    <script type="text/javascript" src="js/timeline-gui.js"></script>
+    <script type="text/javascript" src="js/keyframe.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
     <style>
     html,body
@@ -58,9 +61,9 @@
         </div>
           <div id="menu" class="row bg-dark" style="position: relative;z-index:2">
              <button id="seleccionar" class="stay selected" title="Selecciona los elementos"><i class="fa fa-mouse-pointer"></i></button>
-             <button id="mover" class="stay" title="Mueve los elementos"><i class="fa fa-hand-paper-o"></i></button>
-             <button id="redimensionar" class="stay" title="Redimensiona los elementos"><i class="fa fa-arrows-alt"></i></button>
-             <button id="rotar" class="stay" title="Rota los elementos"><i class="fa fa-repeat" aria-hidden="true"></i></button>
+             <button id="mover" class="stay" title="Mueve los elementos (Mantener pulsado)"><i class="fa fa-hand-paper-o"></i></button>
+             <button id="redimensionar" class="stay" title="Redimensiona los elementos (Ctrl+Mantener pulsado)"><i class="fa fa-arrows-alt"></i></button>
+             <button id="rotar" class="stay" title="Rota los elementos (Ctrl+Shift+Mantener pulsado)"><i class="fa fa-repeat" aria-hidden="true"></i></button>
              <div class="separator"></div>
              <button onclick="circleView()" title="Crear un circulo"><i class="fa fa-circle-thin"></i></button>
              <button onclick="rectangleView()" title="Crear un cuadrado"><i class="fa fa-square-o"></i></button>
@@ -86,7 +89,7 @@
                <button id="elm-import" title="Importar un contenido multimedia" onclick="PonerImagen('#import_media','todo');"><i class="fa fa-upload" aria-hidden="true"></i><span style="font-size:11px;margin-left:5px;">Importar Medio</span></button>
              </div>
           </div>
-          <div class="row" style="height:60%;">
+          <div class="row" style="height:74%;">
             <div id="renderer" class="col-sm">
               <div id="webview" style="position: relative;z-index:1">
 
@@ -119,12 +122,12 @@
                   <option value="hidden" class="elm visibility_elm">none</option>
                 </select>
                 <span class="nombre small">Posición</span>
-                <span>Eje X</span><input class="elm left_elm" min="0" type="number" />
+                <span>Eje X</span><input class="elm left_elm" type="number" />
                 <select class="hidden">
                   <option class="elm left_elm post">px</option>
                   <option class="elm left_elm post">%</option>
                 </select>
-                <span>Eje Y</span><input class="elm top_elm" min="0" type="number" />
+                <span>Eje Y</span><input class="elm top_elm" type="number" />
                 <select class="hidden">
                   <option class="elm top_elm post">px</option>
                   <option class="elm top_elm post">%</option>
@@ -207,24 +210,11 @@
             </div>
           </div>
           <div id="timeline" class="row back-black" style="position: relative;z-index:5;">
-            <div id="timeline-option">
-              <span>Tiempo de la animación:</span>
-              <input id="anim-duration" type="number" min="1" max="9999" value="3" />
-              <span>segundos</span>
-            </div>
-            <div id="menu-timeline" class="row bg-dark">
-              <button title="Quitar Captura"><i class="fa fa-minus"></i></button>
-              <button title="Agregar Captura"><i class="fa fa-plus"></i></button>
-            </div>
             <div id="timeline-control">
-              <div class="circle">
-                <div class="info-circle">
-                  FROM<br />
-                  Comentario: <i>Este es el punto de entrada de tu animación</i>
-                </div>
-              </div>
+              
             </div>
           </div>
         </div>
+        <canvas style="display:none;" id="canvas"></canvas>
   </body>
 </html>
