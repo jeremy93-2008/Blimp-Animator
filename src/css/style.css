@@ -356,6 +356,10 @@ ul li
     background: #616161;
     border-radius:5px;
 }
+#keyEditDialog
+{
+    display:none;
+}
 .deleteImg
 {
     outline: none;
@@ -363,6 +367,39 @@ ul li
     background: none;
     color: white;
     cursor: pointer;
+}
+.keyframe_control
+{
+    position: fixed;
+    z-index: 20;
+    right: 0px;
+    padding: 1px 10px;
+    bottom: 140px;
+    width: 110px;
+    text-align: right;
+    background: #343a40;
+}
+#add_frame,#del_frame
+{   
+    width: 28px;
+    outline: none;
+    height: 28px;
+    padding: 0px 8px;
+    margin-top: -2px;
+    font-size: 13px;
+    background: transparent;
+    border: none;
+    color: white;
+}
+#add_frame:hover,#del_frame:hover
+{
+    border:solid 1px #8e9194;
+    border-radius:10px;
+    cursor: pointer;
+}
+#del_frame
+{
+    right: 45px;
 }
 @keyframes orange
 {

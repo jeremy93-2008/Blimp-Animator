@@ -23,7 +23,7 @@
   </head>
   <body>
       <div class="container-fluid" style="height:100%;overflow: hidden;">
-        <div class="row top bg-dark" style="position: relative;z-index:3;">
+        <div class="row top bg-dark" style="position: relative;z-index:3;height:27px;">
           <ul>
             <li>
               <span>Archivo</span>
@@ -89,7 +89,7 @@
                <button id="elm-import" title="Importar un contenido multimedia" onclick="PonerImagen('#import_media','todo');"><i class="fa fa-upload" aria-hidden="true"></i><span style="font-size:11px;margin-left:5px;">Importar Medio</span></button>
              </div>
           </div>
-          <div class="row" style="height:74%;">
+          <div class="row" style="height: calc(100% - 233px);">
             <div id="renderer" class="col-sm">
               <div id="webview" style="position: relative;z-index:1">
 
@@ -211,7 +211,10 @@
           </div>
           <div id="timeline" class="row back-black" style="position: relative;z-index:5;">
             <div id="timeline-control">
-              
+              <div class="keyframe_control">
+                <button id="del_frame" title="Eliminar fotograma clave"><i class="fa fa-times"></i></button>
+                <button id="add_frame" title="Añadir fotograma clave"><i class="fa fa-plus"></i></button>
+              </div> 
             </div>
           </div>
         </div>

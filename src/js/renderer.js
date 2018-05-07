@@ -86,14 +86,16 @@ window.addEventListener("load",function()
     // Se inicia la timeline
     init();
 })
-
+let timelinegui;
 function init() {
     var canvas = document.getElementById("canvas");
     var c = canvas.getContext("2d");
+    
+    timelinegui = Timeline.getGlobalInstance();
+
+    timelinegui.loop(-1); //loop forever
   
-    Timeline.getGlobalInstance().loop(-1); //loop forever
-  
-    function draw() {
+    /*function draw() {
       var w = canvas.width;
       var h = canvas.height;
   
@@ -120,5 +122,5 @@ function init() {
       requestAnimationFrame(draw, canvas);
     }
   
-    draw();
+    draw();*/
   }

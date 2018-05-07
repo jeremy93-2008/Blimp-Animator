@@ -21,7 +21,7 @@ function createWindow () {
       minHeight: 660,
       icon:"img/logo-32.png",
       backgrounColor: "#333",
-      nativeWindowOpen: true
+      nativeWindowOpen: true,
     })
 
   // and load the index.html of the app.

@@ -114,7 +114,7 @@ Timeline.prototype.applyValues = function() {
     }
     if (this.time >= propertyAnim.startTime && !propertyAnim.hasStarted) {
       var startValue = propertyAnim.target[propertyAnim.propertyName];
-      if (startValue.length && startValue.indexOf('px') > -1) {
+      if (isNaN(startValue) && startValue.length && startValue.indexOf('px') > -1) {
         propertyAnim.startValue = Number(startValue.replace('px', ''));
         propertyAnim.unit = 'px';
       }

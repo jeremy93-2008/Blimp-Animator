@@ -89,8 +89,8 @@ Timeline.prototype.initGUI = function() {
 Timeline.prototype.onMouseDown = function(event) {
   this.selectedKeys = [];
 
-  var x = event.layerX;
-  var y = event.layerY;
+  var x = event.offsetX;
+  var y = event.offsetY;
 
   if (x > this.trackLabelWidth && y < this.headerHeight) {
     //timeline
@@ -106,7 +106,7 @@ Timeline.prototype.onMouseDown = function(event) {
   }
   else if (x > this.trackLabelWidth && y > this.headerHeight && y < this.canvasHeight - this.timeScrollHeight) {
     //keys
-    this.selectKeys(event.layerX, event.layerY);
+    this.selectKeys(event.offsetX, event.offsetY);
     if (this.selectedKeys.length > 0) {
       this.draggingKeys = true;
     }
@@ -128,8 +128,8 @@ Timeline.prototype.onMouseDown = function(event) {
 };
 
 Timeline.prototype.onDocumentMouseMove = function(event) {
-  var x = event.layerX;
-  var y = event.layerY;
+  var x = event.offsetX;
+  var y = event.offsetY;
 
   if (this.draggingTime) {
     this.time = this.xToTime(x);
@@ -154,8 +154,8 @@ Timeline.prototype.onDocumentMouseMove = function(event) {
 };
 
 Timeline.prototype.onCanvasMouseMove = function(event) {
-  var x = event.layerX;
-  var y = event.layerY;
+  var x = event.offsetX;
+  var y = event.offsetY;
 
   if (this.draggingTracksScrollThumb) {
     this.tracksScrollThumbPos = y - this.headerHeight - this.tracksScrollThumbDragOffset;
@@ -356,20 +356,19 @@ Timeline.prototype.updateGUI = function() {
   this.drawRect(3*this.headerHeight - 4 *  2, 5, this.headerHeight - 8, this.headerHeight - 8, "#22272a");
 
   //play --> #343a40 // #fff
-  this.c.strokeStyle = "#ffffff";
-  this.c.beginPath();
-  this.c.moveTo(4 + 6.5, 5 + 5);
-  this.c.lineTo(this.headerHeight - 8, this.headerHeight/2+1.5);
-  this.c.lineTo(4 + 6.5, this.headerHeight - 8);
-  this.c.lineTo(4 + 6.5, 5 + 5);
-  this.c.stroke();
+  this.c.strokeStyle = "#fff";
+  this.c.font = "12px FontAwesome";
+  this.c.fillStyle = "#fff";
+  this.c.fillText('\uF04B',11,21);
 
   //pause
-  this.c.strokeRect(this.headerHeight + 5.5, 5 + 5.5, this.headerHeight/6, this.headerHeight - 8 - 11);
-  this.c.strokeRect(this.headerHeight + 5.5 + this.headerHeight/6 + 2, 5 + 5.5, this.headerHeight/6, this.headerHeight - 8 - 11);
+  this.c.fillText('\uF04C',36,21);
 
   //stop
-  this.c.strokeRect(2*this.headerHeight - 4 + 5.5, 5 + 5.5, this.headerHeight - 8 - 11, this.headerHeight - 8 - 11);
+  this.c.fillText('\uF04D',62,21);
+
+  //Font Family
+  this.c.font = "12px sans-serif";
 
   //export
   this.c.beginPath();
@@ -420,7 +419,7 @@ Timeline.prototype.updateGUI = function() {
     var minutes = Math.floor(sec / 60);
     var seconds = sec % 60;
     var time = minutes + ":" + ((seconds < 10) ? "0" : "") + seconds;
-
+    this.c.fillStyle = "#fff";
     if (x - lastTimeLabelX > 30) {
       this.c.fillText(time, x - 6, this.headerHeight*0.8);
       lastTimeLabelX = x;
@@ -462,6 +461,8 @@ Timeline.prototype.updateGUI = function() {
   this.drawLine(0, this.headerHeight, w, this.headerHeight, "#000000");
   this.drawLine(0, h - this.timeScrollHeight, this.trackLabelWidth, h - this.timeScrollHeight, "#000000");
   this.drawLine(this.trackLabelWidth, h - this.timeScrollHeight - 1, this.trackLabelWidth, h, "#000000");
+
+  this.initTracks();
 };
 
 Timeline.prototype.timeToX = function(time) {
@@ -498,6 +499,7 @@ Timeline.prototype.drawTrack = function(track, y) {
   //bottom track line
   this.drawLine(0, y, this.canvas.width, y, "#FFFFFF");
   //draw track label
+  this.c.fillStyle = "#fff";
   this.c.fillText(track.name, xshift, y - this.trackLabelHeight/4);
 
   //if it's property track then draw anims
