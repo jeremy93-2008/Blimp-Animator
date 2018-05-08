@@ -40,6 +40,8 @@ function AnnadirFrame()
     // Sumamos uno al contador de Frame
     numFrame++;
   }
+  duration = 1;
+  localStorage.timeFrame = beginTo+";"+duration
   let AddWindow = new BrowserWindow(
     {
       width: 380, 
@@ -61,8 +63,7 @@ function AnnadirFrame()
     {
       // Recuperamos las variables
       var arr = localStorage.timeFrame.split(";");
-      beginTo = parseFloat(arr[0]);
-      duration = parseFloat(arr[1]);        
+      beginTo = parseInt(arr[0]) + parseInt(arr[1]);   
     }
     AddWindow = null
   })

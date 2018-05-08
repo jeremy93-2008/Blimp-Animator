@@ -94,16 +94,30 @@ let refButton = null;
 let refColor = null;
 function pickerColor(that)
 {
+    let bigDiv = document.createElement("div");
+    bigDiv.style.width = "100%";
+    bigDiv.style.height = "100%";
+    bigDiv.style.top = "0";
+    bigDiv.style.zIndex = "70";
+    bigDiv.style.left = "0";
+    bigDiv.style.opacity = "0";
+    bigDiv.style.position = "absolute";
+    bigDiv.id = "bigDiv"
     let container = document.createElement("div");
     container.style.border = "solid 1px black";
     container.style.backgroundColor = "white";
     container.style.boxShadow = "0 0 5px black";
     container.style.zIndex = "80";
     container.style.width = "100px";
+    container.style.backgroundColor = "#343a40";
+    container.style.fontWeight = "bold";
+    container.style.color = "white"
+    container.style.height = "80px";
     container.style.padding = "5px 10px";
     container.style.visibility = "hidden";
     container.innerHTML = "<div style='display:inline-block;height:32px;width:32px;border:solid 1px black'></div><p>#000000</p>";
     document.body.appendChild(container)
+    document.body.appendChild(bigDiv)
     refDiv = container;
     refButton = that;
     document.onmousemove = seguirDiv;
@@ -129,6 +143,8 @@ function ponerColor(evt)
     let nameClass = ".elm."+refButton.className.replace("eyedropper ","")+"_elm"
     document.querySelector(nameClass).value = "#"+refColor;
     document.querySelector(nameClass).dispatchEvent(evento);
+    document.getElementById("bigDiv").remove();
+    evt.stopPropagation();
 }
 let timelinegui;
 function init() {

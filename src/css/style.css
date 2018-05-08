@@ -374,12 +374,13 @@ ul li
     z-index: 20;
     right: 0px;
     padding: 1px 10px;
-    bottom: 140px;
-    width: 110px;
+    bottom: 170px;
+    width: 148px;
+    height: 29px;
     text-align: right;
     background: #343a40;
 }
-#add_frame,#del_frame
+#add_frame,#del_frame,#save_frame
 {   
     width: 28px;
     outline: none;
@@ -391,7 +392,7 @@ ul li
     border: none;
     color: white;
 }
-#add_frame:hover,#del_frame:hover
+#add_frame:hover,#del_frame:hover,#save_frame:hover
 {
     border:solid 1px #8e9194;
     border-radius:10px;

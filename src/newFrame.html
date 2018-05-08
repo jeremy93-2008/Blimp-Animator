@@ -74,17 +74,27 @@
             }
             window.close();
         }
+        function cargar()
+        {
+            if(localStorage.timeFrame != "null")
+            {
+                let arr = localStorage.timeFrame.split(";");
+                document.getElementById("beginTo").value = arr[0]
+                document.getElementById("duration").value = arr[1]
+            }
+        }
+        window.onload = cargar;
         window.onunload = cancel;
     </script>
 </head>
 <body style="background: #343a40;">
     <div class="sub"></div>
     <div class="sub">
-        <span class="title">Comienza en</span><input type="number" id="beginTo" value="1" />
+        <span class="title">Comienza en</span><input type="number" id="beginTo" value="0" />
         <span>seg.</span>
     </div>
     <div class="sub">
-        <span class="title">Dura hasta</span><input type="number" id="duration" value="2" />
+        <span class="title">Dura hasta</span><input type="number" id="duration" value="1" />
         <span>seg.</span>
     </div>
     <div class="sub right">
