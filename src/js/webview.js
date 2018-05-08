@@ -581,10 +581,8 @@ function seleccionarObjInspector(that)
     for(let obj of lista)
     {
         obj.style.outline = "none";
-        obj.style.zIndex = "initial";
     }
     that.style.outline = "solid 2px #0a80c4";
-    that.style.zIndex = "10";
 
     VisibleInvisible(that);
 
@@ -609,7 +607,6 @@ function InspectorEsconder(elemento,bool)
             const list = document.querySelectorAll("#webview *");
             for(obj of list)
             {
-                obj.style.zIndex = "initial";
                 obj.style.outline = "none";
             }
         }
@@ -642,6 +639,13 @@ function newInfoToHTMLElement(that,HTMLobj,evt)
                 valor += elm.value;
         }
     }
+    let tabla = clase.split("-")
+    tabla.forEach(function(currentValue,index,array)
+    {
+        if(index > 0)
+            array[index] = currentValue.substring(0,1).toUpperCase()+currentValue.substring(1)
+    });
+    clase = tabla.join("");
     valor = (that.getAttribute("pre")||"") + valor + (that.getAttribute("post")||""); 
     if(clase == "id" || clase == "class" || clase == "src")
         HTMLobj.setAttribute(clase,valor);
@@ -665,10 +669,8 @@ function Mover(elm,evt)
     for(let obj of lista)
     {
         obj.style.outline = "none";
-        obj.style.zIndex = "initial";
     }
     elm.style.outline = "solid 2px #0a80c4";
-    elm.style.zIndex = "10";
     if(!evt.ctrlKey && !evt.shiftKey)
         Movimiento(elm,evt);
     else if(evt.ctrlKey && evt.shiftKey)
