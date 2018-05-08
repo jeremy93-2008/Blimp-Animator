@@ -119,7 +119,13 @@ Timeline.prototype.applyValues = function() {
         propertyAnim.unit = 'px';
       }
       else {
-        propertyAnim.startValue = Number(startValue);
+        if(startValue.indexOf("rgb") != -1 || startValue.indexOf("rotate") != -1)
+        {
+          propertyAnim.startValue = startValue;
+        }else
+        {
+          propertyAnim.startValue = Number(startValue);
+        }
       }
       propertyAnim.hasStarted = true;
       if (propertyAnim.onStart) {
@@ -132,6 +138,38 @@ Timeline.prototype.applyValues = function() {
     t = propertyAnim.easing(t);
 
     var value = propertyAnim.startValue + (propertyAnim.endValue - propertyAnim.startValue) * t;
+
+    if(propertyAnim.startValue != "" && isNaN(propertyAnim.startValue) && propertyAnim.startValue.toString().indexOf("rgb") != -1)
+    {
+      propertyAnim.unit = false;
+      let indice = propertyAnim.startValue.indexOf("rgb(")
+      let colores = propertyAnim.startValue.substring(indice,propertyAnim.startValue.indexOf(")",indice+4)).replace("rgb(","").replace(/\s+/g,"").split(",")
+
+      let indiceEnd = propertyAnim.endValue.indexOf("rgb(")
+      let coloresEnd = propertyAnim.endValue.substring(indiceEnd,propertyAnim.endValue.indexOf(")",indice+4)).replace("rgb(","").replace(/\s+/g,"").split(",")
+
+      let colorFinal = [0,0,0];
+      colores.forEach(function(current,i,arr)
+      {
+          colorFinal[i] = parseInt(parseInt(colores[i]) + parseInt((coloresEnd[i])-parseInt(colores[i]))*t)
+      })
+      let valorReemplazo = "rgb("+colorFinal.join(",")+")"
+      value = propertyAnim.startValue.replace(propertyAnim.startValue.substring(indice,propertyAnim.startValue.indexOf(")",indice+4)),valorReemplazo)
+      value = value.substring(0,value.length-1)
+    }
+    if(propertyAnim.startValue != "" && isNaN(propertyAnim.startValue) && propertyAnim.startValue.toString().indexOf("rotate") != -1)
+    {
+      propertyAnim.unit = false;
+      let indice = propertyAnim.startValue.indexOf("rotate(")
+      let numRot = propertyAnim.startValue.substring(indice,propertyAnim.startValue.indexOf("deg)")).replace("rotate(","").replace(/\s+/g,"")
+
+      let indiceEnd = propertyAnim.endValue.indexOf("rotate(")
+      let numRotEnd = propertyAnim.endValue.substring(indice,propertyAnim.endValue.indexOf("deg)")).replace("rotate(","").replace(/\s+/g,"")           
+      
+      let valorReemplazo = parseInt(numRot) + parseInt((parseInt(numRotEnd)-parseInt(numRot))*t)
+      value = propertyAnim.startValue.replace(propertyAnim.startValue.substring(indice,propertyAnim.startValue.indexOf("deg)")),valorReemplazo)
+      value = "rotate("+value.substring(0,value.length-1)+")"
+    }
 
     if (propertyAnim.unit) value += propertyAnim.unit;
     propertyAnim.target[propertyAnim.propertyName] = value;

@@ -401,6 +401,20 @@ ul li
 {
     right: 45px;
 }
+.eyedropper
+{
+    width: 25px;
+    height: 24px;
+    background: transparent;
+    color: white;
+    font-size: 10px;
+    border: none;
+}
+.eyedropper:hover
+{
+    border:solid 1px lightgray;
+    cursor: pointer;
+}
 @keyframes orange
 {
     from

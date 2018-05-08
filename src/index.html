@@ -14,10 +14,13 @@
     <script type="text/javascript" src="js/timeline-gui.js"></script>
     <script type="text/javascript" src="js/keyframe.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
+    <link href="css/font.css" rel="stylesheet">
     <style>
     html,body
     {
       height:100%;
+      font-family: "Open Sans";
+      overflow: hidden;
     }
     </style>
   </head>
@@ -97,7 +100,7 @@
             </div>
             <div id="inspector" style="max-width:262px;position: relative;z-index:5;" class="col-sm-3 back-black">
               <div class="nothing" style="display:block;">No hay ningún elemento seleccionado</div>
-              <div class="elemento" style="display: none;padding: 0 16%;">
+              <div class="elemento" style="display: none;padding: 0 16% 0 7%;">
                 <span id="titulo" class="nombre">div#nombre.espacio</span>
                 <span>ID</span><input class="elm id_elm" type="text" />
                 <span>Clase</span><input class="elm class_elm" class="end" type="text" />
@@ -116,8 +119,7 @@
                   </select>
                 </div>
                 <span>Orden</span>
-                <input type="number" min="0" max="999" class="elm z-index_elm" />
-                <span style="padding-top: 11px;width:12px;position: absolute;">Z</span>
+                <input type="number" min="1" max="999" class="elm z-index_elm" />
                 <span>Visible</span>
                 <select>
                   <option class="elm visibility_elm">visible</option>
@@ -148,6 +150,7 @@
                 </select>
                 <span class="nombre small">Fondo</span>
                 <span>Color</span><input class="elm background-color_elm" type="color" />
+                <button onclick="pickerColor(this)" title="Selecccionar un color del lienzo" class="eyedropper background-color"><i class="fa fa-eyedropper" aria-hidden="true"></i></button>
                 <span>Imagen</span><input pre="url('" post="')" class="elm background-image_elm" type="text" />
                 <button class="smallbtn" onclick="PonerImagen('.background-image_elm')">...</button>
                 <span class="nombre small">Bordes</span>
@@ -163,6 +166,7 @@
                 <input min="0" post="px" class="elm border-width_elm" type="number" /><span style="width:12px;">px</span>
                 <span>Color</span>
                 <input class="elm border-color_elm" type="color" />
+                <button onclick="pickerColor(this)" title="Selecccionar un color del lienzo" class="eyedropper border-color"><i class="fa fa-eyedropper" aria-hidden="true"></i></button>
                 <span>Curva</span>
                 <input class="elm border-radius_elm" min="0" type="number" />
                 <select class="hidden">
@@ -184,6 +188,7 @@
                 <span style="width:12px;">px</span>
                 <span>Color</span>
                 <input class="elm color_elm" type="color" />
+                <button onclick="pickerColor(this)" title="Selecccionar un color del lienzo" class="eyedropper color"><i class="fa fa-eyedropper" aria-hidden="true"></i></button>
                 <span>Negrita</span>
                 <select>
                   <option value="400" class="elm font-weight_elm">No</option>

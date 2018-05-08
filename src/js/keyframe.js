@@ -1,38 +1,70 @@
-/*var rect = {
-    x: 50,
-    y: 50,
-    opacity: 1,
-    width: 40,
-    height: 40,
-    rotation: 0
-  };*/
-//anim("rect",rect).to({"x":20},0).to({"x":110},1, Timeline.Easing.Bounce.EaseOut).to({"x":20},1, Timeline.Easing.Cubic.EaseOut);
-//anim("rect",rect).to({"rotation":0},0).to({"rotation":3.14},0.99);
-//-----
-//
-//anim("rect2",rect2).to({"y":50},0).to({"y":50},0.33).to({"y":100},1.19);
-//anim("rect2",rect2).to({"height":40},0).to({"height":40},0.34).to({"height":300},1.2);
-//anim(identificador,elm.style,timelinegui).to(0,{"width":Number(keyframes[numFrame][identificador]["width"].replace("px",""))},0.2).to(1,{"width":250},0.3);
-//keyframes[numFrame][identificador] = ConvertNodetoJSON(elm);
 var numFrame = 0;
+var duration = 0;
+var totalDuration = 0;
+var beginTo = 0;
 var keyframes = [];
-function CrearKeyFrame()
+var txtStyle = ["z-index","top","left","width","height","background-color","border-color","border-radius","font-size","color","font-weight","box-shadow","text-shadow","opacity","transform"];
+function AnnadirFrame()
 {
   // Recuperamos el puntero hacia el elemento DOM
   const webview = document.querySelector("#webview");
-  // Se recupera el contenido completo de WebView y se guarda en un fotograma clave, y se hace una copia de valor
-  keyframes[numFrame] = webview.cloneNode(true);
-  // Si el fotograma a grabar es el primero, grabamos todas las propiedades susceptibles de generar un cambio, esa es la lista CSS
-
-}
-
-function ConvertNodetoJSON(elm)
-{
-  let json = [];
-  let CSSProp = window.getComputedStyle(elm,null);
-  for(rule of CSSProp)
+  // Guardamos el estado del frame actual
+  if(webview.innerHTML.trim() != "")
   {
-    json[rule] = CSSProp.getPropertyValue(rule);
+    // Se recupera el contenido completo de WebView y se guarda en un fotograma clave, y se hace una copia de valor
+    keyframes[numFrame] = webview.cloneNode(true);
+    // Si el fotograma a grabar es el primero, grabamos todas las propiedades susceptibles de generar un cambio, esa es la lista del inspector y los eventos de ratón, en la timeline
+    for(let obj of webview.querySelectorAll("*"))
+    {
+      let identificador = "div#"+obj.id+"."+obj.className;
+      let json = {};
+      for(let prop of txtStyle)
+      {
+        let valor = obj.style[prop];
+          if(prop == "opacity")
+            json[prop] = (prop!="opacity")?valor:(valor=="")?1:valor;
+          else if(prop == "transform")
+            json[prop] = (valor=="")?"rotate(0deg)":valor;
+          else if(prop == "height")
+            json[prop] = (valor=="")?Number(window.getComputedStyle(obj,null).getPropertyValue("height").replace("px","")):valor;
+          else if(!isNaN(valor.replace("px","")))
+            json[prop] = Number(valor.replace("px",""));
+          else
+            json[prop] = valor;
+      }
+      // Ponemos el timeline en pausa
+      timelinegui.stop();
+      //Añadimos este frame como clave
+      anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
+    }
+    // Sumamos uno al contador de Frame
+    numFrame++;
   }
-  return json;
+  let AddWindow = new BrowserWindow(
+    {
+      width: 380, 
+      height: 220,
+      minWidth: 380,
+      minHeight: 220,
+      modal:true,
+      icon:"img/logo-32.png",
+      resizable:false,
+      minimizable:false,
+      parent:BrowserWindow.getAllWindows()[0],
+      backgrounColor: "#333",
+      nativeWindowOpen: true
+    })
+  AddWindow.loadURL(path.join(__dirname,"/newFrame.html"))
+  AddWindow.setMenu(null);
+  AddWindow.on('closed', function () {
+    if(localStorage.timeFrame != "null")
+    {
+      // Recuperamos las variables
+      var arr = localStorage.timeFrame.split(";");
+      beginTo = parseFloat(arr[0]);
+      duration = parseFloat(arr[1]);        
+    }
+    AddWindow = null
+  })
+
 }

@@ -1,4 +1,6 @@
 // Menu Renderer
+let robot = require('robotjs');
+
 let openedMenu = false;
 let currentMenu = "";
 
@@ -83,9 +85,49 @@ window.addEventListener("load",function()
             document.querySelector("#"+identificador).style.display = "block";
         })
     }
+    document.querySelector("#add_frame").addEventListener("click",function(evt){AnnadirFrame(evt)});
     // Se inicia la timeline
     init();
 })
+let refDiv = null;
+let refButton = null;
+let refColor = null;
+function pickerColor(that)
+{
+    let container = document.createElement("div");
+    container.style.border = "solid 1px black";
+    container.style.backgroundColor = "white";
+    container.style.boxShadow = "0 0 5px black";
+    container.style.zIndex = "80";
+    container.style.width = "100px";
+    container.style.padding = "5px 10px";
+    container.style.visibility = "hidden";
+    container.innerHTML = "<div style='display:inline-block;height:32px;width:32px;border:solid 1px black'></div><p>#000000</p>";
+    document.body.appendChild(container)
+    refDiv = container;
+    refButton = that;
+    document.onmousemove = seguirDiv;
+}
+function seguirDiv(evt)
+{
+    let container = refDiv;
+    container.style.position = "absolute";
+    container.style.top = (evt.pageY+10)+"px";
+    container.style.left = (evt.pageX+10)+"px";
+    container.style.visibility = "visible";
+    let mouse = robot.getMousePos()
+    refColor = robot.getPixelColor(mouse.x, mouse.y)
+    container.innerHTML = "<div style='display:inline-block;background-color:#"+refColor+";height:32px;width:32px;border:solid 1px black'></div><p>#"+refColor+"</p>";
+    document.onclick = ponerColor;
+}
+function ponerColor(evt)
+{
+    document.onmousemove = null;
+    document.onclick = null;
+    let nameClass = ".elm."+refButton.className.replace("eyedropper ","")+"_elm"
+    document.querySelector(nameClass).value = "#"+refColor;
+    refDiv.remove();
+}
 let timelinegui;
 function init() {
     var canvas = document.getElementById("canvas");

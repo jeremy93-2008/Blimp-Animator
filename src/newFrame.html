@@ -1,0 +1,95 @@
+<html>
+<head>
+    <title>Añadir nuevo fotograma clave</title>
+    <link rel="stylesheet" href="css/font.css" />
+    <meta charset="utf-8"/>
+    <style>
+        body
+        {
+            font-family: "Open Sans";
+            color:white;
+        }
+        .title
+        {
+            display: inline-block;
+            width:150px;
+            text-align:right;
+            padding-right: 10px;
+            margin-bottom:20px;
+        }
+        input
+        {
+            padding:5px 10px;
+            border:solid 4px transparent;
+            border-radius:10px;
+            width:80px;
+            transition: border-color .4s ease-in-out;
+            outline:none;
+        }
+        input:focus
+        {
+            border-color: rgb(10, 128, 196);
+        }
+        .right
+        {
+            right:20px;
+            margin-top:10px;
+            position: absolute;
+        }
+        .sub
+        {
+            min-height: 20px;
+        }
+        button
+        {
+            padding:5px 10px;
+            border:solid 1px rgb(114, 114, 114);
+            background-color: #343a40;
+            color:white;
+            font-family: "Open Sans";
+            transition: border .4s ease-in-out,box-shadow .4s ease-in-out;
+            border-radius:10px;
+            outline:solid 3px transparent;
+        }
+        button:hover
+        {
+            border-color:rgb(10, 128, 196);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgb(10, 128, 196);
+        }
+    </style>
+    <script>
+        let aceptar = false;
+        function accept()
+        {
+            localStorage.timeFrame = document.getElementById("beginTo").value+";"+document.getElementById("duration").value;
+            aceptar = true;
+            window.close();
+        }
+        function cancel()
+        {
+            if(!aceptar)
+            {
+                localStorage.timeFrame = "null";                
+            }
+            window.close();
+        }
+        window.onunload = cancel;
+    </script>
+</head>
+<body style="background: #343a40;">
+    <div class="sub"></div>
+    <div class="sub">
+        <span class="title">Comienza en</span><input type="number" id="beginTo" value="1" />
+        <span>seg.</span>
+    </div>
+    <div class="sub">
+        <span class="title">Dura hasta</span><input type="number" id="duration" value="2" />
+        <span>seg.</span>
+    </div>
+    <div class="sub right">
+        <button onclick="accept()" id="Aceptar">Aceptar</button>
+        <button onclick="cancel()" id="Cancelar">Cancelar</button>
+    </div>
+</body>
+</html>

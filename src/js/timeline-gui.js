@@ -108,7 +108,8 @@ Timeline.prototype.onMouseDown = function(event) {
     //keys
     this.selectKeys(event.offsetX, event.offsetY);
     if (this.selectedKeys.length > 0) {
-      this.draggingKeys = true;
+      this.draggingKeys = false;
+      // Construimos el frame en color
     }
     this.cancelKeyClick = false;
   }
@@ -306,7 +307,7 @@ Timeline.prototype.selectKeys = function(mouseX, mouseY) {
   if (!selectedTrack) {
     return;
   }
-
+  console.log("Pulsado?");
   for(var i=0; i<selectedTrack.keys.length; i++) {
     var key = selectedTrack.keys[i];
     var x = this.timeToX(key.time);
