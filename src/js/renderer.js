@@ -122,11 +122,13 @@ function seguirDiv(evt)
 }
 function ponerColor(evt)
 {
+    refDiv.remove();
+    var evento = new Event("input");
     document.onmousemove = null;
     document.onclick = null;
     let nameClass = ".elm."+refButton.className.replace("eyedropper ","")+"_elm"
     document.querySelector(nameClass).value = "#"+refColor;
-    refDiv.remove();
+    document.querySelector(nameClass).dispatchEvent(evento);
 }
 let timelinegui;
 function init() {
