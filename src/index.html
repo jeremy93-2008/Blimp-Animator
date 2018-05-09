@@ -11,6 +11,7 @@
     <script type="text/javascript" src="js/timeline.js"></script>
     <script type="text/javascript" src="js/timeline-gui.js"></script>
     <script type="text/javascript" src="js/keyframe.js"></script>
+    <script type="text/javascript" src="js/menu.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
     <link rel="stylesheet" href="css/font.css"/>
     <style>
@@ -90,7 +91,7 @@
                <button id="elm-import" title="Importar un contenido multimedia" onclick="PonerImagen('#import_media','todo');"><i class="fa fa-upload" aria-hidden="true"></i><span style="font-size:11px;margin-left:5px;">Importar Medio</span></button>
              </div>
           </div>
-          <div class="row" style="height: calc(100% - 233px);">
+          <div class="row" style="height: calc(100% - 248px);">
             <div id="renderer" class="col-sm">
               <div id="webview" style="position: relative;z-index:1">
 
@@ -196,7 +197,7 @@
                 <select>
                   <option value="normal" class="elm font-style_elm">No</option>
                   <option value="italic" class="elm font-style_elm">Sí</option>
-                </select>                              
+                </select>
                 <span class="nombre small">Efectos</span>
                 <span>Sombra</span>
                 <input pre="0 0 " post="px black" class="elm box-shadow_elm" min="0" type="number" />
@@ -218,9 +219,12 @@
           <div id="timeline" class="row back-black" style="position: relative;z-index:5;">
             <div id="timeline-control">
               <div class="keyframe_control">
-                <!-- Delete Key - 46 -->
-                <button id="add_frame" title="Añadir fotograma clave"><i class="fa fa-plus"></i></button>
-              </div> 
+                <button id="del_frame" title="Eliminar fotograma clave a uno o varios elementos"><i class="fa fa-times"></i></button>
+                <button id="add_frame" title="Añadir fotograma clave a uno o varios elementos"><i class="fa fa-plus"></i></button>
+              </div>
+            </div>
+            <div id="status">
+
             </div>
           </div>
         </div>

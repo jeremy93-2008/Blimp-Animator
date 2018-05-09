@@ -126,7 +126,7 @@ ul li
     padding: 4% 0 0 45px;
     width: 100%;
     height: 100%;
-    background: #555;
+    background: #343a40;
 }
 #timeline-control .circle:hover
 {
@@ -375,11 +375,17 @@ ul li
     z-index: 20;
     right: 0px;
     padding: 1px 10px;
-    bottom: 140px;
+    bottom: 155px;
     width: 110px;
     height: 29px;
     text-align: right;
     background: #343a40;
+}
+#status
+{
+    background-color: #343a40;
+    width:100%;
+    height:10px;
 }
 #add_frame,#del_frame,#save_frame
 {   

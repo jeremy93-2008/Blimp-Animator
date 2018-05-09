@@ -72,6 +72,7 @@ function circleView()
     circle.id = "elm-"+parseInt((Math.random()*1000));
     circle.style.border = "solid 2px black"; 
     circle.style.display = "inline-block";
+    circle.style.backgroundColor = "rgb(255,255,255)";
     circle.style.backgroundSize = "cover";
     circle.style.borderRadius = "50%"
     circle.style.width = "50px";
@@ -89,6 +90,7 @@ function rectangleView()
     circle.id = "elm-"+parseInt((Math.random()*1000));
     circle.style.display = "inline-block";
     circle.style.backgroundSize = "cover";
+    circle.style.backgroundColor = "rgb(255,255,255)";
     circle.style.border = "solid 2px black";
     circle.style.width = "100px";
     circle.style.height = "50px";
@@ -157,6 +159,10 @@ function textView()
     text.setAttribute("contentEditable","true")
     text.style.fontFamily = "sans-serif";
     text.innerText = "Hello World!";
+    text.style.backgroundColor = "rgb(255,255,255)";
+    text.style.color = "rgb(0,0,0)";
+    text.style.fontSize = "12px";
+    text.style.fontWeight = "0";
     text.style.display = "inline-block";
     text.style.width = "150px";
     text.style.minHeight = "25px";

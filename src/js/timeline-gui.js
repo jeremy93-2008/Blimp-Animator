@@ -47,7 +47,7 @@ Timeline.prototype.initGUI = function() {
   this.container.style.background = "#343a40";
   this.container.style.position = "fixed";
   this.container.style.left = "0px";
-  this.container.style.bottom = "0px";
+  this.container.style.bottom = "15px";
   time.appendChild(this.container);
 
   this.splitter = document.createElement("div");
@@ -111,7 +111,11 @@ Timeline.prototype.onMouseDown = function(event) {
       if(parseInt(this.selectedKeys[0].time) > 0)
       {
         supressKeyFrame = true;
-        this.draggingKeys = true;
+        let track = this.selectedKeys[0].track.id;
+        let ind = track.lastIndexOf(".");
+        track = track.substring(0,ind)
+        infoDel = track+" : "+this.selectedKeys[0].time+"s";
+        this.draggingKeys = false;
       }else
       {
         supressKeyFrame = false;
@@ -771,8 +775,11 @@ Timeline.prototype.showKeyEditDialog = function(mouseX, mouseY) {
 Timeline.prototype.deleteSelectedKeys = function() {
   for(var i=0; i<this.selectedKeys.length; i++) {
     var selectedKey = this.selectedKeys[i];
-    var keyIndex = selectedKey.track.keys.indexOf(selectedKey);
-    selectedKey.track.keys.splice(keyIndex, 1);
+    let selected = selectedKey;
+    if(selectedKey.track != undefined)
+        selected = selectedKey.track;
+    var keyIndex = selected.keys.indexOf(selectedKey);
+    selected.keys.splice(keyIndex, 1);
   }
   this.rebuildSelectedTracks();
 };
@@ -792,7 +799,8 @@ Timeline.prototype.sortTrackKeys = function(track) {
 
 Timeline.prototype.rebuildSelectedTracks = function() {
   for(var i=0; i<this.selectedKeys.length; i++) {
-    this.rebuildTrackAnimsFromKeys(this.selectedKeys[i].track);
+    let selected = (this.selectedKeys[i].track==undefined)?this.selectedKeys[i]:this.selectedKeys[i].track;
+    this.rebuildTrackAnimsFromKeys(selected);
   }
   this.save();
 };

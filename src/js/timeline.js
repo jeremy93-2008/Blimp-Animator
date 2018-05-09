@@ -114,12 +114,12 @@ Timeline.prototype.applyValues = function() {
     }
     if (this.time >= propertyAnim.startTime && !propertyAnim.hasStarted) {
       var startValue = propertyAnim.target[propertyAnim.propertyName];
-      if (isNaN(startValue) && startValue.length && startValue.indexOf('px') > -1) {
+      if (isNaN(startValue) && startValue.length && startValue.indexOf('px') > -1 && propertyAnim.propertyName.indexOf("-shadow") == -1) {
         propertyAnim.startValue = Number(startValue.replace('px', ''));
         propertyAnim.unit = 'px';
       }
       else {
-        if(startValue.indexOf("rgb") != -1 || startValue.indexOf("rotate") != -1)
+        if(startValue.indexOf("rgb") != -1 || startValue.indexOf("rotate") != -1 || startValue.indexOf("black 0px 0px") != -1)
         {
           propertyAnim.startValue = startValue;
         }else
@@ -139,7 +139,7 @@ Timeline.prototype.applyValues = function() {
 
     var value = propertyAnim.startValue + (propertyAnim.endValue - propertyAnim.startValue) * t;
 
-    if(propertyAnim.startValue != "" && isNaN(propertyAnim.startValue) && propertyAnim.startValue.toString().indexOf("rgb") != -1)
+    if(propertyAnim.startValue != "" && isNaN(propertyAnim.startValue) && propertyAnim.startValue.toString().indexOf("rgb") != -1 && propertyAnim.startValue.toString().indexOf("0px 0px") == -1)
     {
       propertyAnim.unit = false;
       let indice = propertyAnim.startValue.indexOf("rgb(")
@@ -156,6 +156,19 @@ Timeline.prototype.applyValues = function() {
       let valorReemplazo = "rgb("+colorFinal.join(",")+")"
       value = propertyAnim.startValue.replace(propertyAnim.startValue.substring(indice,propertyAnim.startValue.indexOf(")",indice+4)),valorReemplazo)
       value = value.substring(0,value.length-1)
+    }
+    if(propertyAnim.startValue != "" && isNaN(propertyAnim.startValue) && propertyAnim.startValue.toString().indexOf("black 0px 0px") != -1)
+    {
+      //black 0px 0px 0px
+      propertyAnim.unit = false;
+      let indice = propertyAnim.startValue.indexOf("black 0px 0px")
+      let numSh =  propertyAnim.startValue.substring(indice+13).replace("px","").replace(/\s+/g,"")
+
+      let indiceEnd = propertyAnim.endValue.indexOf("black 0px 0px")
+      let numEndSh =  propertyAnim.endValue.substring(indice+13).replace("px","").replace(/\s+/g,"")
+      
+      let valorReemplazo = parseInt(numSh) + parseInt((parseInt(numEndSh)-parseInt(numSh))*t)
+      value = "black 0px 0px "+valorReemplazo+"px"
     }
     if(propertyAnim.startValue != "" && isNaN(propertyAnim.startValue) && propertyAnim.startValue.toString().indexOf("rotate") != -1)
     {
