@@ -371,11 +371,11 @@ ul li
 }
 .keyframe_control
 {
-    position: fixed;
+    position: absolute;
     z-index: 20;
     right: 0px;
     padding: 1px 10px;
-    bottom: 155px;
+    top: -29px;
     width: 110px;
     height: 29px;
     text-align: right;

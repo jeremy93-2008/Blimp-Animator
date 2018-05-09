@@ -222,7 +222,6 @@ function Anim(name, target, timeline) {
   this.timeline = timeline;
   this.animGroups = [];
 }
-
 //delay, properties, duration, easing
 Anim.prototype.to = function() {
   var args = [];
@@ -274,8 +273,8 @@ Anim.prototype.to = function() {
       propertyName: propertyName,
       endValue: properties[propertyName],
       delay: delay,
-      startTime: this.timeline.time + delay + this.endTime,
-      endTime: this.timeline.time + delay + this.endTime + duration,
+      startTime: delay,
+      endTime: delay + duration,
       easing: easing,
       parent: this,
       onStart: nop,
