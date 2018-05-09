@@ -6,7 +6,6 @@ const app = remote.app;
 const fs = require("fs");
 const extra = require("fs-extra");
 const path = require("path");
-const vue = require("vue");
 let refListenerBinding = {};
 let seleccionado = null;
 
@@ -18,6 +17,8 @@ function NuevoArchivo()
     {
         webview.innerHTML = text;
         document.querySelector("#outline ul").innerHTML = "";
+        timelinegui.anims = [];
+        timelinegui.tracks = [];
         InspectorEsconder(false);
     }
     else
@@ -35,6 +36,10 @@ function NuevoArchivo()
     }
         
 }
+function AbrirArchivo()
+{
+    
+}
 function mensajeguardar(num,chknum)
 {
     const webview = document.querySelector("#webview")
@@ -43,10 +48,18 @@ function mensajeguardar(num,chknum)
         webview.innerHTML = "";
         InspectorEsconder(false);
         document.querySelector("#outline ul").innerHTML = "";
+        beginTo = 0;
+        duration = 0;
+        timelinegui.anims = [];
+        timelinegui.tracks = [];
     }else if(num == 1){
         webview.innerHTML = "";
         InspectorEsconder(false);
         document.querySelector("#outline ul").innerHTML = "";
+        beginTo = 0;
+        duration = 0;
+        timelinegui.anims = [];
+        timelinegui.tracks = [];
     }else{
         console.log("Se cancelo la operación");    
     }
@@ -319,6 +332,7 @@ function ActivaInspector(that,evt)
 {
     let inspector = document.getElementById("inspector");
     let elementos = inspector.querySelector(".elemento");
+    elmSeleccionado = that;
     InspectorEsconder(true,false);
     seleccionarObjInspector(that);
     elementos.querySelector("#titulo").innerHTML = that.nodeName.toLowerCase()+"#"+that.id+"."+that.className;
@@ -599,6 +613,8 @@ function InspectorEsconder(elemento,bool)
     document.querySelector("#btn-inspector").style.animation = "";
     let elementos = inspector.querySelector(".elemento");
     elementos.style.display = (elemento?"block":"none");
+    if(!elemento)
+        elmSeleccionado = null;
     inspector.querySelector(".nothing").style.display = (elemento?"none":"block");
     setTimeout(function()
     {
@@ -774,4 +790,10 @@ function elementRedimensionar(e)
     // set the element's new position:
     elmnt.style.width = (elmnt.offsetWidth + pos1) + "px";
     elmnt.style.height = (elmnt.offsetHeight + pos2) + "px";
+}
+function KeyboardManager(evt)
+{
+    if(evt.code == "Delete")
+        DelFrame();
+    console.log(evt);
 }

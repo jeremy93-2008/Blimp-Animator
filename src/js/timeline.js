@@ -41,9 +41,9 @@ Timeline.prototype.loop = function(n) {
   this.loopMode = n;
 };
 
-Timeline.prototype.stop = function() {
+Timeline.prototype.stop = function(num) {
   this.playing = false;
-  this.time = 0;
+  this.time = num || 0;
 };
 
 Timeline.prototype.pause = function() {

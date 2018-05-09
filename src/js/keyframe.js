@@ -2,46 +2,16 @@ var numFrame = 0;
 var duration = 0;
 var totalDuration = 0;
 var beginTo = 0;
-var keyframes = [];
+var supressKeyFrame = false;
+var elmSeleccionado = null;
 var txtStyle = ["z-index","top","left","width","height","background-color","border-color","border-radius","font-size","color","font-weight","box-shadow","text-shadow","opacity","transform"];
 function AnnadirFrame()
 {
   // Recuperamos el puntero hacia el elemento DOM
   const webview = document.querySelector("#webview");
-  // Guardamos el estado del frame actual
-  if(webview.innerHTML.trim() != "")
-  {
-    // Se recupera el contenido completo de WebView y se guarda en un fotograma clave, y se hace una copia de valor
-    keyframes[numFrame] = webview.cloneNode(true);
-    // Si el fotograma a grabar es el primero, grabamos todas las propiedades susceptibles de generar un cambio, esa es la lista del inspector y los eventos de ratón, en la timeline
-    for(let obj of webview.querySelectorAll("*"))
-    {
-      let identificador = "div#"+obj.id+"."+obj.className;
-      let json = {};
-      for(let prop of txtStyle)
-      {
-        let valor = obj.style[prop];
-          if(prop == "opacity")
-            json[prop] = (prop!="opacity")?valor:(valor=="")?1:valor;
-          else if(prop == "transform")
-            json[prop] = (valor=="")?"rotate(0deg)":valor;
-          else if(prop == "height")
-            json[prop] = (valor=="")?Number(window.getComputedStyle(obj,null).getPropertyValue("height").replace("px","")):valor;
-          else if(!isNaN(valor.replace("px","")))
-            json[prop] = Number(valor.replace("px",""));
-          else
-            json[prop] = valor;
-      }
-      // Ponemos el timeline en pausa
-      timelinegui.stop();
-      //Añadimos este frame como clave
-      anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
-    }
-    // Sumamos uno al contador de Frame
-    numFrame++;
-  }
-  duration = 1;
-  localStorage.timeFrame = beginTo+";"+duration
+  beginTo = parseFloat((elmSeleccionado.getAttribute("termina")==undefined?0:elmSeleccionado.getAttribute("termina")))
+  duration = parseFloat((elmSeleccionado.getAttribute("dura")==undefined)?0:1)
+  localStorage.timeFrame = beginTo+";"+duration+";"+ elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
   let AddWindow = new BrowserWindow(
     {
       width: 380, 
@@ -63,9 +33,48 @@ function AnnadirFrame()
     {
       // Recuperamos las variables
       var arr = localStorage.timeFrame.split(";");
+      beginTo = parseFloat(arr[0]);
+      duration = parseFloat(arr[1]);
+       // Guardamos el estado del frame actual
+      if(webview.innerHTML.trim() != "")
+      {
+        // Grabamos el objeto seleccionado en su movimiento
+        obj = elmSeleccionado;
+        let identificador = "div#"+obj.id+"."+obj.className;
+        let json = {};
+        for(let prop of txtStyle)
+        {
+          let valor = obj.style[prop];
+            if(prop == "opacity")
+              json[prop] = (prop!="opacity")?valor:(valor=="")?1:valor;
+            else if(prop == "transform")
+              json[prop] = (valor=="")?"rotate(0deg)":valor;
+            else if(prop == "height")
+              json[prop] = (valor=="")?Number(window.getComputedStyle(obj,null).getPropertyValue("height").replace("px","")):valor;
+            else if(!isNaN(valor.replace("px","")))
+              json[prop] = Number(valor.replace("px",""));
+            else
+              json[prop] = valor;
+        }
+        //Añadimos este frame como clave
+        anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
+        // Ponemos el timeline en pausa
+        timelinegui.stop(beginTo+duration);
+        // Sumamos uno al contador de Frame
+        numFrame++;
+        obj.setAttribute("termina",parseInt(arr[0]) + parseInt(arr[1]));
+        obj.setAttribute("dura","true");
+      }
       beginTo = parseInt(arr[0]) + parseInt(arr[1]);   
+      duration = 1;
     }
     AddWindow = null
   })
+}
+function DelFrame()
+{
+  if(supressKeyFrame != false)
+  {
 
+  }
 }

@@ -85,6 +85,7 @@ window.addEventListener("load",function()
             document.querySelector("#"+identificador).style.display = "block";
         })
     }
+    document.body.addEventListener("keydown",function(evt){KeyboardManager(evt)})
     document.querySelector("#add_frame").addEventListener("click",function(evt){AnnadirFrame(evt)});
     // Se inicia la timeline
     init();

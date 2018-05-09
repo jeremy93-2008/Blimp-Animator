@@ -3,18 +3,16 @@
   <head>
     <meta charset="UTF-8">
     <title>Blimp Animator</title>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="js/renderer.js"></script>
     <script type="text/javascript" src="js/webview.js"></script>
     <script type="text/javascript" src="js/timeline.js"></script>
     <script type="text/javascript" src="js/timeline-gui.js"></script>
     <script type="text/javascript" src="js/keyframe.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
-    <link href="css/font.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/font.css"/>
     <style>
     html,body
     {
@@ -32,7 +30,7 @@
               <span>Archivo</span>
               <ul class="bg-dark">
                 <li onclick="NuevoArchivo()"><span>Nuevo</span></li>
-                <li><span>Abrir</span></li>
+                <li onclick="AbrirArchivo()"><span>Abrir</span></li>
                 <li class="separator"></li>
                 <li><span>Cerrar</span></li>
               </ul>
@@ -220,9 +218,7 @@
           <div id="timeline" class="row back-black" style="position: relative;z-index:5;">
             <div id="timeline-control">
               <div class="keyframe_control">
-                <button style="padding-right: 7px;margin-right:-5px;" id="save_frame" title="Guardar fotograma clave"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
-                <div style="display:inline-block;vertical-align: middle" class="separator"></div>
-                <button id="del_frame" title="Eliminar fotograma clave"><i class="fa fa-times"></i></button>
+                <!-- Delete Key - 46 -->
                 <button id="add_frame" title="Añadir fotograma clave"><i class="fa fa-plus"></i></button>
               </div> 
             </div>

@@ -108,8 +108,15 @@ Timeline.prototype.onMouseDown = function(event) {
     //keys
     this.selectKeys(event.offsetX, event.offsetY);
     if (this.selectedKeys.length > 0) {
-      this.draggingKeys = false;
-      // Construimos el frame en color
+      if(parseInt(this.selectedKeys[0].time) > 0)
+      {
+        supressKeyFrame = true;
+        this.draggingKeys = true;
+      }else
+      {
+        supressKeyFrame = false;
+        this.draggingKeys = false;
+      }
     }
     this.cancelKeyClick = false;
   }
@@ -196,6 +203,7 @@ Timeline.prototype.onMouseUp = function(event) {
   }
   if (this.draggingKeys) {
     this.draggingKeys = false;
+    supressKeyFrame = false;
   }
   if (this.draggingTracksScrollThumb) {
     this.draggingTracksScrollThumb = false;
@@ -217,7 +225,7 @@ Timeline.prototype.onMouseClick = function(event) {
   }
 
   if (event.layerX > 2*this.headerHeight - 4 * 1 && event.layerX < 3*this.headerHeight - 4 * 2 && event.layerY < this.headerHeight) {
-    this.stop();
+    this.stop(beginTo+duration);
   }
 
   if (event.layerX > 3*this.headerHeight - 4 * 2 && event.layerX < 4*this.headerHeight - 4 * 3 && event.layerY < this.headerHeight) {
@@ -307,7 +315,6 @@ Timeline.prototype.selectKeys = function(mouseX, mouseY) {
   if (!selectedTrack) {
     return;
   }
-  console.log("Pulsado?");
   for(var i=0; i<selectedTrack.keys.length; i++) {
     var key = selectedTrack.keys[i];
     var x = this.timeToX(key.time);
@@ -446,22 +453,22 @@ Timeline.prototype.updateGUI = function() {
   this.c.fill();
 
   //tracks scrollbar
-  this.drawRect(this.canvas.width - this.tracksScrollWidth, this.headerHeight + 1, this.tracksScrollWidth, this.tracksScrollHeight, "#22272a");
+  this.drawRect(this.canvas.width - this.tracksScrollWidth, this.headerHeight + 1, this.tracksScrollWidth, this.tracksScrollHeight, "#343a40");
   if (this.tracksScrollThumbHeight < this.tracksScrollHeight) {
-    this.drawRect(this.canvas.width - this.tracksScrollWidth, this.headerHeight + 1 + this.tracksScrollThumbPos, this.tracksScrollWidth, this.tracksScrollThumbHeight, "#343a40");
+    this.drawRect(this.canvas.width - this.tracksScrollWidth, this.headerHeight + 1 + this.tracksScrollThumbPos, this.tracksScrollWidth, this.tracksScrollThumbHeight, "#5c6670");
   }
 
   //time scrollbar
-  this.drawRect(this.trackLabelWidth, h - this.timeScrollHeight, w - this.trackLabelWidth - this.tracksScrollWidth, this.timeScrollHeight, "#22272a");
+  this.drawRect(this.trackLabelWidth, h - this.timeScrollHeight, w - this.trackLabelWidth - this.tracksScrollWidth, this.timeScrollHeight, "#343a40");
   if (this.timeScrollThumbWidth < this.timeScrollWidth) {
-    this.drawRect(this.trackLabelWidth + 1 + this.timeScrollThumbPos, h - this.timeScrollHeight, this.timeScrollThumbWidth, this.timeScrollHeight, "#22272a");
+    this.drawRect(this.trackLabelWidth + 1 + this.timeScrollThumbPos, h - this.timeScrollHeight, this.timeScrollThumbWidth, this.timeScrollHeight, "#5c6670");
   }
 
   //header borders
   this.drawLine(0, 0, w, 0, "#000000");
   this.drawLine(0, this.headerHeight, w, this.headerHeight, "#000000");
-  this.drawLine(0, h - this.timeScrollHeight, this.trackLabelWidth, h - this.timeScrollHeight, "#000000");
-  this.drawLine(this.trackLabelWidth, h - this.timeScrollHeight - 1, this.trackLabelWidth, h, "#000000");
+  this.drawLine(0, h - this.timeScrollHeight, this.trackLabelWidth, h - this.timeScrollHeight, "#343a40");
+  this.drawLine(this.trackLabelWidth, h - this.timeScrollHeight - 1, this.trackLabelWidth, h, "#343a40");
 
   this.initTracks();
 };
@@ -534,7 +541,7 @@ Timeline.prototype.drawRect = function(x, y, w, h, color) {
 };
 
 Timeline.prototype.drawCenteredRect = function(x, y, w, h, color) {
-  this.c.fillStyle = color;
+  this.c.fillStyle = "#343a40";
   this.c.fillRect(x-w/2, y-h/2, w, h);
 };
 

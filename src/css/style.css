@@ -330,6 +330,7 @@ ul li
 {
     width: 100%;
     height: 100%;
+    border: dashed 1px #343a40;
 }
 .inspector_menu
 {
@@ -374,8 +375,8 @@ ul li
     z-index: 20;
     right: 0px;
     padding: 1px 10px;
-    bottom: 170px;
-    width: 148px;
+    bottom: 140px;
+    width: 110px;
     height: 29px;
     text-align: right;
     background: #343a40;

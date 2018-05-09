@@ -8,6 +8,13 @@
         {
             font-family: "Open Sans";
             color:white;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: default;
         }
         .title
         {
@@ -57,6 +64,10 @@
             cursor: pointer;
             box-shadow: 0 0 10px rgb(10, 128, 196);
         }
+        h4
+        {
+            text-align: center;
+        }
     </style>
     <script>
         let aceptar = false;
@@ -81,6 +92,7 @@
                 let arr = localStorage.timeFrame.split(";");
                 document.getElementById("beginTo").value = arr[0]
                 document.getElementById("duration").value = arr[1]
+                document.querySelector("h4").innerHTML = arr[2]
             }
         }
         window.onload = cargar;
@@ -88,7 +100,7 @@
     </script>
 </head>
 <body style="background: #343a40;">
-    <div class="sub"></div>
+    <h4>div#elm-647.default</h4>
     <div class="sub">
         <span class="title">Comienza en</span><input type="number" id="beginTo" value="0" />
         <span>seg.</span>
