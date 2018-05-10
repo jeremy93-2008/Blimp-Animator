@@ -18,7 +18,7 @@ function NuevoArchivo()
         webview.innerHTML = text;
         document.querySelector("#outline ul").innerHTML = "";
         timelinegui.anims = [];
-        timelinegui.tracks = [];
+        //timelinegui.tracks = [];
         InspectorEsconder(false);
     }
     else
@@ -51,7 +51,6 @@ function mensajeguardar(num,chknum)
         beginTo = 0;
         duration = 0;
         timelinegui.anims = [];
-        timelinegui.tracks = [];
     }else if(num == 1){
         webview.innerHTML = "";
         InspectorEsconder(false);
@@ -59,7 +58,6 @@ function mensajeguardar(num,chknum)
         beginTo = 0;
         duration = 0;
         timelinegui.anims = [];
-        timelinegui.tracks = [];
     }else{
         console.log("Se cancelo la operación");    
     }

@@ -130,11 +130,9 @@ function DelFrame()
             {
               if(num==0)
               {
-                //let list = self.selectedKeys[0].track.parent.propertyTracks;
                 let time = self.selectedKeys[0].time;
-                self.deleteSelectedKeys(time);
-                self.rebuildSelectedTracks();
-                self.hideKeyEditDialog();
+				let identifiador = self.selectedKeys[0].track.parent.id;
+				BorrarFrame(time,identifiador);
               }
             });
   }else
@@ -150,4 +148,67 @@ function DelFrame()
         "message":"No se ha seleccionado ningún fotograma clave para su eliminación."
     });
   }
+}
+/**
+ * Borra una sección delimitada en segundos de un punto en la secuencia de animación para un elemento dado
+ * @param {number} time Tiempo por el cual se va a identificar las secuencias a eliminar
+ * @param {string} identificador Id del objeto del cual se va a borrar sus secuencias
+ */
+function BorrarFrame(time,identificador)
+{
+	let endNum = -1
+	for(var num = 0;num < timelinegui.anims.length;num++)
+	{
+		obj = timelinegui.anims[num];
+		if(obj.targetName == identifiador)
+		{
+			if(endNum > -1)
+			{
+				if(obj.endTime > time)
+				{
+					obj.startTime = endNum;
+					endNum = 0;
+				}
+			}
+			if(obj.endTime == time)
+			{
+				timelinegui.anims.splice(num,1)
+				endNum = obj.startTime;
+				num--;
+			}
+		}
+	}
+}
+function MostrarSeleccionSeccion(selected)
+{
+	let x = window.event.clientX+"px";
+	let container = document.createElement("div");
+	container.style.position = "absolute";
+	container.style.bottom = "170px";
+	container.style.zIndex = 80;
+	container.style.color = "white";
+	container.style.padding = "5px 10px";
+	container.style.fontSize = "12px";
+	container.style.fontWeight = "bold";
+	container.style.left = x;
+	container.style.width = "170px";
+	container.style.height = "32px";
+	container.style.boxShadow = "0 0 3px white;";
+	container.style.backgroundColor = "#343a40";
+	container.style.border = "solid 1px white";
+	container.style.borderRadius = "10px";
+	container.style.opacity = "1"
+	container.style.display = "block"
+	container.style.transition = "opacity 1s ease-in-out";
+	container.innerHTML = selected.track.parent.id+" - "+selected.time+"s";
+	document.body.appendChild(container)
+	window.setTimeout(ocultar,800)
+	function ocultar()
+	{
+		container.style.opacity = "0"
+		evento = window.setTimeout(function()
+		{
+			container.remove();
+		},1000)
+	}
 }

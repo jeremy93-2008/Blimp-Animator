@@ -221,18 +221,18 @@ Timeline.prototype.onMouseUp = function(event) {
 };
 
 Timeline.prototype.onMouseClick = function(event) {
-  if (event.layerX < 1*this.headerHeight - 4 * 0 && event.layerY < this.headerHeight) {
+  if (event.layerX < 1*this.headerHeight - 14 * 0 && event.layerY < this.headerHeight) {
     this.play();
   }
-  if (event.layerX > 1*this.headerHeight - 4 * 0 && event.layerX < 2*this.headerHeight - 4 * 1 && event.layerY < this.headerHeight) {
+  if (event.layerX > 1*this.headerHeight - 4 + 10 * 0 && event.layerX < 2*this.headerHeight - 4 + 10 * 1 && event.layerY < this.headerHeight) {
     this.pause();
   }
 
-  if (event.layerX > 2*this.headerHeight - 4 * 1 && event.layerX < 3*this.headerHeight - 4 * 2 && event.layerY < this.headerHeight) {
+  if (event.layerX > 2*this.headerHeight - 4 + 10 * 1 && event.layerX < 3*this.headerHeight - 4 + 10* 2 && event.layerY < this.headerHeight) {
     this.stop(beginTo+duration);
   }
 
-  if (event.layerX > 3*this.headerHeight - 4 * 2 && event.layerX < 4*this.headerHeight - 4 * 3 && event.layerY < this.headerHeight) {
+  if (event.layerX > 3*this.headerHeight - 4 + 10 * 2 && event.layerX < 4*this.headerHeight - 4 + 10 * 3 && event.layerY < this.headerHeight) {
     this.exportCode();
   }
 
@@ -247,7 +247,7 @@ Timeline.prototype.onMouseDoubleClick = function(event) {
 
   if (x > this.trackLabelWidth && y < this.headerHeight) {
     //timeline
-    var timeStr = prompt("Enter time") || "0:0:0";
+    var timeStr = "0:0:0";
     var timeArr = timeStr.split(":");
     var seconds = 0;
     var minutes = 0;
@@ -324,9 +324,10 @@ Timeline.prototype.selectKeys = function(mouseX, mouseY) {
     var x = this.timeToX(key.time);
 
     if (x >= mouseX - this.trackLabelHeight*0.3 && x <= mouseX + this.trackLabelHeight*0.3) {
-      this.selectedKeys.push(key);
+	  this.selectedKeys.push(key);
+	  MostrarSeleccionSeccion(this.selectedKeys[0]);
       break;
-    }
+	}
   }
 };
 
@@ -807,15 +808,19 @@ Timeline.prototype.sortTrackKeys = function(track) {
 Timeline.prototype.rebuildSelectedTracks = function(time) {
   for(var i=0; i<this.selectedKeys.length; i++) {
     var selectedKey = this.selectedKeys[i].track;
+    let primeravez = false;
+    let a = 0;
     for(let obj of selectedKey.parent.propertyTracks)
     {
-      this.rebuildTrackAnimsFromKeys(obj,time);
+      primeravez = (a==selectedKey.parent.propertyTracks.length-1)?false:true;
+      this.rebuildTrackAnimsFromKeys(obj,time,primeravez);
+      a++;
     }
   }
   this.save();
 };
 
-Timeline.prototype.rebuildTrackAnimsFromKeys = function(track,time) {
+Timeline.prototype.rebuildTrackAnimsFromKeys = function(track,time,primeravez) {
   var deletedAnims = [];
   var j;
 
@@ -835,32 +840,35 @@ Timeline.prototype.rebuildTrackAnimsFromKeys = function(track,time) {
   if (track.keys.length === 0) {
     return;
   }
-
-  var delay = track.keys[0].time;
-  var prevKeyTime = track.keys[0].time;
-  var prevKeyValue = track.keys[0].value;
-  var prevKeyEasing = Timeline.Easing.Linear.EaseNone;
-  //create new anims based on keys
-  for(j=0; j<track.keys.length; j++) {
-    var key = track.keys[j];
-    var anim = {
-      timeline: this,
-      target: track.target,
-      propertyName: track.propertyName,
-      startValue: prevKeyValue,
-      endValue: key.value,
-      delay: delay,
-      startTime: prevKeyTime,
-      endTime: key.time,
-      easing: prevKeyEasing
-    };
-    track.anims.push(anim);
-    this.anims.push(anim);
-    delay = 0;
-    prevKeyTime = key.time;
-    prevKeyValue = key.value;
-    prevKeyEasing = key.easing;
+  if(!primeravez)
+  {
+    var delay = track.keys[0].time;
+    var prevKeyTime = track.keys[0].time;
+    var prevKeyValue = track.keys[0].value;
+    var prevKeyEasing = Timeline.Easing.Linear.EaseNone;
+    //create new anims based on keys
+    for(j=0; j<track.keys.length; j++) {
+      var key = track.keys[j];
+      var anim = {
+        timeline: this,
+        target: track.target,
+        propertyName: track.propertyName,
+        startValue: prevKeyValue,
+        endValue: key.value,
+        delay: delay,
+        startTime: prevKeyTime,
+        endTime: key.time,
+        easing: prevKeyEasing
+      };
+      track.anims.push(anim);
+      this.anims.push(anim);
+      delay = 0;
+      prevKeyTime = key.time;
+      prevKeyValue = key.value;
+      prevKeyEasing = key.easing;
+    }
   }
+  
 };
 
 Timeline.prototype.exportCode = function() {
@@ -885,8 +893,6 @@ Timeline.prototype.exportCode = function() {
     }
     code += ';\n';
   }
-
-  prompt("Copy this:", code);
 };
 
 Timeline.prototype.save = function() {
