@@ -836,7 +836,7 @@ Timeline.prototype.rebuildTrackAnimsFromKeys = function(track,time) {
     return;
   }
 
-  /*var delay = track.keys[0].time;
+  var delay = track.keys[0].time;
   var prevKeyTime = track.keys[0].time;
   var prevKeyValue = track.keys[0].value;
   var prevKeyEasing = Timeline.Easing.Linear.EaseNone;
@@ -860,7 +860,7 @@ Timeline.prototype.rebuildTrackAnimsFromKeys = function(track,time) {
     prevKeyTime = key.time;
     prevKeyValue = key.value;
     prevKeyEasing = key.easing;
-  }*/
+  }
 };
 
 Timeline.prototype.exportCode = function() {
