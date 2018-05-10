@@ -359,7 +359,7 @@ ul li
 }
 #keyEditDialog
 {
-    display:none;
+    display:none !important;
 }
 .deleteImg
 {
@@ -371,8 +371,9 @@ ul li
 }
 .keyframe_control
 {
-    position: absolute;
+    position: fixed;
     z-index: 20;
+    bottom: 185px;
     right: 0px;
     padding: 1px 10px;
     width: 110px;

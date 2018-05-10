@@ -221,18 +221,18 @@ Timeline.prototype.onMouseUp = function(event) {
 };
 
 Timeline.prototype.onMouseClick = function(event) {
-  if (event.layerX < 1*this.headerHeight - 14 * 0 && event.layerY < this.headerHeight) {
+  if (event.layerX < 1*this.headerHeight - 4 * 0 && event.layerY < this.headerHeight-10) {
     this.play();
   }
-  if (event.layerX > 1*this.headerHeight - 4 + 10 * 0 && event.layerX < 2*this.headerHeight - 4 + 10 * 1 && event.layerY < this.headerHeight) {
+  if (event.layerX > 1*this.headerHeight - 4 * 0 && event.layerX < 2*this.headerHeight - 4 * 1 && event.layerY < this.headerHeight) {
     this.pause();
   }
 
-  if (event.layerX > 2*this.headerHeight - 4 + 10 * 1 && event.layerX < 3*this.headerHeight - 4 + 10* 2 && event.layerY < this.headerHeight) {
+  if (event.layerX > 2*this.headerHeight - 4 * 1 && event.layerX < 3*this.headerHeight - 4 * 2 && event.layerY < this.headerHeight) {
     this.stop(beginTo+duration);
   }
 
-  if (event.layerX > 3*this.headerHeight - 4 + 10 * 2 && event.layerX < 4*this.headerHeight - 4 + 10 * 3 && event.layerY < this.headerHeight) {
+  if (event.layerX > 3*this.headerHeight - 4 * 2 && event.layerX < 4*this.headerHeight - 4 * 3 && event.layerY < this.headerHeight) {
     this.exportCode();
   }
 
@@ -256,9 +256,10 @@ Timeline.prototype.onMouseDoubleClick = function(event) {
     if (timeArr.length > 1) minutes = parseInt(timeArr[timeArr.length-2], 10);
     if (timeArr.length > 2) hours = parseInt(timeArr[timeArr.length-3], 10);
     this.time = this.totalTime = hours * 60 * 60 + minutes * 60 + seconds;
+    ModificarFrame(this.selectedKeys[0])
   }
-  else if (x > this.trackLabelWidth && this.selectedKeys.length === 0 && y > this.headerHeight && y < this.canvasHeight - this.timeScrollHeight) {
-    this.addKeyAt(x, y);
+  else if (x > this.trackLabelWidth && y > this.headerHeight && y < this.canvasHeight - this.timeScrollHeight) {
+    //ModificarFrame(this.selectedKeys[0])
   }
 };
 
@@ -324,8 +325,8 @@ Timeline.prototype.selectKeys = function(mouseX, mouseY) {
     var x = this.timeToX(key.time);
 
     if (x >= mouseX - this.trackLabelHeight*0.3 && x <= mouseX + this.trackLabelHeight*0.3) {
-	  this.selectedKeys.push(key);
-	  MostrarSeleccionSeccion(this.selectedKeys[0]);
+      this.selectedKeys.push(key);
+      MostrarSeleccionSeccion(this.selectedKeys[0]);
       break;
 	}
   }

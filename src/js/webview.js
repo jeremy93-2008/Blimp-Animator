@@ -233,11 +233,12 @@ function htmlView()
           minWidth: 680,
           minHeight: 420,
           modal:true,
+          title:"Añadir Código HTML personalizado",
           icon:"img/logo-32.png",
           resizable:false,
           minimizable:false,
           parent:BrowserWindow.getAllWindows()[0],
-          backgrounColor: "#333",
+          backgroundColor: "#333",
           nativeWindowOpen: true
         })
       CodeWindow.loadURL(path.join(__dirname,"/htmlcode.html"))

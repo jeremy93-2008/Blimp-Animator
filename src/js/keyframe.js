@@ -131,8 +131,8 @@ function DelFrame()
               if(num==0)
               {
                 let time = self.selectedKeys[0].time;
-				let identifiador = self.selectedKeys[0].track.parent.id;
-				BorrarFrame(time,identifiador);
+				        let identifiador = self.selectedKeys[0].track.parent.id;
+				        BorrarFrame(time,identifiador);
               }
             });
   }else
@@ -178,6 +178,84 @@ function BorrarFrame(time,identificador)
 			}
 		}
 	}
+}
+function ModificarFrame()
+{
+  let self = timelinegui;
+  let time = self.selectedKeys[0].time;
+  const webview = document.querySelector("#webview");
+  beginTo = parseFloat((elmSeleccionado.getAttribute("termina")==undefined?0:elmSeleccionado.getAttribute("termina")))
+  duration = parseFloat((elmSeleccionado.getAttribute("dura")==undefined)?0:1)
+  //Buscamos los numeros de inicio y fnal de la clave
+  for(let obj of self.selectedKeys[0].track.anims)
+  {
+    if(obj.endTime == time)
+    {
+      beginTo = obj.startTime;
+      duration = obj.endTime-obj.startTime;
+    }
+  }
+  let id_for_elm = elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
+  localStorage.timeFrame = beginTo+";"+duration+";"+ id_for_elm
+  let AddWindow = new BrowserWindow(
+    {
+      width: 380,
+      height: 220,
+      minWidth: 380,
+      minHeight: 220,
+      modal:true,
+      icon:"img/logo-32.png",
+      resizable:false,
+      title: "Modificar fotograma clave",
+      minimizable:false,
+      parent:BrowserWindow.getAllWindows()[0],
+      backgrounColor: "#333",
+      nativeWindowOpen: true,
+      show:false
+    })
+  AddWindow.webContents.on('did-finish-load', function() {
+      AddWindow.show();
+  });
+  AddWindow.loadURL(path.join(__dirname,"/newFrame.html"))
+  AddWindow.setMenu(null);
+  AddWindow.on('closed', function () {
+    if(localStorage.timeFrame != "null")
+    {
+      // Recuperamos las variables
+      var arr = localStorage.timeFrame.split(";");
+      beginTo = parseFloat(arr[0]);
+      duration = parseFloat(arr[1]);
+      let identifiador = self.selectedKeys[0].track.parent.id;
+      // Modificamos los anims necesarios
+      if(webview.innerHTML.trim() != "")
+      {
+        let futuro = false;
+        for(let a = 0;a < timelinegui.anims.length;a++)
+        {
+          let obj = timelinegui.anims[a];
+          if(obj.targetName == identifiador)
+          {
+            if(obj.endTime == time)
+            {
+              obj.startTime = beginTo;
+              obj.delay = beginTo;
+              obj.endTime = beginTo+duration;
+              futuro = true;
+            }
+          }
+          if(obj.startTime = time && futuro)
+          {
+            let duration = obj.endTime-obj.delay;
+            obj.startTime = beginTo + duration;
+            obj.endTime = obj.delay + duration;
+          }
+        }
+      }
+      beginTo = parseInt(arr[0]) + parseInt(arr[1]);
+      duration = 1;
+    }
+    AddWindow = null
+  })
 }
 function MostrarSeleccionSeccion(selected)
 {
