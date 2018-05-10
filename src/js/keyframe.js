@@ -130,9 +130,9 @@ function DelFrame()
             {
               if(num==0)
               {
-                let list = self.selectedKeys[0].track.parent.propertyTracks;
-                self.selectedKeys = list;
-                self.deleteSelectedKeys();
+                //let list = self.selectedKeys[0].track.parent.propertyTracks;
+                let time = self.selectedKeys[0].time;
+                self.deleteSelectedKeys(time);
                 self.rebuildSelectedTracks();
                 self.hideKeyEditDialog();
               }

@@ -21,7 +21,7 @@ function createWindow () {
       minHeight: 660,
       title:"Blimp Animator",
       icon:"img/logo-32.png",
-      backgrounColor: "#333",
+      backgroundColor: "#343a40",
       nativeWindowOpen: true,
     })
 

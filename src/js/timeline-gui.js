@@ -772,16 +772,23 @@ Timeline.prototype.showKeyEditDialog = function(mouseX, mouseY) {
   this.keyEditDialogValue.focus();
 };
 
-Timeline.prototype.deleteSelectedKeys = function() {
+Timeline.prototype.deleteSelectedKeys = function(time) {
   for(var i=0; i<this.selectedKeys.length; i++) {
-    var selectedKey = this.selectedKeys[i];
-    let selected = selectedKey;
-    if(selectedKey.track != undefined)
-        selected = selectedKey.track;
-    var keyIndex = selected.keys.indexOf(selectedKey);
-    selected.keys.splice(keyIndex, 1);
+    var selectedKey = this.selectedKeys[i].track;
+    for(let obj of selectedKey.parent.propertyTracks)
+    {
+      for(let b = 0;b< obj.keys.length;b++)
+      {
+        if(obj.keys[b].time == time)
+        {
+          obj.keys.splice(b,1);
+          b--
+        } 
+      }
+    }
+
   }
-  this.rebuildSelectedTracks();
+  this.rebuildSelectedTracks(time);
 };
 
 Timeline.prototype.hideKeyEditDialog = function() {
@@ -797,33 +804,39 @@ Timeline.prototype.sortTrackKeys = function(track) {
   }
 };
 
-Timeline.prototype.rebuildSelectedTracks = function() {
+Timeline.prototype.rebuildSelectedTracks = function(time) {
   for(var i=0; i<this.selectedKeys.length; i++) {
-    let selected = (this.selectedKeys[i].track==undefined)?this.selectedKeys[i]:this.selectedKeys[i].track;
-    this.rebuildTrackAnimsFromKeys(selected);
+    var selectedKey = this.selectedKeys[i].track;
+    for(let obj of selectedKey.parent.propertyTracks)
+    {
+      this.rebuildTrackAnimsFromKeys(obj,time);
+    }
   }
   this.save();
 };
 
-Timeline.prototype.rebuildTrackAnimsFromKeys = function(track) {
+Timeline.prototype.rebuildTrackAnimsFromKeys = function(track,time) {
   var deletedAnims = [];
   var j;
 
   //remove all track's anims from the timeline
   for(j=0; j<track.anims.length; j++) {
-    var index = this.anims.indexOf(track.anims[j]);
-    deletedAnims.push(track.anims[j]);
-    this.anims.splice(index, 1);
+    if(track.anims[j].endTime == time)
+    {
+      var index = this.anims.indexOf(track.anims[j]);
+      deletedAnims.push(track.anims[j]);
+      this.anims.splice(index, 1);
+      //Delete some anims
+      track.anims.splice(j,1);
+      j--;
+    }
   }
-
-  //remove all anims from the track
-  track.anims.splice(0, track.anims.length);
 
   if (track.keys.length === 0) {
     return;
   }
 
-  var delay = track.keys[0].time;
+  /*var delay = track.keys[0].time;
   var prevKeyTime = track.keys[0].time;
   var prevKeyValue = track.keys[0].value;
   var prevKeyEasing = Timeline.Easing.Linear.EaseNone;
@@ -847,7 +860,7 @@ Timeline.prototype.rebuildTrackAnimsFromKeys = function(track) {
     prevKeyTime = key.time;
     prevKeyValue = key.value;
     prevKeyEasing = key.easing;
-  }
+  }*/
 };
 
 Timeline.prototype.exportCode = function() {
