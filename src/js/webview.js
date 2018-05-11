@@ -7,7 +7,6 @@ const fs = require("fs");
 const extra = require("fs-extra");
 const path = require("path");
 let refListenerBinding = {};
-let seleccionado = null;
 
 function NuevoArchivo()
 {
@@ -667,7 +666,15 @@ function newInfoToHTMLElement(that,HTMLobj,evt)
             array[index] = currentValue.substring(0,1).toUpperCase()+currentValue.substring(1)
     });
     clase = tabla.join("");
-    valor = (that.getAttribute("pre")||"") + valor + (that.getAttribute("post")||""); 
+	valor = (that.getAttribute("pre")||"") + valor + (that.getAttribute("post")||"");
+	if(clase=="id")
+	{
+		CambiarIdentificador(valor);
+	}
+	if(clase=="class")
+	{
+		CambiarClase(valor);
+	}
     if(clase == "id" || clase == "class" || clase == "src")
         HTMLobj.setAttribute(clase,valor);
     else if(clase == "autoplay" || clase == "controls")
@@ -799,6 +806,11 @@ function elementRedimensionar(e)
 function KeyboardManager(evt)
 {
     if(evt.code == "Delete")
-        DelFrame();
-    console.log(evt);
+		DelFrame();
+	if(evt.ctrlKey == true && evt.code == "KeyX")
+		Cortar();
+	if(evt.ctrlKey == true && evt.code == "KeyC")
+		Copiar();
+	if(evt.ctrlKey == true && evt.code == "KeyV")
+		Pegar();
 }

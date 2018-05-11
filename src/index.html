@@ -33,18 +33,19 @@
                 <li onclick="NuevoArchivo()"><span>Nuevo</span></li>
                 <li onclick="AbrirArchivo()"><span>Abrir</span></li>
                 <li class="separator"></li>
-                <li><span>Cerrar</span></li>
+                <li onclick="Cerrar()"><span>Cerrar</span></li>
               </ul>
             </li>
             <li>
                 <span>Editar</span>
                 <ul class="bg-dark">
-                  <li><span>Cortar</span></li>
-                  <li><span>Copiar</span></li>
-                  <li><span>Pegar</span></li>
-                  <li class="separator"></li>
-                  <li><span>Buscar</span></li>
-                  <li><span>Reemplazar</span></li>
+					<li onclick="Deshacer()"><span>Deshacer</span></li>
+					<li><span>Rehacer</span></li>
+					<li class="separator"></li>
+					<li onclick="Cortar()"><span>Cortar</span></li>
+					<li onclick="Copiar()"><span>Copiar</span></li>
+					<li onclick="PegarSoloEstilo()"><span>Pegar solo estilo</span></li>
+					<li onclick="Pegar()"><span>Pegar</span></li>
                 </ul>
             </li>
             <li>
@@ -118,7 +119,7 @@
                   </select>
                 </div>
                 <span>Orden</span>
-                <input type="number" min="1" max="999" class="elm z-index_elm" />
+                <input type="number" min="0" max="999" class="elm z-index_elm" />
                 <span>Visible</span>
                 <select>
                   <option class="elm visibility_elm">visible</option>

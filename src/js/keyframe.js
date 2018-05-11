@@ -13,7 +13,8 @@ function AnnadirFrame()
     // Recuperamos el puntero hacia el elemento DOM
     const webview = document.querySelector("#webview");
     beginTo = parseFloat((elmSeleccionado.getAttribute("termina")==undefined?0:elmSeleccionado.getAttribute("termina")))
-    duration = parseFloat((elmSeleccionado.getAttribute("dura")==undefined)?0:1)
+	duration = parseFloat((elmSeleccionado.getAttribute("dura")==undefined)?0:1)
+	localStorage.habilitarBegin = "true"
     localStorage.timeFrame = beginTo+";"+duration+";"+ elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
     let AddWindow = new BrowserWindow(
       {
@@ -26,13 +27,10 @@ function AnnadirFrame()
         resizable:false,
         minimizable:false,
         parent:BrowserWindow.getAllWindows()[0],
-        backgrounColor: "#333",
+		backgroundColor: "#333",
+		title:"Añadir fotograma clave",
         nativeWindowOpen: true,
-        show:false
       })
-    AddWindow.webContents.on('did-finish-load', function() {
-        AddWindow.show();
-    });
     AddWindow.loadURL(path.join(__dirname,"/newFrame.html"))
     AddWindow.setMenu(null);
     AddWindow.on('closed', function () {
@@ -91,16 +89,7 @@ function AnnadirFrame()
     })
   }else
   {
-    dialog.showMessageBox(BrowserWindow.getAllWindows()[0],
-    {
-        "title":"Información",
-        "type":"info",
-        "buttons":["OK"],
-        "defaultId":0,
-        "cancelId":2,
-        "noLink":true,
-        "message":"No se ha seleccionado ningún elemento para crear el fotograma clave."
-    });
+	MessageBox("Información","No se ha seleccionado ningún elemento para crear el fotograma clave.","info",["OK"],function(){});
   }
 }
 function devolverNumeroTexto(obj,prop)
@@ -131,22 +120,13 @@ function DelFrame()
               if(num==0)
               {
                 let time = self.selectedKeys[0].time;
-				        let identifiador = self.selectedKeys[0].track.parent.id;
-				        BorrarFrame(time,identifiador);
+				let identifiador = self.selectedKeys[0].track.parent.id;
+				BorrarFrame(time,identifiador);
               }
             });
   }else
   {
-    dialog.showMessageBox(BrowserWindow.getAllWindows()[0],
-    {
-        "title":"Información",
-        "type":"info",
-        "buttons":["OK"],
-        "defaultId":0,
-        "cancelId":2,
-        "noLink":true,
-        "message":"No se ha seleccionado ningún fotograma clave para su eliminación."
-    });
+	  MessageBox("Información","No se ha seleccionado ningún fotograma clave para su eliminación.","info",["OK"],function(){});
   }
 }
 /**
@@ -160,7 +140,7 @@ function BorrarFrame(time,identificador)
 	for(var num = 0;num < timelinegui.anims.length;num++)
 	{
 		obj = timelinegui.anims[num];
-		if(obj.targetName == identifiador)
+		if(obj.targetName == identificador)
 		{
 			if(endNum > -1)
 			{
@@ -184,8 +164,8 @@ function ModificarFrame()
   let self = timelinegui;
   let time = self.selectedKeys[0].time;
   const webview = document.querySelector("#webview");
-  beginTo = parseFloat((elmSeleccionado.getAttribute("termina")==undefined?0:elmSeleccionado.getAttribute("termina")))
-  duration = parseFloat((elmSeleccionado.getAttribute("dura")==undefined)?0:1)
+  beginTo = 0
+  duration = 0
   //Buscamos los numeros de inicio y fnal de la clave
   for(let obj of self.selectedKeys[0].track.anims)
   {
@@ -195,67 +175,78 @@ function ModificarFrame()
       duration = obj.endTime-obj.startTime;
     }
   }
-  let id_for_elm = elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
+  let id_for_elm = self.selectedKeys[0].track.parent.id;
+  localStorage.habilitarBegin = "false"
   localStorage.timeFrame = beginTo+";"+duration+";"+ id_for_elm
-  let AddWindow = new BrowserWindow(
-    {
-      width: 380,
-      height: 220,
-      minWidth: 380,
-      minHeight: 220,
-      modal:true,
-      icon:"img/logo-32.png",
-      resizable:false,
-      title: "Modificar fotograma clave",
-      minimizable:false,
-      parent:BrowserWindow.getAllWindows()[0],
-      backgrounColor: "#333",
-      nativeWindowOpen: true,
-      show:false
-    })
-  AddWindow.webContents.on('did-finish-load', function() {
-      AddWindow.show();
-  });
-  AddWindow.loadURL(path.join(__dirname,"/newFrame.html"))
-  AddWindow.setMenu(null);
-  AddWindow.on('closed', function () {
-    if(localStorage.timeFrame != "null")
-    {
-      // Recuperamos las variables
-      var arr = localStorage.timeFrame.split(";");
-      beginTo = parseFloat(arr[0]);
-      duration = parseFloat(arr[1]);
-      let identifiador = self.selectedKeys[0].track.parent.id;
-      // Modificamos los anims necesarios
-      if(webview.innerHTML.trim() != "")
-      {
-        let futuro = false;
-        for(let a = 0;a < timelinegui.anims.length;a++)
-        {
-          let obj = timelinegui.anims[a];
-          if(obj.targetName == identifiador)
-          {
-            if(obj.endTime == time)
-            {
-              obj.startTime = beginTo;
-              obj.delay = beginTo;
-              obj.endTime = beginTo+duration;
-              futuro = true;
-            }
-          }
-          if(obj.startTime = time && futuro)
-          {
-            let duration = obj.endTime-obj.delay;
-            obj.startTime = beginTo + duration;
-            obj.endTime = obj.delay + duration;
-          }
-        }
-      }
-      beginTo = parseInt(arr[0]) + parseInt(arr[1]);
-      duration = 1;
-    }
-    AddWindow = null
-  })
+  if(beginTo > 0 || duration > 0)
+  {
+	let AddWindow = new BrowserWindow(
+		{
+		  width: 380,
+		  height: 220,
+		  minWidth: 380,
+		  minHeight: 220,
+		  modal:true,
+		  icon:"img/logo-32.png",
+		  resizable:false,
+		  title: "Modificar fotograma clave",
+		  minimizable:false,
+		  parent:BrowserWindow.getAllWindows()[0],
+		  backgroundColor: "#333",
+		  title:"Añadir fotograma clave",
+		  nativeWindowOpen: true
+		})
+	  AddWindow.loadURL(path.join(__dirname,"/newFrame.html"))
+	  AddWindow.setMenu(null);
+	  AddWindow.on('closed', function () {
+		if(localStorage.timeFrame != "null")
+		{
+		  // Recuperamos las variables
+		  var arr = localStorage.timeFrame.split(";");
+		  beginTo = parseFloat(arr[0]);
+		  duration = parseFloat(arr[1]);
+		  let identifiador = self.selectedKeys[0].track.parent.id;
+		  let lastEnd = 0;
+		  let forStop = 0;
+		  // Modificamos los anims necesarios
+		  if(webview.innerHTML.trim() != "")
+		  {
+			let futuro = false;
+			for(let a = 0;a < timelinegui.anims.length;a++)
+			{
+			  let obj = timelinegui.anims[a];
+			  if(obj.targetName == identifiador)
+			  {
+				if(obj.endTime == time)
+				{
+				  obj.startTime = beginTo;
+				  obj.delay = beginTo;
+				  obj.endTime = beginTo+duration;
+				  lastEnd = obj.endTime;
+				  futuro = true;
+				}
+				if(obj.startTime >= time && futuro)
+				{
+				  let duration = obj.endTime-obj.delay;
+				  obj.startTime = lastEnd;
+				  obj.delay = lastEnd;
+				  obj.endTime = obj.startTime + duration;
+				}
+			  }
+			  forStop = obj.endTime; 
+			}
+		  }
+		  //Y ponemos en stop el timeline
+		  timelinegui.stop(forStop);
+		  beginTo = parseInt(arr[0]) + parseInt(arr[1]);
+		  duration = 1;
+		}
+		AddWindow = null
+	  })
+  }else
+  {
+	MessageBox("Información","No se puede modificar el frame base de la animación.","info",["OK"],function(){});
+  }
 }
 function MostrarSeleccionSeccion(selected)
 {
@@ -289,4 +280,60 @@ function MostrarSeleccionSeccion(selected)
 			container.remove();
 		},1000)
 	}
+}
+function CambiarIdentificador(newname)
+{
+	if(elmSeleccionado != null)
+	{
+		let elm = elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
+		for(let obj of timelinegui.anims)
+		{
+			if(elm == obj.targetName)
+			{
+				obj.targetName = elm.replace(/#[a-z|0-9|\-|\_]*/g,"#"+newname);
+				obj.parent.name = elm.replace(/#[a-z|0-9|\-|\_]*/g,"#"+newname);
+				obj.parent.targetName = elm.replace(/#[a-z|0-9|\-|\_]*/g,"#"+newname);
+			}
+		}
+	}
+}
+function CambiarClase(newname)
+{
+	if(elmSeleccionado != null)
+	{
+		let elm = elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
+		for(let obj of timelinegui.anims)
+		{
+			if(elm == obj.targetName)
+			{
+				obj.targetName = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+				obj.parent.name = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+				obj.parent.targetName = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+			}
+		}		
+	}
+}
+/**
+ * Hace aparecer un Mensaje del sistema según los parametros mandados
+ * @param {string} title 
+ * @param {string} message 
+ * @param {enum} type 
+ * @param {array} button 
+ * @param {function} callback 
+ */
+function MessageBox(title,message,type,button,callback)
+{
+	dialog.showMessageBox(BrowserWindow.getAllWindows()[0],
+	{
+		"title":title,
+		"type":type,
+		"buttons":button,
+		"defaultId":0,
+		"cancelId":2,
+		"noLink":true,
+		"message":message
+	},function(num)
+	{
+	  callback(num);
+	});
 }

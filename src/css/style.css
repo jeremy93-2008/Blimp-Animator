@@ -237,7 +237,7 @@ ul li
 #inspector .elemento .nombre
 {
     font-size: 11px;
-    width: 130px;
+    width: 140px;
     display: block;
     font-weight: bold;
     text-align: center;
@@ -373,7 +373,7 @@ ul li
 {
     position: fixed;
     z-index: 20;
-    bottom: 185px;
+    top: calc(100% - 184px);
     right: 0px;
     padding: 1px 10px;
     width: 110px;

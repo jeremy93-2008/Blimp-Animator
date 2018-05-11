@@ -514,7 +514,7 @@ Timeline.prototype.drawTrack = function(track, y) {
   this.drawLine(0, y, this.canvas.width, y, "#FFFFFF");
   //draw track label
   this.c.fillStyle = "#fff";
-  this.c.fillText(track.name, xshift, y - this.trackLabelHeight/4);
+  this.c.fillText((track.name.length<=16)?track.name:(track.name.substring(0,13)+"..."), xshift, y - this.trackLabelHeight/4);
 
   //if it's property track then draw anims
   if (track.type == "property") {

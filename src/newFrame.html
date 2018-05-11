@@ -87,6 +87,11 @@
         }
         function cargar()
         {
+			if(localStorage.habilitarBegin == "false")
+			{
+				document.getElementById("beginTo").readOnly = true;
+				document.getElementById("beginTo").style.color = "gray";
+			}
             if(localStorage.timeFrame != "null")
             {
                 let arr = localStorage.timeFrame.split(";");
@@ -102,11 +107,11 @@
 <body style="background: #343a40;">
     <h4>div#elm-647.default</h4>
     <div class="sub">
-        <span class="title">Comienza en</span><input type="number" id="beginTo" value="0" />
+        <span class="title">Comienza en</span><input type="number" id="beginTo" min="0" step="0.5" value="0" />
         <span>seg.</span>
     </div>
     <div class="sub">
-        <span class="title">Dura hasta</span><input type="number" id="duration" value="1" />
+        <span class="title">Dura hasta</span><input type="number" id="duration" min="0" step="0.5" value="1" />
         <span>seg.</span>
     </div>
     <div class="sub right">
