@@ -12,16 +12,31 @@ function AnnadirFrame()
   {
     // Recuperamos el puntero hacia el elemento DOM
     const webview = document.querySelector("#webview");
-    beginTo = parseFloat((elmSeleccionado.getAttribute("termina")==undefined?0:elmSeleccionado.getAttribute("termina")))
-	duration = parseFloat((elmSeleccionado.getAttribute("dura")==undefined)?0:1)
-	localStorage.habilitarBegin = "true"
-    localStorage.timeFrame = beginTo+";"+duration+";"+ elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
+		localStorage.habilitarBegin = "true"
+
+		if(Array.isArray(elmSeleccionado))
+		{
+			let html = "";
+			for(let obj of elmSeleccionado)
+			{
+				html += obj.nodeName.toLowerCase()+"#"+obj.id+"."+obj.className+"<br>";
+			}
+			beginTo = parseFloat((elmSeleccionado[elmSeleccionado.length-1].getAttribute("termina")==undefined?0:elmSeleccionado[elmSeleccionado.length-1].getAttribute("termina")))
+			duration = parseFloat((elmSeleccionado[elmSeleccionado.length-1].getAttribute("dura")==undefined)?0:1)
+			localStorage.timeFrame = beginTo+";"+duration+";"+ html;
+		}else
+		{
+			beginTo = parseFloat((elmSeleccionado.getAttribute("termina")==undefined?0:elmSeleccionado.getAttribute("termina")))
+			duration = parseFloat((elmSeleccionado.getAttribute("dura")==undefined)?0:1)
+			localStorage.timeFrame = beginTo+";"+duration+";"+ elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
+		}
+    
     let AddWindow = new BrowserWindow(
       {
         width: 380,
-        height: 220,
+        height: 240,
         minWidth: 380,
-        minHeight: 220,
+        minHeight: 240,
         modal:true,
         icon:"img/logo-32.png",
         resizable:false,
@@ -44,43 +59,88 @@ function AnnadirFrame()
         if(webview.innerHTML.trim() != "")
         {
           // Grabamos el objeto seleccionado en su movimiento
-          obj = elmSeleccionado;
-          let identificador = "div#"+obj.id+"."+obj.className;
-          let json = {};
-          for(let prop of txtStyle)
-          {
-            let valor = obj.style[prop];
-              if(prop == "opacity")
-                json[prop] = (prop!="opacity")?valor:(valor=="")?1:valor;
-              else if(prop == "transform")
-                json[prop] = (valor=="")?"rotate(0deg)":valor;
-              else if(prop == "height")
-                json[prop] = (valor=="")?devolverNumeroTexto(obj,prop):Number(valor.replace("px",""));
-              else if(valor == "black")
-                json[prop] = "rgb(0,0,0)";
-              else if(valor == "" && prop.indexOf("-shadow") != -1)
-                json[prop] = "black 0px 0px 0px";
-              else if(valor != "" && prop.indexOf("-shadow") != -1)
-                json[prop] = valor;
-              else if(valor == "" && prop == "z-index")
-                json[prop] = 0;
-              else if(valor == "" && prop == "font-weight")
-                json[prop] = 400;                
-              else if(valor == "")
-                json[prop] = devolverNumeroTexto(obj,prop);
-              else if(valor.indexOf("px") != -1)
-                json[prop] = Number(valor.replace("px",""));
-              else
-                json[prop] = valor;
-          }
-          //Añadimos este frame como clave
-          anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
-          // Ponemos el timeline en pausa
-          timelinegui.stop(beginTo+duration);
-          // Sumamos uno al contador de Frame
-          numFrame++;
-          obj.setAttribute("termina",parseInt(arr[0]) + parseInt(arr[1]));
-          obj.setAttribute("dura","true");
+					el = elmSeleccionado;
+					if(Array.isArray(elmSeleccionado))
+					{
+						for(let obj of elmSeleccionado)
+						{
+							let identificador = "div#"+obj.id+"."+obj.className;
+							let json = {};
+							for(let prop of txtStyle)
+							{
+								let valor = obj.style[prop];
+									if(prop == "opacity")
+										json[prop] = (prop!="opacity")?valor:(valor=="")?1:valor;
+									else if(prop == "transform")
+										json[prop] = (valor=="")?"rotate(0deg)":valor;
+									else if(prop == "height")
+										json[prop] = (valor=="")?devolverNumeroTexto(obj,prop):Number(valor.replace("px",""));
+									else if(valor == "black")
+										json[prop] = "rgb(0,0,0)";
+									else if(valor == "" && prop.indexOf("-shadow") != -1)
+										json[prop] = "black 0px 0px 0px";
+									else if(valor != "" && prop.indexOf("-shadow") != -1)
+										json[prop] = valor;
+									else if(valor == "" && prop == "z-index")
+										json[prop] = 0;
+									else if(valor == "" && prop == "font-weight")
+										json[prop] = 400;                
+									else if(valor == "")
+										json[prop] = devolverNumeroTexto(obj,prop);
+									else if(valor.indexOf("px") != -1)
+										json[prop] = Number(valor.replace("px",""));
+									else
+										json[prop] = valor;
+							}
+							//Añadimos este frame como clave
+							anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
+							// Ponemos el timeline en pausa
+							timelinegui.stop(beginTo+duration);
+							// Sumamos uno al contador de Frame
+							numFrame++;
+							obj.setAttribute("termina",parseInt(arr[0]) + parseInt(arr[1]));
+							obj.setAttribute("dura","true");
+						}
+					}else
+					{
+						let obj = el;
+						let identificador = "div#"+obj.id+"."+obj.className;
+						let json = {};
+						for(let prop of txtStyle)
+						{
+							let valor = obj.style[prop];
+								if(prop == "opacity")
+									json[prop] = (prop!="opacity")?valor:(valor=="")?1:valor;
+								else if(prop == "transform")
+									json[prop] = (valor=="")?"rotate(0deg)":valor;
+								else if(prop == "height")
+									json[prop] = (valor=="")?devolverNumeroTexto(obj,prop):Number(valor.replace("px",""));
+								else if(valor == "black")
+									json[prop] = "rgb(0,0,0)";
+								else if(valor == "" && prop.indexOf("-shadow") != -1)
+									json[prop] = "black 0px 0px 0px";
+								else if(valor != "" && prop.indexOf("-shadow") != -1)
+									json[prop] = valor;
+								else if(valor == "" && prop == "z-index")
+									json[prop] = 0;
+								else if(valor == "" && prop == "font-weight")
+									json[prop] = 400;                
+								else if(valor == "")
+									json[prop] = devolverNumeroTexto(obj,prop);
+								else if(valor.indexOf("px") != -1)
+									json[prop] = Number(valor.replace("px",""));
+								else
+									json[prop] = valor;
+						}
+						//Añadimos este frame como clave
+						anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
+						// Ponemos el timeline en pausa
+						timelinegui.stop(beginTo+duration);
+						// Sumamos uno al contador de Frame
+						numFrame++;
+						obj.setAttribute("termina",parseInt(arr[0]) + parseInt(arr[1]));
+						obj.setAttribute("dura","true");					
+					}     
         }
         beginTo = parseInt(arr[0]) + parseInt(arr[1]);
         duration = 1;
@@ -183,9 +243,9 @@ function ModificarFrame()
 	let AddWindow = new BrowserWindow(
 		{
 		  width: 380,
-		  height: 220,
+		  height: 240,
 		  minWidth: 380,
-		  minHeight: 220,
+		  minHeight: 240,
 		  modal:true,
 		  icon:"img/logo-32.png",
 		  resizable:false,
@@ -286,6 +346,9 @@ function CambiarIdentificador(newname)
 	if(elmSeleccionado != null)
 	{
 		let elm = elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
+		let elmnt = document.querySelector("#outline *[identificador='"+elm+"']")
+		elmnt.setAttribute("identificador",elm.replace(/#[a-z|0-9|\-|\_]*/g,"#"+newname));
+		elmnt.querySelector("b").innerHTML = elm.replace(/#[a-z|0-9|\-|\_]*/g,"#"+newname)
 		for(let obj of timelinegui.anims)
 		{
 			if(elm == obj.targetName)
@@ -301,16 +364,40 @@ function CambiarClase(newname)
 {
 	if(elmSeleccionado != null)
 	{
-		let elm = elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
-		for(let obj of timelinegui.anims)
+		if(Array.isArray(elmSeleccionado))
 		{
-			if(elm == obj.targetName)
+			for(let obj of elmSeleccionado)
 			{
-				obj.targetName = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
-				obj.parent.name = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
-				obj.parent.targetName = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+				let elm = obj.nodeName.toLowerCase()+"#"+obj.id+"."+obj.className;
+				let elmnt = document.querySelector("#outline *[identificador='"+elm+"']")
+				elmnt.setAttribute("identificador",elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname));
+				elmnt.querySelector("b").innerHTML = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname)
+				for(let obj of timelinegui.anims)
+				{
+					if(elm == obj.targetName)
+					{
+						obj.targetName = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+						obj.parent.name = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+						obj.parent.targetName = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+					}
+				}	
 			}
-		}		
+		}else
+		{
+			let elm = elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
+			let elmnt = document.querySelector("#outline *[identificador='"+elm+"']")
+			elmnt.setAttribute("identificador",elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname));
+			elmnt.querySelector("b").innerHTML = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname)
+			for(let obj of timelinegui.anims)
+			{
+				if(elm == obj.targetName)
+				{
+					obj.targetName = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+					obj.parent.name = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+					obj.parent.targetName = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname);
+				}
+			}	
+		}	
 	}
 }
 /**

@@ -373,7 +373,7 @@ ul li
 {
     position: fixed;
     z-index: 20;
-    top: calc(100% - 184px);
+    top: calc(100% - 214px);
     right: 0px;
     padding: 1px 10px;
     width: 110px;
@@ -417,6 +417,12 @@ ul li
     color: white;
     font-size: 10px;
     border: none;
+}
+.ui-selectable-helper
+{
+    z-index:80 !important;
+    background-color: rgb(27, 102, 172,0.4);
+    border: solid 2px rgb(6, 48, 87);
 }
 .eyedropper:hover
 {

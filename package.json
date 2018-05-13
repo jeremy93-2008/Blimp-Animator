@@ -16,9 +16,7 @@
     "electron": "^1.8.4"
   },
   "dependencies": {
-    "bootstrap": "^4.1.0",
     "fs-extra": "^6.0.0",
-    "jquery": "^3.3.1",
     "monaco-editor": "^0.12.0",
     "popper.js": "^1.14.3",
     "robotjs": "^0.5.1"
