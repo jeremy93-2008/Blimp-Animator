@@ -334,16 +334,39 @@ function AnnadirContenido(that)
 }
 function ActivaInspector(that,evt)
 {
+    let tabla = [];
+    let oldSeleccionado = elmSeleccionado;
+    if(evt.ctrlKey && oldSeleccionado != null)
+    {
+        if(Array.isArray(oldSeleccionado))
+        {
+            tabla.push(...oldSeleccionado)
+        }else
+        {
+            tabla.push(oldSeleccionado);
+        }
+        tabla.push(that);
+    }
     let inspector = document.getElementById("inspector");
     let elementos = inspector.querySelector(".elemento");
-    elmSeleccionado = that;
+    elmSeleccionado = (tabla.length>0)?tabla:that;
     InspectorEsconder(true,false);
-    seleccionarObjInspector(that);
-    elementos.querySelector("#titulo").innerHTML = that.nodeName.toLowerCase()+"#"+that.id+"."+that.className;
-    GenerarInspector(that,elementos);
+    seleccionarObjInspector((tabla.length>0)?tabla:that);
+    elementos.querySelector("#titulo").innerHTML = "";
+    if(tabla.length>0)
+    {
+        for(let obj of tabla)
+        {
+            elementos.querySelector("#titulo").innerHTML += obj.nodeName.toLowerCase()+"#"+obj.id+"."+obj.className+"<br>";
+        }
+    }else
+    {
+        elementos.querySelector("#titulo").innerHTML = that.nodeName.toLowerCase()+"#"+that.id+"."+that.className;
+    }
+    GenerarInspector(that,elementos,(tabla.length>0)?tabla:false);
     evt.stopPropagation();
 }
-function GenerarInspector(that,list)
+function GenerarInspector(that,list,tabla)
 {
     let computed = window.getComputedStyle(that,null)
     let list_elm = list.querySelectorAll(".elm");
@@ -397,7 +420,7 @@ function GenerarInspector(that,list)
                     elm.value = that.src;
                 else
                     elm.value = that.className;
-            refListenerBinding[clase] = function(){newInfoToHTMLElement(elm,that)};
+            refListenerBinding[clase] = function(){newInfoToHTMLElement(elm,(Array.isArray(tabla))?tabla:that)};
             elm.addEventListener("input",refListenerBinding[clase],true);
         }else if(elm.nodeName == "OPTION")
         {
@@ -429,7 +452,7 @@ function GenerarInspector(that,list)
             }
             if(refListenerBinding[clase] == null)
             {
-                refListenerBinding[clase] = function(){newInfoToHTMLElement(elm,that)};
+                refListenerBinding[clase] = function(){newInfoToHTMLElement(elm,(Array.isArray(tabla))?tabla:that)};
                 elm.parentNode.addEventListener("change",refListenerBinding[clase],true);                
             }
         }
@@ -593,23 +616,46 @@ function AbrirImagen(ruta)
 }
 function seleccionarObjInspector(that)
 {
-    let tituloEnObj = that.nodeName.toLowerCase()+"#"+that.id+"."+that.className;
-
+    let list = document.querySelectorAll("#outline ul li");
     let lista = document.querySelectorAll("#webview *");
     for(let obj of lista)
     {
         obj.style.outline = "none";
     }
-    that.style.outline = "solid 2px #0a80c4";
-
-    VisibleInvisible(that);
-
-    let list = document.querySelectorAll("#outline ul li");
-    for(let line of list)
+    if(Array.isArray(that))
+    { 
+        for(let line of list)
+        {
+            line.className = "";
+        }
+        let elementos = inspector.querySelector(".elemento");
+        elementos.querySelector("#titulo").innerHTML = "";
+        for(let self of that)
+        {
+            let tituloEnObj = self.nodeName.toLowerCase()+"#"+self.id+"."+self.className;
+            self.style.outline = "solid 2px #0a80c4";
+            VisibleInvisible(self);
+            for(let line of list)
+            {
+                if(tituloEnObj == line.getAttribute("identificador"))
+                    line.className = "selected"
+            }
+            elementos.querySelector("#titulo").innerHTML += tituloEnObj+"<br>";
+        }
+        GenerarInspector(that[0],elementos,that);
+        InspectorEsconder(elementos,true);
+    }
+    else
     {
-        line.className = "";
-        if(tituloEnObj == line.getAttribute("identificador"))
-            line.className = "selected"
+        let tituloEnObj = that.nodeName.toLowerCase()+"#"+that.id+"."+that.className;
+        that.style.outline = "solid 2px #0a80c4";
+        VisibleInvisible(that);
+        for(let line of list)
+        {
+            line.className = "";
+            if(tituloEnObj == line.getAttribute("identificador"))
+                line.className = "selected"
+        }
     }
 }
 function InspectorEsconder(elemento,bool)
@@ -674,13 +720,28 @@ function newInfoToHTMLElement(that,HTMLobj,evt)
 	if(clase=="class")
 	{
 		CambiarClase(valor);
-	}
-    if(clase == "id" || clase == "class" || clase == "src")
-        HTMLobj.setAttribute(clase,valor);
-    else if(clase == "autoplay" || clase == "controls")
-        (valor=="true")?HTMLobj.setAttribute(clase,valor):HTMLobj.removeAttribute(clase);
+    }
+    if(Array.isArray(HTMLobj))
+    {
+        for(let obj of HTMLobj)
+        {
+            if(clase == "id" || clase == "class" || clase == "src")
+                obj.setAttribute(clase,valor);
+            else if(clase == "autoplay" || clase == "controls")
+                (valor=="true")?obj.setAttribute(clase,valor):obj.removeAttribute(clase);
+            else
+                obj.style[clase] = valor;
+        }
+    }
     else
-        HTMLobj.style[clase] = valor;
+    {
+        if(clase == "id" || clase == "class" || clase == "src")
+            HTMLobj.setAttribute(clase,valor);
+        else if(clase == "autoplay" || clase == "controls")
+            (valor=="true")?HTMLobj.setAttribute(clase,valor):HTMLobj.removeAttribute(clase);
+        else
+            HTMLobj.style[clase] = valor;
+    }
 
     VisibleInvisible(that,valor);
 }
@@ -692,6 +753,8 @@ let elmnt = null;
 function Mover(elm,evt)
 {
     elmnt = elm;
+
+    document.getElementById("webview").onmousedown = null;
 
     let lista = document.querySelectorAll("#webview *");
     for(let obj of lista)
@@ -748,6 +811,7 @@ function closeDragElement() {
     /* stop moving when mouse button is released:*/
     document.onmouseup = null;
     document.onmousemove = null;
+    document.getElementById("webview").onmousedown = SeleccionCuadrado;
 }
 // Rotación de los elementos
 function Rotar(elm,evt)
@@ -803,8 +867,120 @@ function elementRedimensionar(e)
     elmnt.style.width = (elmnt.offsetWidth + pos1) + "px";
     elmnt.style.height = (elmnt.offsetHeight + pos2) + "px";
 }
+let cuadradoOrigenX = 0;
+let cuadradoOrigenY = 0;
+let seleccionDiv = document.createElement("div");
+function SeleccionCuadrado(evt)
+{
+    cuadradoOrigenX = evt.clientX;
+    cuadradoOrigenY = evt.clientY;
+    seleccionDiv.style.backgroundColor = "rgba(27, 102, 172, .4)";
+    seleccionDiv.style.border = "solid 2px rgba(6, 48, 87,.8)";
+    seleccionDiv.style.position = "fixed"
+    seleccionDiv.style.width = "0"
+    seleccionDiv.style.height = "0"
+    seleccionDiv.style.top = cuadradoOrigenY+"px";
+    seleccionDiv.style.left = cuadradoOrigenX+"px";
+    document.querySelector("#webview").appendChild(seleccionDiv);
+    InspectorEsconder(false);
+    seleccionDiv.onmouseup = CerrarCuadrado
+    document.getElementById("webview").onclick = null;
+    document.getElementById("webview").onmousemove = MueveCuadrado;   
+}
+function MueveCuadrado(evt)
+{
+    let anchura = evt.clientX - cuadradoOrigenX
+    let alto = evt.clientY - cuadradoOrigenY
+    if(evt.clientX < cuadradoOrigenX)
+    {
+        seleccionDiv.style.left = evt.clientX+"px";
+        anchura = cuadradoOrigenX - evt.clientX
+    }  
+    if(evt.clientY < cuadradoOrigenY)
+    {
+        seleccionDiv.style.top = evt.clientY+"px";
+        alto = cuadradoOrigenY - evt.clientY
+    }
+    seleccionDiv.style.width = anchura+"px";
+    seleccionDiv.style.height = alto+"px";
+    document.getElementById("webview").onmouseup = CerrarCuadrado;
+}
+function CerrarCuadrado(evt)
+{
+    let left = seleccionDiv.style.left;
+    let top = seleccionDiv.style.top;
+    let width = seleccionDiv.style.width;
+    let height = seleccionDiv.style.height;
+
+    document.getElementById("webview").onmousemove = null;   
+    document.querySelector("#webview").removeChild(seleccionDiv);
+    document.getElementById("webview").onmouseup = null;
+    SeleccionarElementosEnArea(top,left,width,height);
+}
+function SeleccionarElementosEnArea(top,left,width,height)
+{
+    let list = document.querySelectorAll("#webview *")
+    top = Number(top.replace("px","")-81)
+    left = Number(left.replace("px","")-15)
+    width = Number(width.replace("px",""))
+    height = Number(height.replace("px",""))
+    /** Variable Array que guarda los elementos que deben guardarse */
+    let elmsSelecc = [];
+    for(let obj of list)
+    {
+        let ancho = Number(obj.style.width.replace("px",""));
+        let alto = Number(obj.style.height.replace("px",""));
+        let arriba = Number(obj.style.top.replace("px",""));
+        let izq = Number(obj.style.left.replace("px",""));
+
+        /**Ahora vemos si cada elemento está dentro de la caja de selección */
+        if((arriba > top && arriba < (top+height)) && (izq > left && izq < (left+width)))
+        {
+            elmsSelecc.push(obj);
+        }
+    }
+    if(elmsSelecc.length > 0)
+    {
+        seleccionarObjInspector(elmsSelecc);
+        elmSeleccionado = elmsSelecc;
+    }
+        
+}
+function Mover(num)
+{
+    if(elmSeleccionado != null)
+    {
+        if(Array.isArray(elmSeleccionado))
+        {
+            for(let elm of elmSeleccionado)
+                MoverObjetoTeclado(num,elm)
+        }else
+        {
+            MoverObjetoTeclado(num,elmSeleccionado);
+        }
+    }
+}
+function MoverObjetoTeclado(num,elm)
+{
+    switch(num)
+    {
+        case 0:
+            elm.style.top = elm.style.top-1;
+        break;
+        case 1:
+            elm.style.left = elm.style.top+1;
+        break;
+        case 2:
+            elm.style.top = elm.style.top+1;
+        break;
+        case 3:
+            elm.style.left = elm.style.top-1;
+        break;
+    }
+}
 function KeyboardManager(evt)
 {
+    console.log(evt);
     if(evt.code == "Delete")
 		DelFrame();
 	if(evt.ctrlKey == true && evt.code == "KeyX")
@@ -812,5 +988,13 @@ function KeyboardManager(evt)
 	if(evt.ctrlKey == true && evt.code == "KeyC")
 		Copiar();
 	if(evt.ctrlKey == true && evt.code == "KeyV")
-		Pegar();
+        Pegar();
+    if(evt.code == "ArrowUp")
+        Mover(0); //0 arriba 1 derecha 2 abajo 3 izquierda 
+    if(evt.code == "ArrowRight")
+        Mover(1); //0 arriba 1 derecha 2 abajo 3 izquierda 
+    if(evt.code == "ArrowDown")
+        Mover(2); //0 arriba 1 derecha 2 abajo 3 izquierda 
+    if(evt.code == "ArrowLeft")
+        Mover(3); //0 arriba 1 derecha 2 abajo 3 izquierda 
 }
