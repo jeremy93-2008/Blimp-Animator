@@ -229,7 +229,7 @@ Timeline.prototype.onMouseClick = function(event) {
   }
 
   if (event.layerX > 2*this.headerHeight - 4 * 1 && event.layerX < 3*this.headerHeight - 4 * 2 && event.layerY < this.headerHeight) {
-    this.stop(beginTo+duration);
+    this.stop(beginTo);
   }
 
   if (event.layerX > 3*this.headerHeight - 4 * 2 && event.layerX < 4*this.headerHeight - 4 * 3 && event.layerY < this.headerHeight) {

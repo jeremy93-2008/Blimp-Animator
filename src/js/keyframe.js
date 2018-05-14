@@ -5,6 +5,7 @@ var beginTo = 0;
 var supressKeyFrame = false;
 var infoDel = "";
 var elmSeleccionado = null;
+var endTimeline = 0;
 var txtStyle = ["z-index","top","left","width","height","background-color","border-color","border-radius","font-size","color","font-weight","box-shadow","text-shadow","opacity","transform"];
 function AnnadirFrame()
 {
@@ -95,10 +96,12 @@ function AnnadirFrame()
 							//Añadimos este frame como clave
 							anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
 							// Ponemos el timeline en pausa
-							timelinegui.stop(beginTo+duration);
+							if(beginTo>endTimeline)
+								endTimeline = beginTo 
+							timelinegui.stop(beginTo);
 							// Sumamos uno al contador de Frame
 							numFrame++;
-							obj.setAttribute("termina",parseInt(arr[0]) + parseInt(arr[1]));
+							obj.setAttribute("termina",parseFloat(arr[0]) + parseFloat(arr[1]));
 							obj.setAttribute("dura","true");
 						}
 					}else
@@ -135,14 +138,16 @@ function AnnadirFrame()
 						//Añadimos este frame como clave
 						anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
 						// Ponemos el timeline en pausa
-						timelinegui.stop(beginTo+duration);
+						if(beginTo>endTimeline)
+							endTimeline = beginTo 
+						timelinegui.stop(beginTo);
 						// Sumamos uno al contador de Frame
 						numFrame++;
-						obj.setAttribute("termina",parseInt(arr[0]) + parseInt(arr[1]));
+						obj.setAttribute("termina",parseFloat(arr[0]) + parseFloat(arr[1]));
 						obj.setAttribute("dura","true");					
 					}     
         }
-        beginTo = parseInt(arr[0]) + parseInt(arr[1]);
+        beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
         duration = 1;
       }
       AddWindow = null
@@ -298,7 +303,7 @@ function ModificarFrame()
 		  }
 		  //Y ponemos en stop el timeline
 		  timelinegui.stop(forStop);
-		  beginTo = parseInt(arr[0]) + parseInt(arr[1]);
+		  beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
 		  duration = 1;
 		}
 		AddWindow = null
