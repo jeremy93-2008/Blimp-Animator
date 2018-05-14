@@ -34,8 +34,11 @@
               <span>Archivo</span>
               <ul class="bg-dark">
                 <li onclick="NuevoArchivo()"><span>Nuevo</span></li>
-                <li onclick="AbrirArchivo()"><span>Abrir</span></li>
-                <li class="separator"></li>
+				<li onclick="AbrirArchivo()"><span>Abrir</span></li>
+				<li onclick="Guardar()"><span>Guardar</span></li>
+				<li onclick="Guardar(true)"><span>Guardar como...</span></li>
+				<li class="separator"></li>
+				<li onclick="Opciones()"><span>Preferencias</span></li>
                 <li onclick="Cerrar()"><span>Cerrar</span></li>
               </ul>
             </li>
@@ -101,7 +104,9 @@
              <button onclick="htmlView()" title="Insertar un trozo de código personalizado"><i class="fa fa-code"></i></button>
              <div class="separator"></div>
              <button title="Reproduce la animación"><i class="fa fa-play"></i></button>
-             <button title="Construye la animación en HTML/CSS"><i class="fa fa-cog"></i></button>
+			 <button title="Construye la animación en HTML/CSS"><i class="fa fa-cog"></i></button>
+			 <div class="separator"></div>
+			 <span title="Esta es la resolución con la cual se trabaja la animación" id="resolucion">w:1024px h:320px</span>
              <div class="right">
                 <button id="elm-relative" title="Posición relativa al cuerpo del documento"><i class="fa fa-th" aria-hidden="true"></i></button>
                 <button id="elm-absolute" title="Posición absoluta al cuerpo del documento"><i class="fa fa-dot-circle-o" aria-hidden="true"></i></button>
@@ -116,7 +121,7 @@
                <button id="elm-import" title="Importar un contenido multimedia" onclick="PonerImagen('#import_media','todo');"><i class="fa fa-upload" aria-hidden="true"></i><span style="font-size:11px;margin-left:5px;">Importar Medio</span></button>
              </div>
           </div>
-          <div class="row" style="height: calc(100% - 248px);">
+          <div class="row" style="height: calc(100% - 278px);">
             <div id="renderer" class="col-sm">
               <div id="webview" style="position: relative;z-index:1">
 
@@ -255,10 +260,10 @@
                 </div>
             </div>
             <div id="status">
-
+				
             </div>
           </div>
-        </div>
+		</div>
         <canvas style="display:none;" id="canvas"></canvas>
   </body>
 </html>

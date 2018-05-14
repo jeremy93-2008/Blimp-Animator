@@ -12,7 +12,8 @@ function NuevoArchivo() {
     const webview = document.querySelector("#webview")
     let text = "";
     if (webview.innerHTML.trim() == "") {
-        webview.innerHTML = text;
+		webview.innerHTML = text;
+		undoList = [];
 		document.querySelector("#outline ul").innerHTML = "";
         timelinegui.anims = [];
         //timelinegui.tracks = [];
@@ -43,14 +44,16 @@ function mensajeguardar(num, chknum) {
         InspectorEsconder(false);
         document.querySelector("#outline ul").innerHTML = "";
         beginTo = 0;
-        duration = 0;
+		duration = 0;
+		undoList = [];
         timelinegui.anims = [];
     } else if (num == 1) {
         webview.innerHTML = "";
         InspectorEsconder(false);
         document.querySelector("#outline ul").innerHTML = "";
         beginTo = 0;
-        duration = 0;
+		duration = 0;
+		undoList = [];
         timelinegui.anims = [];
     } else {
         console.log("Se cancelo la operación");
@@ -404,7 +407,8 @@ function Creacion(elm) {
     {
         newLine.innerHTML = "<div style='width: 8px;height: 8px;display: inline-block;margin-right: 5px;background: #868585;border-radius:50%;'></div><b>" + elm.nodeName.toLowerCase() + "#" + elm.id + "." + elm.className + "</b>";
     }
-    lista_elm.appendChild(newLine)
+	lista_elm.appendChild(newLine)
+	recordUndo()
 }
 function Soltar(evt)
 {
@@ -825,7 +829,8 @@ function newInfoToHTMLElement(that, HTMLobj, evt) {
         else
             HTMLobj.style[clase] = valor;
     }
-
+	recordUndo();
+	cambio = "record";
     VisibleInvisible(that, valor);
 }
 function DelElm()
@@ -929,7 +934,9 @@ function closeDragElement() {
     document.onmouseup = null;
     document.onmousemove = null;
     const elementos = document.querySelector(".elemento")
-    GenerarInspector((Array.isArray(elmnt)?elmnt[0]:elmnt),elementos,(Array.isArray(elmnt)?elmnt:""));
+	GenerarInspector((Array.isArray(elmnt)?elmnt[0]:elmnt),elementos,(Array.isArray(elmnt)?elmnt:""));
+	recordUndo();
+	cambios = true;
     document.getElementById("webview").onmousedown = SeleccionCuadrado;
 }
 // Rotación de los elementos
