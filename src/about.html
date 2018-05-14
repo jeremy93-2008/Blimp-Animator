@@ -1,0 +1,160 @@
+<html>
+<head>
+    <title>Acerca de Blimp Animator</title>
+    <link rel="stylesheet" href="css/font.css" />
+	<meta charset="utf-8"/>
+	<script>
+		const {shell} = require('electron').remote;
+		function Clic(that,evt)
+		{
+			evt.preventDefault();
+			shell.openExternal(that.href);
+		}
+	</script>
+	<style>
+		body
+        {
+            font-family: "Open Sans";
+            color:white;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+			cursor: default;
+			font-size:12px;
+        }
+        .title
+        {
+            display: inline-block;
+            width:150px;
+            text-align:right;
+            padding-right: 10px;
+            margin-bottom:20px;
+        }
+        input
+        {
+            padding:5px 10px;
+            border:solid 4px transparent;
+            border-radius:10px;
+            width:80px;
+            transition: border-color .4s ease-in-out;
+            outline:none;
+        }
+        input:focus
+        {
+            border-color: rgb(10, 128, 196);
+        }
+        .right
+        {
+            right:20px;
+            margin-top:10px;
+            position: absolute;
+        }
+        .sub
+        {
+            min-height: 20px;
+        }
+        button
+        {
+            padding:5px 10px;
+            border:solid 1px rgb(114, 114, 114);
+            background-color: #343a40;
+            color:white;
+            font-family: "Open Sans";
+            transition: border .4s ease-in-out,box-shadow .4s ease-in-out;
+            border-radius:10px;
+            outline:solid 3px transparent;
+        }
+        button:hover
+        {
+            border-color:rgb(10, 128, 196);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgb(10, 128, 196);
+		}
+		a
+		{
+			text-decoration: none;
+			color: rgb(10, 128, 196);
+		}
+        h4
+        {
+			text-align: center;
+		}
+		h1
+		{
+			font-size:16px;
+			text-align: center;
+		}
+		h2
+		{
+			font-size:14px;
+		}
+		dt
+		{
+			font-weight: bold;
+		}
+		.person li
+		{
+			margin: 5px 10px;
+		}
+		body::-webkit-scrollbar,#outline::-webkit-scrollbar
+		{
+			background: #222;
+		}
+		body::-webkit-scrollbar-track,#outline::-webkit-scrollbar-track
+		{
+			background: #555;
+		}
+		body::-webkit-scrollbar-thumb,#outline::-webkit-scrollbar-thumb
+		{
+			background: #222;
+		}
+	</style>
+</head>
+<body>
+	<div style="text-align: center"><img draggable="false" src="img/logo-512.png" width="128px"></div>
+	<h1>Blimp Animator <sub>v.0.1.0</sub></h1>
+	<p>Diseñado y programado por <strong>Jeremy Auvray</strong></p>
+	<p>Bajo la licencia MPL [<strong>Mozilla Public License</strong>] v.2.0</p>
+	<p>Con la ayuda de estas librerias libres:</p>
+	<ul>
+		<li>Timeline.js [Marcin Ignac]
+			<ul><li><a onclick="Clic(this,event)" href="https://github.com/vorg/timeline.js">https://github.com/vorg/timeline.js</a></li></ul>
+		</li>
+		<li>Font Awesome [Fort Awesome]
+			<ul><li><a onclick="Clic(this,event)" href="https://github.com/FortAwesome/Font-Awesome">https://github.com/FortAwesome/Font-Awesome</a></li></ul>
+		</li>
+		<li>Monaco Editor [Microsoft Corporation]
+			<ul><li><a onclick="Clic(this,event)" href="https://github.com/Microsoft/monaco-editor">https://github.com/Microsoft/monaco-editor</a></li></ul>
+		</li>
+		<li>Bootstrap [Twitter, Inc.]
+			<ul><li><a onclick="Clic(this,event)" href="https://github.com/twbs/bootstrap">https://github.com/twbs/bootstrap</a></li></ul>
+		</li>
+		<li>Electron [Github, Inc.]
+			<ul><li><a onclick="Clic(this,event)" href="https://github.com/electron/electron">https://github.com/electron/electron</a></li></ul>
+		</li>
+		<li>fs-extra [JP Richardson]
+			<ul><li><a onclick="Clic(this,event)" href="https://github.com/jprichardson/node-fs-extra">https://github.com/jprichardson/node-fs-extra</a></li></ul>
+		</li>
+		<li>robot.js [Jason Stallings]
+			<ul><li><a onclick="Clic(this,event)" href="https://github.com/octalmage/robotjs">https://github.com/octalmage/robotjs</a></li></ul>
+		</li>
+	</ul>
+	<p>Y estas maravillosas personas:</p>
+	<ul class="person">
+		<li>Francisco Garcia Rios</li>
+		<li>Alejandro Manuel Hinojo Gutiérrez</li>
+		<li>Pablo Hinojo Gutiérrez</li>
+		<li>Ruben Manuel Alvarez Alvarez</li>
+		<li>Roseline Sommain</li>
+		<li>Manuel Montañez Solís</li>
+		<li>Tatiana Gutiérrez Lago</li>
+	</ul>
+	<p>Puedes contribuir, descargar o modificar el proyecto aqui:</p>
+	<ul>
+		<a href="#">Github</a>
+	</ul>
+</body>
+</html>

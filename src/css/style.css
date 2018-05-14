@@ -24,7 +24,8 @@ ul li
 }
 .top ul li
 {
-    display:inline-block;
+	display:inline-block;
+	text-align: center;
     padding: 4px 5px 4px 10px;
     font-size: 12px;
     cursor:default;
@@ -42,6 +43,7 @@ ul li
 }
 .top ul li ul li
 {
+	text-align: left;
     display: block;
     width: 100%;
 }
@@ -267,7 +269,7 @@ ul li
 }
 #inspector .elemento span
 {
-    width: 46px;
+    width: 47px;
     overflow: hidden;
     display: inline-block;
     text-align: right;

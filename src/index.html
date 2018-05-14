@@ -43,7 +43,7 @@
                 <span>Editar</span>
                 <ul class="bg-dark">
 					<li onclick="Deshacer()"><span>Deshacer</span></li>
-					<li><span>Rehacer</span></li>
+					<li onclick="Rehacer()"><span>Rehacer</span></li>
 					<li class="separator"></li>
 					<li onclick="Cortar()"><span>Cortar</span></li>
 					<li onclick="Copiar()"><span>Copiar</span></li>
@@ -52,12 +52,33 @@
                 </ul>
             </li>
             <li>
-                <span>Ventana</span>
+                <span>Ver</span>
                 <ul class="bg-dark">
                   <li><span>Minimizar</span></li>
-                  <li><span>Maximizar</span></li>
+				  <li><span>Maximizar</span></li>
+				  <li class="separator"></li>
+                  <li><span>Inspector</span></li>
+				  <li><span>Elementos</span></li>		
+				  <li><span>Libreria</span></li>				  
                 </ul>
-              </li>
+			</li>
+			<li>
+                <span>Animación</span>
+                <ul class="bg-dark">
+                  <li><span>Reproducir en navegador</span></li>
+				  <li><span>Construir la animación</span></li>
+				  <li class="separator"></li>
+                  <li><span>Opciones de Construcción</span></li>			  
+                </ul>
+			</li>
+			<li>
+                <span>Ayuda</span>
+                <ul class="bg-dark">
+				  <li><span>Ayuda de Blimp Animator</span></li>
+				  <li onclick="Licencia()"><span>Ver la licencia</span></li>	
+				  <li onclick="Acerca()"><span>Acerca de Blimp Animator</span></li>		  
+                </ul>
+            </li>
           </ul>
         </div>
         <div class="inspector_menu">
@@ -122,7 +143,13 @@
                   </select>
                 </div>
                 <span>Orden</span>
-                <input type="number" min="0" max="999" class="elm z-index_elm" />
+				<input type="number" min="0" max="999" class="elm z-index_elm" />
+				<span style="font-size:10px;">Desborde</span>
+				<select>
+					<option value="visible" class="elm overflow_elm">Sí</option>
+					<option value="auto" class="elm overflow_elm">Con Scroll</option>
+					<option value="hidden" class="elm overflow_elm">No</option>
+				</select>
                 <span>Visible</span>
                 <select>
                   <option class="elm visibility_elm">visible</option>

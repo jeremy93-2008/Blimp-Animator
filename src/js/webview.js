@@ -13,7 +13,7 @@ function NuevoArchivo() {
     let text = "";
     if (webview.innerHTML.trim() == "") {
         webview.innerHTML = text;
-        document.querySelector("#outline ul").innerHTML = "";
+		document.querySelector("#outline ul").innerHTML = "";
         timelinegui.anims = [];
         //timelinegui.tracks = [];
         InspectorEsconder(false);
@@ -67,7 +67,8 @@ function circleView() {
     circle.style.backgroundSize = "cover";
     circle.style.borderRadius = "50%"
     circle.style.width = "50px";
-    circle.style.height = "50px";
+	circle.style.height = "50px";
+	circle.style.overflow = "visible";
     circle.style.position = "relative";
     if(elmSeleccionado != null)
     {
@@ -95,7 +96,8 @@ function rectangleView() {
     circle.style.backgroundColor = "rgb(255,255,255)";
     circle.style.border = "solid 2px black";
     circle.style.width = "100px";
-    circle.style.height = "50px";
+	circle.style.height = "50px";
+	circle.style.overflow = "visible";
     circle.style.position = "relative";
     if(elmSeleccionado != null)
     {
@@ -117,7 +119,8 @@ function imageView(src) {
     let webview = document.querySelector("#webview")
     let image = document.createElement("img");
     image.className = "default";
-    image.draggable = false;
+	image.draggable = false;
+	image.style.overflow = "visible";
     image.id = "elm-" + parseInt((Math.random() * 1000));
     if (src == null) {
         dialog.showOpenDialog(
@@ -185,7 +188,8 @@ function textView() {
     text.style.fontWeight = "0";
     text.style.display = "inline-block";
     text.style.width = "150px";
-    text.style.minHeight = "25px";
+	text.style.minHeight = "25px";
+	text.style.overflow = "visible";
     text.style.backgroundSize = "cover";
     text.className = "default";
     text.style.position = "relative";
@@ -213,7 +217,8 @@ function multimediaView(name, src) {
     tag.id = "elm-" + parseInt((Math.random() * 1000));
     tag.style.position = "relative";
     tag.style.backgroundCover = "relative";
-    tag.controls = "true";
+	tag.controls = "true";
+	tag.style.overflow = "visible";
     if (src == undefined) {
         dialog.showOpenDialog(
             {
@@ -287,7 +292,8 @@ function htmlView() {
         if (localStorage.codigo != "null") {
             obj.id = "elm-" + parseInt((Math.random() * 1000));
             obj.className = "default";
-            obj.innerHTML = localStorage.codigo;
+			obj.innerHTML = localStorage.codigo;
+			obj.style.overflow = "visible";
             obj.style.position = "relative";
             obj.style.backgroundSize = "cover";
             if(elmSeleccionado != null)
@@ -358,28 +364,78 @@ function Creacion(elm) {
     var newLine = document.createElement("li");
     newLine.setAttribute("identificador", elm.nodeName.toLowerCase() + "#" + elm.id + "." + elm.className);
     newLine.style.width = "100%";
-    newLine.style.padding = "1px 15px";
+	newLine.style.padding = "1px 15px";
+	newLine.setAttribute("draggable","true");
+	newLine.setAttribute("ondragstart","ArrastarOutline(this,event)");
+	newLine.setAttribute("ondragover","Soltar(event)");
+	newLine.setAttribute("ondrop","SoltarOutline(this,event)");
     newLine.addEventListener("click", function (evt) {
         ActivaInspector(elm, evt);
     });
     if(elmSeleccionado!=null)
     {
-        newLine.innerHTML = "<i style='margin-right:5px;color:#868585' class=\"fa fa-long-arrow-right\" aria-hidden=\"true\"></i></div><b>" + elm.nodeName.toLowerCase() + "#" + elm.id + "." + elm.className + "</b>";
-        if(Array.isArray(elmSeleccionado))
-        {
-            let titulo = elmSeleccionado[0].nodeName.toLowerCase() + "#" + elmSeleccionado[0].id + "." + elmSeleccionado[0].className;
-            lista_elm = document.querySelector("#outline *[identificador='"+titulo+"']");
-        }else
-        {
-            let titulo = elmSeleccionado.nodeName.toLowerCase() + "#" + elmSeleccionado.id + "." + elmSeleccionado.className;
-            lista_elm = document.querySelector("#outline *[identificador='"+titulo+"']");;
-        }
+		let entra = true;
+		if(Array.isArray(elmSeleccionado))
+			if(elmSeleccionado[0].nodeName != "DIV")
+				entra = false
+			else
+				entra = true
+		else
+			if(elmSeleccionado.nodeName != "DIV")
+				entra = false
+		if(entra)
+		{
+			newLine.innerHTML = "<div style='width: 8px;height: 8px;display: inline-block;margin-right: 5px;background: #868585;border-radius:50%;'></div><b>" + elm.nodeName.toLowerCase() + "#" + elm.id + "." + elm.className + "</b>";
+			if(Array.isArray(elmSeleccionado))
+			{
+				let titulo = elmSeleccionado[0].nodeName.toLowerCase() + "#" + elmSeleccionado[0].id + "." + elmSeleccionado[0].className;
+				lista_elm = document.querySelector("#outline *[identificador='"+titulo+"']");
+			}else
+			{
+				let titulo = elmSeleccionado.nodeName.toLowerCase() + "#" + elmSeleccionado.id + "." + elmSeleccionado.className;
+				lista_elm = document.querySelector("#outline *[identificador='"+titulo+"']");;
+			}
+		}else
+		{
+        	newLine.innerHTML = "<div style='width: 8px;height: 8px;display: inline-block;margin-right: 5px;background: #868585;border-radius:50%;'></div><b>" + elm.nodeName.toLowerCase() + "#" + elm.id + "." + elm.className + "</b>";				
+		}
         
     }else
     {
         newLine.innerHTML = "<div style='width: 8px;height: 8px;display: inline-block;margin-right: 5px;background: #868585;border-radius:50%;'></div><b>" + elm.nodeName.toLowerCase() + "#" + elm.id + "." + elm.className + "</b>";
     }
     lista_elm.appendChild(newLine)
+}
+function Soltar(evt)
+{
+	evt.preventDefault();
+}
+function ArrastarOutline(that,evt)
+{
+	evt.dataTransfer.setData("elm",that.getAttribute("identificador"));
+	evt.stopPropagation();
+}
+function SoltarOutline(that,evt)
+{
+	let iden = evt.dataTransfer.getData("elm");
+	if(that.getAttribute("identificador").indexOf("div") != -1)
+	{
+		try
+		{
+			document.querySelector(that.getAttribute("identificador")).appendChild(document.querySelector(iden))
+			that.appendChild(document.querySelector("#outline *[identificador='"+iden+"']"));
+		}catch(eot)
+		{
+		}
+	}
+	evt.stopPropagation();
+}
+function SoltarOutlineWeb(that,evt)
+{
+	let iden = evt.dataTransfer.getData("elm");
+	document.querySelector("#outline ul").appendChild(document.querySelector("#outline *[identificador='"+iden+"']"))
+	document.querySelector("#webview").appendChild(document.querySelector(iden));
+	evt.stopPropagation();
 }
 function AnnadirContenido(that) {
     let imagen = ['.png', '.jpg', '.gif', '.bmp', '.svg', '.jpeg'];
@@ -772,6 +828,25 @@ function newInfoToHTMLElement(that, HTMLobj, evt) {
 
     VisibleInvisible(that, valor);
 }
+function DelElm()
+{
+	if(Array.isArray(elmSeleccionado))
+	{
+		for(let obj of elmSeleccionado)
+		{
+			obj.remove();
+			let nombre =  obj.nodeName.toLowerCase() + "#" + obj.id + "." + obj.className;
+			document.querySelector("#outline *[identificador='"+nombre+"']").remove();
+		}
+	}else
+	{
+		elmSeleccionado.remove();
+		let nombre =  elmSeleccionado.nodeName.toLowerCase() + "#" + elmSeleccionado.id + "." + elmSeleccionado.className;
+		document.querySelector("#outline *[identificador='"+nombre+"']").remove();
+	}
+	InspectorEsconder(false)
+	elmSeleccionado = null
+}
 // Movimiento de los elementos
 let movimientoView = null;
 let detenerMovimiento = null;
@@ -876,7 +951,7 @@ function Rotar(elm, evt) {
 function elementRotate(evt) {
     var primero = (Array.isArray(elmnt)?elmnt[0]:elmnt)
     var boxCenter = [primero.offsetLeft + parseFloat(primero.style.width.replace("px", "")) / 2, primero.offsetTop + parseFloat(primero.style.height.replace("px", "")) / 2];
-    var angle = Math.atan2(evt.pageX - boxCenter[0], - (evt.pageY - boxCenter[1])) * -(180 / Math.PI);
+    var angle = Math.atan2(evt.pageX - boxCenter[0], (evt.pageY - boxCenter[1])) * -(180 / Math.PI);
     if(Array.isArray(elmnt))
     {
         for(let obj of elmnt)
@@ -996,7 +1071,7 @@ function SeleccionarElementosEnArea(top, left, width, height) {
 
 }
 function MovimientoTec(num) {
-    if (elmSeleccionado != null) {
+    if (elmSeleccionado != null && document.activeElement.tagName != "INPUT") {
         if (Array.isArray(elmSeleccionado)) {
             for (let elm of elmSeleccionado)
                 MoverObjetoTeclado(num, elm)
@@ -1022,9 +1097,12 @@ function MoverObjetoTeclado(num, elm) {
     }
 }
 function KeyboardManager(evt) {
-    console.log(evt);
-    if (evt.code == "Delete")
-        DelFrame();
+	console.log(evt);
+	if (evt.code == "Delete")
+		if(elmSeleccionado != null)
+			DelElm();
+		else
+        	DelFrame();
     else if (evt.ctrlKey == true && evt.code == "KeyX")
         Cortar();
     else if (evt.ctrlKey == true && evt.code == "KeyC")

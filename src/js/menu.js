@@ -84,3 +84,43 @@ function Pegar()
 		Creacion(newElm);
 	}
 }
+function Licencia()
+{
+	let CodeWindow = new BrowserWindow(
+        {
+            width: 480,
+            height: 320,
+            minWidth: 480,
+            minHeight: 320,
+            modal: true,
+            title: "Ver Licencia",
+            icon: "img/logo-32.png",
+            resizable: false,
+            minimizable: false,
+            parent: BrowserWindow.getAllWindows()[0],
+            backgroundColor: "#333",
+            nativeWindowOpen: true
+        })
+    CodeWindow.loadURL(path.join(__dirname, "/license.html"))
+    CodeWindow.setMenu(null);
+}
+function Acerca()
+{
+	let CodeWindow = new BrowserWindow(
+        {
+            width: 480,
+            height: 320,
+            minWidth: 480,
+            minHeight: 320,
+            modal: true,
+            title: "Acerca de",
+            icon: "img/logo-32.png",
+            resizable: false,
+            minimizable: false,
+            parent: BrowserWindow.getAllWindows()[0],
+            backgroundColor: "#333",
+            nativeWindowOpen: true
+        })
+    CodeWindow.loadURL(path.join(__dirname, "/about.html"))
+	CodeWindow.setMenu(null);
+}

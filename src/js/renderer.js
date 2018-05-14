@@ -71,7 +71,8 @@ window.addEventListener("load", function () {
     document.querySelector("#del_frame").addEventListener("click", function (evt) { DelFrame() });
     // Se inicia la timeline
     init();
-    CargarMultiSeleccion();
+	CargarMultiSeleccion();
+	CargarDrop();
 })
 let refDiv = null;
 let refButton = null;
@@ -139,4 +140,10 @@ function init() {
 
 function CargarMultiSeleccion() {
     document.getElementById("webview").onmousedown = SeleccionCuadrado;
+}
+function CargarDrop()
+{
+	const newLine = document.getElementById("outline");
+	newLine.setAttribute("ondragover","Soltar(event)");
+	newLine.setAttribute("ondrop","SoltarOutlineWeb(this,event)");
 }
