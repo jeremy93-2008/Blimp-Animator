@@ -912,11 +912,31 @@ Timeline.prototype.save = function() {
     data[track.id] = keysData;
   }
 
-  localStorage["timeline.js.settings.canvasHeight"] = this.canvasHeight;
-  localStorage["timeline.js.settings.timeScale"] = this.timeScale;
-  localStorage["timeline.js.data." + this.name] = JSON.stringify(data);
+  return data;
 };
-
+Timeline.prototype.loadFile = function(dataString)
+{
+	var data = dataString;
+	for(var i=0; i<this.tracks.length; i++) {
+	  var track = this.tracks[i];
+	  if (!data[track.id]) {
+		continue;
+	  }
+	  if (track.type == "property") {
+		var keysData = data[track.id];
+		track.keys = [];
+		for(var j=0; j<keysData.length; j++) {
+		  track.keys.push({
+			time: keysData[j].time,
+			value: keysData[j].value,
+			easing: Timeline.stringToEasingFunction(keysData[j].easing),
+			track: track
+		  });
+		}
+		this.rebuildTrackAnimsFromKeys(track);
+	  }
+	}
+};
 Timeline.prototype.load = function() {
   if (localStorage["timeline.js.settings.canvasHeight"]) {
     this.canvasHeight = localStorage["timeline.js.settings.canvasHeight"];

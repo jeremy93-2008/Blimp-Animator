@@ -95,15 +95,16 @@ function AnnadirFrame()
 							}
 							//Añadimos este frame como clave
 							anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
-							// Ponemos el timeline en pausa
-							if(beginTo>endTimeline)
-								endTimeline = beginTo 
-							timelinegui.stop(beginTo);
 							// Sumamos uno al contador de Frame
 							numFrame++;
 							obj.setAttribute("termina",parseFloat(arr[0]) + parseFloat(arr[1]));
 							obj.setAttribute("dura","true");
 						}
+						// Ponemos el timeline en pausa
+						beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
+						if(beginTo>endTimeline)
+							endTimeline = beginTo 
+						timelinegui.stop(endTimeline);
 					}else
 					{
 						let obj = el;
@@ -138,9 +139,10 @@ function AnnadirFrame()
 						//Añadimos este frame como clave
 						anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
 						// Ponemos el timeline en pausa
+						beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
 						if(beginTo>endTimeline)
 							endTimeline = beginTo 
-						timelinegui.stop(beginTo);
+						timelinegui.stop(endTimeline);
 						// Sumamos uno al contador de Frame
 						numFrame++;
 						obj.setAttribute("termina",parseFloat(arr[0]) + parseFloat(arr[1]));
@@ -404,6 +406,31 @@ function CambiarClase(newname)
 			}	
 		}	
 	}
+}
+function ModoReproduccion(activo)
+{
+	let container = document.createElement("div");
+	container.style.background = "rgba(33,33,33,0.1)";
+	container.style.width = "100%"
+	container.style.height = "100%";
+	container.id = "divModoRep"
+	container.style.position = "absolute";
+	container.style.top = "0"
+	container.style.left = "0"
+	container.style.padding = "21px"
+	container.style.zIndex = "150"
+	container.innerHTML="<strong>Modo reproducción</strong>";
+	if(activo)
+	{
+		if(document.querySelector("#divModoRep") == undefined)
+			document.querySelector("#renderer").appendChild(container)
+	}else
+	{
+		try
+		{
+			document.querySelector("#divModoRep").remove()
+		}catch(ex){}
+	}	
 }
 /**
  * Hace aparecer un Mensaje del sistema según los parametros mandados

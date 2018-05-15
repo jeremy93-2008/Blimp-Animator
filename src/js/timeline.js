@@ -43,6 +43,7 @@ Timeline.prototype.loop = function(n) {
 
 Timeline.prototype.stop = function(num) {
   this.playing = false;
+  ModoReproduccion(false);
   this.time = num || 0;
 };
 
@@ -52,6 +53,7 @@ Timeline.prototype.pause = function() {
 
 Timeline.prototype.play = function() {
   this.playing = true;
+  ModoReproduccion(true);
 };
 
 Timeline.prototype.preUpdate = function() {

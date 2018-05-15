@@ -135,7 +135,8 @@ function init() {
 
     timelinegui = Timeline.getGlobalInstance();
 
-    timelinegui.loop(-1); //loop forever
+	timelinegui.loop(-1); //loop forever
+	timelinegui.stop();
 }
 
 function CargarMultiSeleccion() {

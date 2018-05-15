@@ -4,8 +4,7 @@ const dialog = remote.dialog;
 const { BrowserWindow } = remote;
 const app = remote.app;
 const fs = require("fs");
-const extra = require("fs-extra");
-const path = require("path");
+let libreria = [];
 let refListenerBinding = {};
 
 function NuevoArchivo() {
@@ -14,6 +13,7 @@ function NuevoArchivo() {
     if (webview.innerHTML.trim() == "") {
 		webview.innerHTML = text;
 		undoList = [];
+		libreria = [];
 		document.querySelector("#outline ul").innerHTML = "";
         timelinegui.anims = [];
         //timelinegui.tracks = [];
@@ -31,7 +31,6 @@ function NuevoArchivo() {
                 "message": "El lienzo contiene elementos que se estaban editando. ¿Desea guardar esos cambios?"
             }, mensajeguardar);
     }
-
 }
 function AbrirArchivo() {
 
@@ -39,12 +38,14 @@ function AbrirArchivo() {
 function mensajeguardar(num, chknum) {
     const webview = document.querySelector("#webview")
     if (num == 0) {
-        console.log("Guardar");
+		console.log("Guardar");
+		Guardar();
         webview.innerHTML = "";
         InspectorEsconder(false);
         document.querySelector("#outline ul").innerHTML = "";
         beginTo = 0;
 		duration = 0;
+		libreria = [];
 		undoList = [];
         timelinegui.anims = [];
     } else if (num == 1) {
@@ -54,6 +55,7 @@ function mensajeguardar(num, chknum) {
         beginTo = 0;
 		duration = 0;
 		undoList = [];
+		libreria = [];
         timelinegui.anims = [];
     } else {
         console.log("Se cancelo la operación");
@@ -124,7 +126,7 @@ function imageView(src) {
     image.className = "default";
 	image.draggable = false;
 	image.style.overflow = "visible";
-    image.id = "elm-" + parseInt((Math.random() * 1000));
+	image.id = "elm-" + parseInt((Math.random() * 1000));
     if (src == null) {
         dialog.showOpenDialog(
             {
@@ -143,7 +145,7 @@ function imageView(src) {
                         annadir = false;
                     extra.copySync(pathFiles[0], __dirname + "/img/client/" + path.win32.basename(pathFiles[0]));
                     image.src = "./img/client/" + path.win32.basename(pathFiles[0]);
-                    image.style.width = "150px";
+					image.style.width = "150px";
                     image.style.position = "relative";
                     if(elmSeleccionado != null)
                     {
@@ -664,7 +666,8 @@ function annadirALibreria(img, texto) {
     let ruta = img.src;
     if (img.nodeName != "IMG") {
         ruta = "img/play-button.png";
-    }
+	}
+	libreria.push(img.src);
     new_img.innerHTML = "<div ondblclick='AbrirImagen(\"" + img.src + "\")'><img fuente='" + img.src.replace(/\//g, "\\").replace(__dirname, ".").replace("file:\\\\\\", "") + "' class='library' src='" + ruta + "' style='width: 35px;margin-right: 5px;border: solid 3px #868585;border-radius: 10px;' ><b style='display: inline-block;width: 71px;max-width:71px;'>" + textoImg + "</b><button onclick='AnnadirContenido(this.parentNode)' title='Añadir este contenido al lienzo' class='deleteImg'><i class=\"fa fa-plus\" aria-hidden=\"true\"></i></button><button onclick='EliminarContenido(this.parentNode)' title='Eliminar este contenido' class='deleteImg'><i class='fa fa-times' aria-hidden='true'></i></button></div>";
     list.appendChild(new_img);
 }
@@ -1115,7 +1118,9 @@ function KeyboardManager(evt) {
     else if (evt.ctrlKey == true && evt.code == "KeyC")
         Copiar();
     else if (evt.ctrlKey == true && evt.code == "KeyV")
-        Pegar();
+		Pegar();
+	else if (evt.ctrlKey == true && evt.altKey == true && evt.code == "KeyV")
+        PegarSoloEstilo();
     else if (evt.code == "ArrowUp")
         MovimientoTec(0);
     else if (evt.code == "ArrowRight")
