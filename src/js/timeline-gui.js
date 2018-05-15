@@ -39,7 +39,7 @@ Timeline.prototype.initGUI = function() {
 
   this.trackNameCounter = 0;
   this.initTracks();
-  this.load();
+  //this.load();
 
   this.container = document.createElement("div");
   this.container.style.width = "100%";
@@ -827,7 +827,7 @@ Timeline.prototype.rebuildTrackAnimsFromKeys = function(track,time,primeravez) {
 
   //remove all track's anims from the timeline
   for(j=0; j<track.anims.length; j++) {
-    if(track.anims[j].endTime == time)
+    if(track.anims[j].endTime == time || time == -1)
     {
       var index = this.anims.indexOf(track.anims[j]);
       deletedAnims.push(track.anims[j]);
@@ -841,7 +841,7 @@ Timeline.prototype.rebuildTrackAnimsFromKeys = function(track,time,primeravez) {
   if (track.keys.length === 0) {
     return;
   }
-  if(!primeravez)
+  if(!primeravez || time == -1)
   {
     var delay = track.keys[0].time;
     var prevKeyTime = track.keys[0].time;
@@ -917,24 +917,67 @@ Timeline.prototype.save = function() {
 Timeline.prototype.loadFile = function(dataString)
 {
 	var data = dataString;
-	for(var i=0; i<this.tracks.length; i++) {
-	  var track = this.tracks[i];
-	  if (!data[track.id]) {
-		continue;
-	  }
-	  if (track.type == "property") {
-		var keysData = data[track.id];
-		track.keys = [];
-		for(var j=0; j<keysData.length; j++) {
-		  track.keys.push({
-			time: keysData[j].time,
-			value: keysData[j].value,
-			easing: Timeline.stringToEasingFunction(keysData[j].easing),
-			track: track
-		  });
+	let padre = "";
+	let animPadre = {};
+	for(let numObj in data)
+	{	
+		if(data[numObj].length < 1)
+		{
+			padre = numObj;
+			let id = padre.match(/#[a-z|0-9|\-|\_]+/g)[0];
+			animPadre = 
+			{
+				animGroups:[[]],
+				endTime: 0,
+				hasEnded: false,
+				hasStarted: false,
+				name: padre,
+				propertyAnims:[],
+				startTime:0,
+				target: document.querySelector(id).style,
+				time:0,
+				timeline:this
+			};
 		}
-		this.rebuildTrackAnimsFromKeys(track);
-	  }
+		if(data[numObj].length > 0)
+		{
+			let id = numObj.match(/#[a-z|0-9|\-|\_]+/g)[0];
+			let elm = document.querySelector(id).style;
+			console.log(id);
+			let tiempo = 0;
+			let valor = "";
+			let vuelta = 0;
+			for(let arrayValor of data[numObj])
+			{
+				if (vuelta == 0)
+				{
+					tiempo = arrayValor["time"];
+					valor = arrayValor["value"];
+				}
+				let propiedad= numObj.split(".")[numObj.split(".").length-1];
+				var anim = {
+					timeline: this,
+					target: elm,
+					targetName:numObj.replace("."+propiedad,""),
+					propertyName: propiedad,
+					startValue: valor,
+					endValue: arrayValor["value"],
+					delay: tiempo,
+					parent:animPadre,
+					startTime: tiempo,
+					endTime: arrayValor["time"],
+					easing: Timeline.stringToEasingFunction(arrayValor["easing"]),
+					unit: "px"
+				  };
+				animPadre["animGroups"][0].push(anim);
+				console.log(anim);
+				tiempo = arrayValor["time"];
+				valor = arrayValor["value"];	
+				vuelta++;
+				this.anims.push(anim);
+			}
+			vuelta = 0;
+		}
 	}
 };
 Timeline.prototype.load = function() {

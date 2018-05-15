@@ -82,6 +82,10 @@ function AbrirArchivo()
 		}, function (pathFiles) {
 			let project = pathFiles[0];
 			let fich = new Zip(project);
+			document.querySelector("#outline ul").innerHTML = "";
+			undoList = [];
+			elmSeleccionado = null;
+			document.querySelector("#libreria ul").innerHTML = "";
 			if(extra.existsSync(app.getPath("temp")+"\\BlimpTemp"))
 			{
 				deleteFolderRecursive(app.getPath("temp")+"\\BlimpTemp")
@@ -90,6 +94,14 @@ function AbrirArchivo()
 			fich.extractAllTo(app.getPath("temp")+"\\BlimpTemp");
 			let json = extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\html.bl");
 			document.querySelector("#webview").innerHTML = json.html;
+			for(let obj of document.querySelectorAll("#webview *"))
+			{
+				obj.addEventListener("mousedown", function (evt) { ActivaInspector(obj, evt); });
+				Creacion(obj);
+				if(obj.nodeName == "IMG" || obj.nodeName == "AUDIO" || obj.nodeName == "VIDEO")
+					annadirALibreria(obj);
+			}
+			timelinegui.anims = [];
 			timelinegui.loadFile(extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\timeline.bl"));
 			//Read Medias and pass to local dir for edition
 		});
