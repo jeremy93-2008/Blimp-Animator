@@ -943,7 +943,6 @@ Timeline.prototype.loadFile = function(dataString)
 		{
 			let id = numObj.match(/#[a-z|0-9|\-|\_]+/g)[0];
 			let elm = document.querySelector(id).style;
-			console.log(id);
 			let tiempo = 0;
 			let valor = "";
 			let vuelta = 0;
@@ -968,9 +967,10 @@ Timeline.prototype.loadFile = function(dataString)
 					endTime: arrayValor["time"],
 					easing: Timeline.stringToEasingFunction(arrayValor["easing"]),
 					unit: "px"
-				  };
+          };
+          if(arrayValor["time"] > endTimeline)
+            endTimeline = arrayValor["time"]
 				animPadre["animGroups"][0].push(anim);
-				console.log(anim);
 				tiempo = arrayValor["time"];
 				valor = arrayValor["value"];	
 				vuelta++;

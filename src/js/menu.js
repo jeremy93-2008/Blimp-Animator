@@ -101,6 +101,7 @@ function AbrirArchivo()
 				if(obj.nodeName == "IMG" || obj.nodeName == "AUDIO" || obj.nodeName == "VIDEO")
 					annadirALibreria(obj);
 			}
+			rutaArch = project
 			timelinegui.anims = [];
 			timelinegui.loadFile(extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\timeline.bl"));
 			//Read Medias and pass to local dir for edition
@@ -231,7 +232,7 @@ function PegarSoloEstilo() {
 			let lista = div.firstChild.style;
 			for(let estilo of lista)
 			{
-				if(estilo != "top" && estilo != "left" && estilo != "width" && estilo != "height")
+				if(estilo != "top" && estilo != "left" && estilo != "width" && estilo != "height" && estilo != "transform")
 					elmS.style[estilo] = lista[estilo];
 			}
 		}
@@ -257,6 +258,68 @@ function Pegar() {
 		let newElm = document.querySelector("#" + id);
 		newElm.addEventListener("click", function (evt) { ActivaInspector(newElm, evt); });
 		Creacion(newElm);
+	}
+}
+function Reproducir()
+{
+
+}
+function Construir()
+{
+	let list_anims = timelinegui.anims;
+	let css = "";
+	let percentageTable = [];
+	let numArr = [];
+	let inicioPer = 0;
+	let val = 0;
+	let nombre = "";
+	let end = 0;
+	for(let keyframe of list_anims)
+	{
+		if(nombre != keyframe.targetName)
+		{
+			if(css.length>0)
+			{
+				for(let valor of numArr)
+				{
+					css += "\n"+valor+"% {\n"+percentageTable[valor].join("\n")+"}";
+					percentageTable[valor] = [];
+				}
+				css += "}\n";
+			}
+				
+			nombre = keyframe.targetName;
+			css += "@keyframe "+nombre+"{\n";
+		}
+		let comienza = keyframe["startTime"]
+		let final = keyframe["endTime"]
+		let endPerc = (final*100)/endTimeline;
+		if(inicioPer == 0)
+		{
+			BuildCSS(endPerc,keyframe.propertyName,keyframe.endValue,keyframe.unit);
+		}else
+		{
+			BuildCSS(inicioPer,keyframe.propertyName,keyframe.endValue,keyframe.unit);			
+		}
+		end = final;
+		inicioPer = (comienza*100)/endTimeline;
+	}
+	for(let valor of numArr)
+	{
+		css += "\n"+valor+"% {\n"+percentageTable[valor].join("\n")+"}";
+		percentageTable[valor] = [];
+	}
+	css += "}\n";
+	//termina || dura
+	console.log(css);
+
+	function BuildCSS(porcentaje,estilo,valor,unit)
+	{
+		if(numArr.indexOf(porcentaje) == -1)
+			numArr.push(porcentaje);
+		if(percentageTable[porcentaje] == undefined)
+			percentageTable[porcentaje] = [];
+		percentageTable[porcentaje].push(estilo + ":" + ((unit==false||estilo.indexOf("color") != -1 ||estilo.indexOf("-shadow") != -1 ||estilo.indexOf("opacity") != -1 ||estilo.indexOf("z-index") != -1)?valor:valor+unit) +";"); 
 	}
 }
 function Licencia() {

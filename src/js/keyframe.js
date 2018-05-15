@@ -43,8 +43,8 @@ function AnnadirFrame()
         resizable:false,
         minimizable:false,
         parent:BrowserWindow.getAllWindows()[0],
-		backgroundColor: "#333",
-		title:"Añadir fotograma clave",
+				backgroundColor: "#333",
+				title:"Añadir fotograma clave",
         nativeWindowOpen: true,
       })
     AddWindow.loadURL(path.join(__dirname,"/newFrame.html"))
