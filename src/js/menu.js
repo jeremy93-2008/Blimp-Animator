@@ -7,6 +7,7 @@ let Zip = require("adm-zip");
 let rutaArch = "";
 const extra = require("fs-extra");
 const path = require("path");
+const {shell} = require("electron").remote
 
 function Guardar(verDialogo)
 {
@@ -104,7 +105,13 @@ function AbrirArchivo()
 			rutaArch = project
 			timelinegui.anims = [];
 			timelinegui.loadFile(extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\timeline.bl"));
+			timelinegui.stop(endTimeline);
 			//Read Medias and pass to local dir for edition
+			let local_media = extra.readdirSync(app.getPath("temp")+"/BlimpTemp/img/client");
+			for(let media of local_media)
+			{
+				extra.copySync(app.getPath("temp")+"/BlimpTemp/img/client/"+media,__dirname+"/img/client/"+media);
+			}
 		});
 		function deleteFolderRecursive(path) {
 			if (extra.existsSync(path)) {
@@ -262,9 +269,23 @@ function Pegar() {
 }
 function Reproducir()
 {
-
+	try
+	{
+		extra.mkdirSync(app.getPath("temp")+"/tmpBuild/");
+	}catch(ex){}
+	let tempPath = app.getPath("temp")+"/tmpBuild/tmp-"+parseInt(Math.random()*100)+".html";
+	Construir(tempPath)
+	if(extra.existsSync(tempPath))
+		shell.openExternal(tempPath);
 }
-function Construir()
+function Construir(rutaPredefinida)
+{
+	if(document.querySelectorAll("#webview *").length > 0)
+	{
+		Build(rutaPredefinida);
+	}
+}
+function Build(rutaPredefinida)
 {
 	let list_anims = timelinegui.anims;
 	let css = "";
@@ -289,18 +310,12 @@ function Construir()
 			}
 				
 			nombre = keyframe.targetName;
-			css += "@keyframe "+nombre+"{\n";
+			css += "@keyframes "+nombre.replace("#","").replace(".","")+"{";
 		}
 		let comienza = keyframe["startTime"]
 		let final = keyframe["endTime"]
 		let endPerc = (final*100)/endTimeline;
-		if(inicioPer == 0)
-		{
-			BuildCSS(endPerc,keyframe.propertyName,keyframe.endValue,keyframe.unit);
-		}else
-		{
-			BuildCSS(inicioPer,keyframe.propertyName,keyframe.endValue,keyframe.unit);			
-		}
+		BuildCSS(endPerc,keyframe.propertyName,keyframe.endValue,keyframe.unit);
 		end = final;
 		inicioPer = (comienza*100)/endTimeline;
 	}
@@ -310,17 +325,92 @@ function Construir()
 		percentageTable[valor] = [];
 	}
 	css += "}\n";
-	//termina || dura
-	console.log(css);
-
 	function BuildCSS(porcentaje,estilo,valor,unit)
 	{
-		if(numArr.indexOf(porcentaje) == -1)
-			numArr.push(porcentaje);
-		if(percentageTable[porcentaje] == undefined)
-			percentageTable[porcentaje] = [];
-		percentageTable[porcentaje].push(estilo + ":" + ((unit==false||estilo.indexOf("color") != -1 ||estilo.indexOf("-shadow") != -1 ||estilo.indexOf("opacity") != -1 ||estilo.indexOf("z-index") != -1)?valor:valor+unit) +";"); 
+		if(numArr.indexOf(porcentaje.toFixed(2)) == -1)
+			numArr.push(porcentaje.toFixed(2));
+		if(percentageTable[porcentaje.toFixed(2)] == undefined)
+			percentageTable[porcentaje.toFixed(2)] = [];
+		percentageTable[porcentaje.toFixed(2)].push("\t"+estilo + ":" + ((unit==false||estilo.indexOf("color") != -1 ||estilo.indexOf("-shadow") != -1 ||estilo.indexOf("opacity") != -1 ||estilo.indexOf("z-index") != -1  || estilo.indexOf("transform") != -1 || valor.toString().indexOf("%") != -1 || estilo.indexOf("font-weight") != -1)?valor:valor+unit) +";"); 
 	}
+
+	//termina || dura
+	let fotogramaCSS = css;
+
+	css = "";
+	for(let elm of document.querySelectorAll("#webview *"))
+	{
+		css += "#"+elm.id+"{\n";
+		for(var a = 0;a < elm.style.length;a++)
+		{
+			let clave = elm.style[a];
+			if(clave != "outline-color" && clave != "outline-style" && clave != "outline-width")
+				css+= "\t"+clave+":"+elm.style[clave]+";\n";
+		}
+		let identificador = "div"+elm.id+elm.className
+		css += "animation: "+identificador+" "+endTimeline+"s linear 0s infinite";
+		css += "}\n"
+	}
+	let styleCss = css;
+
+	let htmlCode = document.querySelector("#webview").innerHTML;
+	var doc = document.createElement("div");
+	doc.innerHTML = htmlCode;
+	for(let obj of doc.querySelectorAll("*"))
+	{
+		obj.removeAttribute("style");
+		obj.removeAttribute("termina");
+		obj.removeAttribute("dura");
+		obj.removeAttribute("draggable");
+	}
+	if(rutaPredefinida == undefined)
+	{
+			dialog.showSaveDialog(BrowserWindow.getAllWindows()[0],
+			{
+				"title": "Elija una ruta de exportación",
+				"defaultPath": app.getPath("desktop"),
+				"filters": [{
+					name: 'Archivo de página Web',
+					extensions: ['html']
+				}
+				]
+			},function(pathFile)
+			{
+				let titulo = (rutaArch!="")?path.win32.basename(rutaArch):"WebProject";
+				let htmlFile = "<html>\n\t<head>\n\t\t<title>"+titulo+"</title>\n\t\t<meta charset='utf-8' />\n\t\t<link rel='stylesheet' href='style.css' />\n\t</head>\n\t<body>"+doc.innerHTML+"\n\t</body>\n</html>"
+				let rutaDirectorio = pathFile.replace(path.win32.basename(pathFile),"")
+				extra.writeFileSync(pathFile,htmlFile,"utf-8");
+				let cssFile = styleCss+fotogramaCSS;
+				extra.writeFileSync(rutaDirectorio+"style.css",cssFile,"utf-8")
+				try
+				{
+					extra.mkdirSync(rutaDirectorio+"img");
+					extra.mkdirSync(rutaDirectorio+"img/client");
+				}catch(ex){console.log("Directorios ya creados");}
+				for(let media of libreria)
+				{
+					extra.copySync(media.replace("file:///",""),rutaDirectorio+"img/client/"+path.win32.basename(media));
+				}
+			})				
+	}else
+	{
+		let titulo = (rutaArch!="")?path.win32.basename(rutaArch):"WebProject";
+		let htmlFile = "<html>\n\t<head>\n\t\t<title>"+titulo+"</title>\n\t\t<meta charset='utf-8' />\n\t\t<link rel='stylesheet' href='style.css' />\n\t</head>\n\t<body>"+doc.innerHTML+"\n\t</body>\n</html>"
+		let rutaDirectorio = rutaPredefinida.replace(path.win32.basename(rutaPredefinida),"")
+		extra.writeFileSync(rutaPredefinida,htmlFile,"utf-8");
+		let cssFile = styleCss+fotogramaCSS;
+		extra.writeFileSync(rutaDirectorio+"style.css",cssFile,"utf-8")
+		try
+		{
+			extra.mkdirSync(rutaDirectorio+"img");
+			extra.mkdirSync(rutaDirectorio+"img/client");
+		}catch(ex){console.log("Directorios ya creados");}
+		for(let media of libreria)
+		{
+			extra.copySync(media.replace("file:///",""),rutaDirectorio+"img/client/"+path.win32.basename(media));
+		}
+	}
+	
 }
 function Licencia() {
 	let CodeWindow = new BrowserWindow(
