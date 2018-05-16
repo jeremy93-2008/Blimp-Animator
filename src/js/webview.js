@@ -410,7 +410,6 @@ function Creacion(elm) {
         newLine.innerHTML = "<div style='width: 8px;height: 8px;display: inline-block;margin-right: 5px;background: #868585;border-radius:50%;'></div><b>" + elm.nodeName.toLowerCase() + "#" + elm.id + "." + elm.className + "</b>";
     }
 	lista_elm.appendChild(newLine)
-	recordUndo()
 }
 function Soltar(evt)
 {
@@ -780,6 +779,7 @@ function InspectorEsconder(elemento, bool) {
         if (elementos.style.display == "block")
             document.querySelector("#btn-inspector").style.animation = "orange 1s linear";
     }, 50)
+    recordUndo();
 }
 function newInfoToHTMLElement(that, HTMLobj, evt) {
     if (that.nodeName == "OPTION") {
@@ -832,7 +832,7 @@ function newInfoToHTMLElement(that, HTMLobj, evt) {
         else
             HTMLobj.style[clase] = valor;
     }
-	recordUndo();
+
 	cambio = "record";
     VisibleInvisible(that, valor);
 }
@@ -1122,6 +1122,10 @@ function KeyboardManager(evt) {
 		Pegar();
 	else if (evt.ctrlKey == true && evt.altKey == true && evt.code == "KeyV")
         PegarSoloEstilo();
+    else if (evt.ctrlKey == true && evt.code == "KeyZ")
+        Deshacer();
+    else if (evt.ctrlKey == true && evt.code == "KeyY")
+        Rehacer();
     else if (evt.code == "ArrowUp")
         MovimientoTec(0);
     else if (evt.code == "ArrowRight")

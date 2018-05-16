@@ -134,6 +134,7 @@ function Deshacer() {
 		const webview = document.querySelector("#webview")
 		if(undoList[numUndo]["timeline"] != undefined)
 		{
+			endTimeline = 0;
 			let modificar = undoList[numUndo]["timeline"]["modifica"];
 			if(modificar)
 			{
@@ -142,13 +143,18 @@ function Deshacer() {
 				for(var a = 0;a < timelinegui.anims.length;a++)
 				{
 					if(arrTiempo.indexOf(timelinegui.anims[a]) != -1)
-					{}
+					{
+						timelinegui.anims[a] = arrTiempo[a]
+						if(endTimeline < timelinegui.anims[a].endTime)
+						{
+							endTimeline = timelinegui.anims[a].endTime
+						}
+					}
 				}
 			}else
 			{
 				let arrTiempo = undoList[numUndo]["timeline"]["tiempos"];
 				let endTime = 0;
-				endTimeline = 0;
 				for(var a = 0;a < timelinegui.anims.length;a++)
 				{
 					if(arrTiempo.indexOf(timelinegui.anims[a]) != -1)
@@ -176,6 +182,8 @@ function Deshacer() {
 				{
 					// Cuando no se encuentra el elemento en el webview
 					let container = document.createElement(jsonAnterior[elm]["@node"]);
+					container.id = jsonAnterior[elm]["@id"]
+					container.className = jsonAnterior[elm]["@class"]
 					elemento = container;
 					let padre = jsonAnterior[elm]["@parentNode"];
 					padre.appendChild(container);
@@ -209,6 +217,8 @@ function Deshacer() {
 			}
 		}
 		numRedo = numUndo + 1;
+		if(undoList[numUndo]["timeline"] != undefined)
+			numRedo--;
 		numUndo--;
 		numUndo = (numUndo > 0) ? numUndo : 0
 		numRedo = (numRedo > 0) ? numRedo : 1
@@ -217,20 +227,91 @@ function Deshacer() {
 function Rehacer() {
 	if(endTimeline == timelinegui.time && !timelinegui.playing)
 	{
-		let jsonAnterior = undoList[numRedo];
-		const webview = document.querySelector("#webview")
-		for (let elm in jsonAnterior) {
-			let id = jsonAnterior[elm]["@id"];
-			let elemento = webview.querySelector("#" + id)
-			for (let estilo in jsonAnterior[elm]) {
-				if (estilo.indexOf("@") != -1) {
-					elemento[estilo.replace("@", "")] = jsonAnterior[elm][estilo];
-				} else {
-					elemento.style[estilo] = jsonAnterior[elm][estilo];
+		if(undoList[numRedo]["timeline"] != undefined)
+		{
+			endTimeline = 0;
+			let modificar = undoList[numRedo]["timeline"]["modifica"];
+			if(modificar)
+			{
+				let arrTiempo = undoList[numRedo]["timeline"]["tiempos"];
+				let endTime = 0;
+				for(var a = 0;a < timelinegui.anims.length;a++)
+				{
+					if(arrTiempo.indexOf(timelinegui.anims[a]) != -1)
+					{
+						timelinegui.anims[a] = arrTiempo[a]
+					}
+					if(endTimeline < timelinegui.anims[a].endTime)
+					{
+						endTimeline = timelinegui.anims[a].endTime
+					}
+				}
+			}else
+			{
+				let arrTiempo = undoList[numRedo]["timeline"]["tiempos"];
+				let endTime = 0;
+				for(var a = 0;a < arrTiempo.length;a++)
+				{
+					endTime = arrTiempo[a].startTime
+					let id = arrTiempo[a].targetName.match(/#[a-z|0-9|\-|\_]+/g)[0];
+					document.querySelector(id).setAttribute("termina",endTime);
+					timelinegui.anims.push(arrTiempo[a]);
+					if(endTimeline < arrTiempo[a].endTime)
+					{
+						endTimeline = arrTiempo[a].endTime
+					}
+				}
+			}
+			timelinegui.stop(endTimeline);
+		}
+		else
+		{
+			let jsonAnterior = undoList[numRedo];
+			const webview = document.querySelector("#webview")
+			for (let elm in jsonAnterior) {
+				let id = jsonAnterior[elm]["@id"];
+				let elemento = webview.querySelector("#" + id)
+				if(elemento == undefined)
+				{
+					// Cuando no se encuentra el elemento en el webview
+					let container = document.createElement(jsonAnterior[elm]["@node"]);
+					container.id = jsonAnterior[elm]["@id"]
+					container.className = jsonAnterior[elm]["@class"]
+					elemento = container;
+					let padre = jsonAnterior[elm]["@parentNode"];
+					padre.appendChild(container);
+					// Lo insertamos en el outline
+					container.addEventListener("mousedown", function (evt) { ActivaInspector(container, evt); });
+					Creacion(container);
+				}
+				for (let estilo in jsonAnterior[elm]) {
+					if (estilo.indexOf("@") != -1) {
+						elemento[estilo.replace("@", "")] = jsonAnterior[elm][estilo];
+					} else {
+						elemento.style[estilo] = jsonAnterior[elm][estilo];
+					}
+				}
+			}
+			for(let elm of document.querySelectorAll("#webview *"))
+			{
+				let res = false;
+				for(let clave in jsonAnterior)
+				{
+					if(jsonAnterior[clave]["@id"] == elm.id)
+						res = true
+				}
+				if(!res)
+				{
+					elm.remove();
+					//Lo eliminamos de Outline
+					let fullIdentificador = elm.nodeName.toLowerCase()+"#"+elm.id+"."+elm.className
+					document.querySelector("#outline ul li[identificador='"+fullIdentificador+"']").remove();
 				}
 			}
 		}
 		numUndo = numRedo - 1;
+		if(undoList[numRedo]["timeline"] != undefined)
+			numUndo--;
 		numRedo++;
 		numUndo = (numUndo > undoList.length - 1) ? undoList.length - 2 : numUndo
 		numRedo = (numRedo > undoList.length - 1) ? undoList.length - 1 : numRedo
