@@ -146,11 +146,13 @@ function AnnadirFrame()
 						// Sumamos uno al contador de Frame
 						numFrame++;
 						obj.setAttribute("termina",parseFloat(arr[0]) + parseFloat(arr[1]));
-						obj.setAttribute("dura","true");					
+						obj.setAttribute("dura","true");
+						recordUndoTimeLine();					
 					}     
         }
         beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
-        duration = 1;
+		duration = 1;
+		
       }
       AddWindow = null
     })
@@ -307,6 +309,7 @@ function ModificarFrame()
 		  timelinegui.stop(forStop);
 		  beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
 		  duration = 1;
+		  recordUndoTimeLine(true);
 		}
 		AddWindow = null
 	  })

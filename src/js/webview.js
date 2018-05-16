@@ -852,6 +852,7 @@ function DelElm()
 		let nombre =  elmSeleccionado.nodeName.toLowerCase() + "#" + elmSeleccionado.id + "." + elmSeleccionado.className;
 		document.querySelector("#outline *[identificador='"+nombre+"']").remove();
 	}
+	recordUndo();
 	InspectorEsconder(false)
 	elmSeleccionado = null
 }
