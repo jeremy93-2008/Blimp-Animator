@@ -253,7 +253,13 @@ function recordUndoTimeLine(modifica)
 		json.modifica = false
 		json.tiempos = times
 	}
+	if(numUndo > 0 && numUndo < (undoList.length-1))
+	{
+		let cantidad = (undoList.length-1)-numUndo
+		undoList.splice(numUndo,cantidad);
+	}
 	undoList.push({timeline:json});
+
 	numUndo = undoList.length - 1;
 	numRedo = undoList.length - 1;
 	numUndo = (numUndo<0)?0:numUndo;
