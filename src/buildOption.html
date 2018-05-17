@@ -1,13 +1,15 @@
 <html>
+
 <head>
-	<title>Opciones de Construcción</title>
-	<link rel="stylesheet" href="css/font.css" />
-	<link rel="stylesheet" href="css/option.css" />
-	<script defer type="text/javascript" src="js/option.js"></script>
-	<link rel="stylesheet" data-name="vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
+    <title>Opciones de Construcción</title>
+    <link rel="stylesheet" href="css/font.css" />
+    <link rel="stylesheet" href="css/option.css" />
+    <script defer type="text/javascript" src="js/option.js"></script>
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
 </head>
+
 <body>
-	<!--
+    <!--
 		A VER:
 	-> LINEAR / EASE-IN-OUT and Custom Cubic
 	-> Tiempo de espera antes de empezar la animación 
@@ -15,39 +17,48 @@
 	-> Direccion de la animación normal,reverse,alternate, alternate-reverse
 	-> aplica estilos? none backwards forwards both
 	-->
-	<div class="Options">
-		<div class="BasicTab">
-			Básico
-		</div>
-		<div class="AdvancedTab">
-			Avanzado
-		</div>
-		<div class="BasicContainer">
-			Hola
-		</div>
-		<div class="AdvancedContainer">
-			Adios
-		</div>
-		<div id="container" style="width:100%;height:90%;border:1px solid grey"></div>
-	</div>
-	<script>
+    <div class="Options">
+        <h1>Opciones de Construcción</h1>
+        <div class="BasicTab selected">
+            Básico
+        </div>
+        <div class="AdvancedTab">
+            Avanzado
+        </div>
+        <div class="sidebarElm">
+           <div class="selected">div#elm-65.default</div>   
+           <div>div#elm-93.default</div>   
+           <div>div#elm-85.default</div>   
+           <div>div#elm-71.default</div>         
+        </div>
+        <div class="BasicContainer">
+            <div class="singleOption">
+                Hola
+            </div>
+        </div>
+        <div class="AdvancedContainer">
+            Adios
+        </div>
+        <div id="container" style="width:100%;height:90%;border:1px solid grey"></div>
+    </div>
+    <script>
         // require node modules before loader.js comes in
         var path = require('path');
         var remote = require("electron").remote;
-        var {BrowserWindow} = remote;
-        </script>
-        <script>
+        var { BrowserWindow } = remote;
+    </script>
+    <script>
         // Monaco uses a custom amd loader that over-rides node's require.
         // Keep a reference to node's require so we can restore it after executing the amd loader file.
         var nodeRequire = global.require;
-        </script>
-        <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
-        <script>
+    </script>
+    <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+    <script>
         // Save Monaco's amd require and restore Node's require
         var amdRequire = global.require;
         global.require = nodeRequire;
-        </script>
-        <script>
+    </script>
+    <script>
         function uriFromPath(_path) {
             var pathName = path.resolve(_path).replace(/\\/g, '/');
             if (pathName.length > 0 && pathName.charAt(0) !== '/') {
@@ -55,16 +66,16 @@
             }
             return encodeURI('file://' + pathName);
         }
-        
+
         amdRequire.config({
             baseUrl: uriFromPath(path.join(__dirname, '../node_modules/monaco-editor/min'))
         });
-        
+
         // workaround monaco-css not understanding the environment
         self.module = undefined;
         // workaround monaco-typescript not understanding the environment
         self.process.browser = true;
-        amdRequire(['vs/editor/editor.main'], function() {
+        amdRequire(['vs/editor/editor.main'], function () {
             var editor = monaco.editor.create(document.getElementById('container'), {
                 value: [
                     '<h1>Hello World!</h1>',
@@ -72,8 +83,7 @@
                 ].join('\n'),
                 language: 'html'
             });
-            document.getElementById("Aceptar").addEventListener("click",function()
-            {
+            document.getElementById("Aceptar").addEventListener("click", function () {
                 localStorage.codigo = editor.getValue();
                 console.log(editor.getValue());
                 window.close();
@@ -81,4 +91,5 @@
         });
     </script>
 </body>
+
 </html>
