@@ -61,16 +61,19 @@ function Guardar(verDialogo)
 			{
 				comprimido.writeZip(pathFile);
 				rutaArch = pathFile;
+				document.title = path.win32.basename(rutaArch)+" - Blimp Animator"
 			})		
 	}else
 	{
 		comprimido.writeZip(rutaArch);
+		document.title = path.win32.basename(rutaArch)+" - Blimp Animator"
 	}
 	
 }
 function AbrirArchivo()
 {
-	dialog.showOpenDialog(
+	document.title = document.title.replace("*","")
+	dialog.showOpenDialog(BrowserWindow.getAllWindows()[0],
 		{
 			"title": "Elija un proyecto BLIMP",
 			"defaultPath": app.getPath("desktop"),
@@ -95,8 +98,12 @@ function AbrirArchivo()
 			fich.extractAllTo(app.getPath("temp")+"\\BlimpTemp");
 			let json = extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\html.bl");
 			document.querySelector("#webview").innerHTML = json.html;
+			endTimeline = 0;
 			for(let obj of document.querySelectorAll("#webview *"))
 			{
+				obj.style.outline = "";
+				if(parseFloat(obj.getAttribute("termina")) > endTimeline )
+					endTimeline = parseFloat(obj.getAttribute("termina"))
 				obj.addEventListener("mousedown", function (evt) { ActivaInspector(obj, evt); });
 				Creacion(obj);
 				if(obj.nodeName == "IMG" || obj.nodeName == "AUDIO" || obj.nodeName == "VIDEO")
@@ -112,6 +119,7 @@ function AbrirArchivo()
 			{
 				extra.copySync(app.getPath("temp")+"/BlimpTemp/img/client/"+media,__dirname+"/img/client/"+media);
 			}
+			document.title = path.win32.basename(rutaArch)+" - Blimp Animator"
 		});
 		function deleteFolderRecursive(path) {
 			if (extra.existsSync(path)) {
@@ -345,6 +353,8 @@ function recordUndoTimeLine(modifica)
 	numRedo = undoList.length - 1;
 	numUndo = (numUndo<0)?0:numUndo;
 	numRedo = (numRedo<0)?0:numRedo;
+	if(document.title.indexOf("●") == -1)
+		document.title = "● "+document.title;
 }
 function recordUndo() {
 	if(endTimeline == timelinegui.time && !timelinegui.playing)
@@ -369,6 +379,8 @@ function recordUndo() {
 		numRedo = undoList.length - 1;
 		numUndo = (numUndo<0)?0:numUndo;
 		numRedo = (numRedo<0)?0:numRedo;
+		if(document.title.indexOf("●") == -1)
+		document.title = "● "+document.title;
 	}
 }
 function Cortar() {
@@ -453,6 +465,19 @@ function Reproducir()
 	if(extra.existsSync(tempPath))
 		shell.openExternal(tempPath);
 }
+function CompararId(name,name2)
+{
+	if(name.targetName < name2.targetName)
+	{
+		return 1
+	}else if(name.targetName > name2.targetName)
+	{
+		return -1
+	}else
+	{
+		return 0;
+	}
+}
 function Construir(rutaPredefinida)
 {
 	if(document.querySelectorAll("#webview *").length > 0)
@@ -462,7 +487,7 @@ function Construir(rutaPredefinida)
 }
 function Build(rutaPredefinida)
 {
-	let list_anims = timelinegui.anims;
+	let list_anims = timelinegui.anims.sort(CompararId);
 	let css = "";
 	let percentageTable = [];
 	let numArr = [];
@@ -586,6 +611,20 @@ function Build(rutaPredefinida)
 		}
 	}
 	
+}
+function CambiarPanel(name)
+{
+	var evento = new Event("click");
+	document.querySelector(".inspector_menu #btn-"+name).dispatchEvent(evento);
+}
+function Ventana(state)
+{
+	if(state == "min")
+		BrowserWindow.getAllWindows()[0].minimize();
+	else if(state == "max")
+		BrowserWindow.getAllWindows()[0].maximize();
+	else if(state == "full")
+		BrowserWindow.getAllWindows()[0].setFullScreen((BrowserWindow.getAllWindows()[0].isFullScreen())?false:true);
 }
 function Licencia() {
 	let CodeWindow = new BrowserWindow(

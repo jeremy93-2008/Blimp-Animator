@@ -28,7 +28,7 @@
   </head>
   <body>
       <div class="container-fluid" style="height:100%;overflow: hidden;">
-        <div class="row top bg-dark" style="position: relative;z-index:3;height:27px;">
+        <div class="row top bg-dark" style="position: relative;z-index:10;height:27px;">
           <ul>
             <li>
               <span>Archivo</span>
@@ -57,12 +57,14 @@
             <li>
                 <span>Ver</span>
                 <ul class="bg-dark">
-                  <li><span>Minimizar</span></li>
-				  <li><span>Maximizar</span></li>
+                  <li onclick="Ventana('min')"><span>Minimizar</span></li>
+				  <li onclick="Ventana('max')"><span>Maximizar</span></li>
 				  <li class="separator"></li>
-                  <li><span>Inspector</span></li>
-				  <li><span>Elementos</span></li>		
-				  <li><span>Libreria</span></li>				  
+				  <li onclick="Ventana('full')"><span>Pantalla completa</span></li>
+				  <li class="separator"></li>
+                  <li onclick="CambiarPanel('inspector')"><span>Inspector</span></li>
+				  <li onclick="CambiarPanel('outline')"><span>Elementos</span></li>		
+				  <li onclick="CambiarPanel('libreria')"><span>Libreria</span></li>				  
                 </ul>
 			</li>
 			<li>
@@ -77,7 +79,13 @@
 			<li>
                 <span>Ayuda</span>
                 <ul class="bg-dark">
-				  <li><span>Ayuda de Blimp Animator</span></li>
+				  <li><span>Ayuda de Blimp Animator</span></li> <!-- Se necesita una documentación md -->
+				  <li class="separator"></li>
+				  <li onclick="Actualizar()"><span>Buscar Actualizaciones...</span></li>	<!-- Se necesita un servidor -->
+				  <li onclick="Visitar()"><span>Visita nuestro Sitio Web</span></li> <!-- Se necesita una web -->					  
+				  <li class="separator"></li>
+ 				  <li onclick="Report()"><span>Reportar un Problema</span></li> <!-- Se necesita un servidor -->
+				  <li class="separator"></li>
 				  <li onclick="Licencia()"><span>Ver la licencia</span></li>	
 				  <li onclick="Acerca()"><span>Acerca de Blimp Animator</span></li>		  
                 </ul>
@@ -103,8 +111,8 @@
              <button onclick="multimediaView('video')" title="Inserta un video"><i class="fa fa-film"></i></button>
              <button onclick="htmlView()" title="Insertar un trozo de código personalizado"><i class="fa fa-code"></i></button>
              <div class="separator"></div>
-             <button title="Reproduce la animación"><i class="fa fa-play"></i></button>
-			 <button title="Construye la animación en HTML/CSS"><i class="fa fa-cog"></i></button>
+             <button onclick="Reproducir()" title="Reproduce la animación"><i class="fa fa-play"></i></button>
+			 <button onclick="Construir()" title="Construye la animación en HTML/CSS"><i class="fa fa-cog"></i></button>
 			 <div class="separator"></div>
 			 <span title="Esta es la resolución con la cual se trabaja la animación" id="resolucion">w:1024px h:320px</span>
              <div class="right">

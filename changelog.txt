@@ -1,4 +1,6 @@
-Build and Play Animation
+Build and Play Animation --> Hecho
+Preferences
+Build Preferences
 AutoUpdate
 Language Pack
 KeyBoard Binding

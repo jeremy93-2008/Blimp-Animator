@@ -5,7 +5,7 @@ let openedMenu = false;
 let currentMenu = "";
 
 window.addEventListener("load", function () {
-    let listLI = document.querySelectorAll(".top ul li");
+    let listLI = document.querySelectorAll(".top>ul>li");
     for (let li of listLI) {
         li.addEventListener("click", function (ev) {
             let lista = document.querySelectorAll(".top ul li ul");
@@ -15,7 +15,7 @@ window.addEventListener("load", function () {
                 visible = this.querySelector("ul").style.display == "block";
                 openedMenu = false;
                 insideMenu = false;
-            }
+			}
             for (let item of lista) {
                 item.parentNode.className = "";
                 item.style.display = "none";
@@ -24,9 +24,37 @@ window.addEventListener("load", function () {
                         this.querySelector("ul").style.display = "block";
                         this.className = "selected";
                         openedMenu = true;
-                        currentMenu = this;
-                    }
-            }
+						currentMenu = this;
+						if(document.querySelector("#deselectMenu") == undefined)
+						{
+							let container = document.createElement("div")
+							container.id = "deselectMenu";
+							container.style.position = "absolute";
+							container.style.zIndex = "9"
+							container.style.left = "0";
+							container.style.top = "0"
+							container.style.width = "100%"
+							container.style.height = "100%"
+							container.style.background = "#333";
+							container.style.opacity = ".4"
+							container.addEventListener("click",function()
+							{
+								for (let item of lista) {
+									item.parentNode.className = "";
+									item.style.display = "none";
+									this.remove();
+									openedMenu = false
+								}
+							});
+							document.body.appendChild(container);
+						}
+					}
+					if(!openedMenu)
+					{
+						if(document.querySelector("#deselectMenu") != undefined)
+							document.querySelector("#deselectMenu").remove();
+					}
+			}
             ev.stopPropagation();
         })
         li.addEventListener("mouseenter", function () {
@@ -73,6 +101,8 @@ window.addEventListener("load", function () {
     init();
 	CargarMultiSeleccion();
 	CargarDrop();
+	// Ponemos un nombre nuevo de proyecto
+	document.title = "blankProject.blimp - "+document.title
 })
 let refDiv = null;
 let refButton = null;

@@ -55,7 +55,7 @@ function AnnadirFrame()
         // Recuperamos las variables
         var arr = localStorage.timeFrame.split(";");
         beginTo = parseFloat(arr[0]);
-        duration = parseFloat(arr[1]);
+		duration = parseFloat(arr[1]);
         // Guardamos el estado del frame actual
         if(webview.innerHTML.trim() != "")
         {

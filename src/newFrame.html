@@ -19,12 +19,12 @@
         .title
         {
             display: inline-block;
-            width:150px;
+            width:150px;;
             text-align:right;
             padding-right: 10px;
             margin-bottom:20px;
         }
-        input
+        input,select
         {
             padding:5px 10px;
             border:solid 4px transparent;
@@ -32,7 +32,12 @@
             width:80px;
             transition: border-color .4s ease-in-out;
             outline:none;
-        }
+		}
+		select
+		{
+			width:130px;
+			margin-left:-4px;
+		}
         input:focus
         {
             border-color: rgb(10, 128, 196);
@@ -73,7 +78,7 @@
         let aceptar = false;
         function accept()
         {
-            localStorage.timeFrame = document.getElementById("beginTo").value+";"+document.getElementById("duration").value;
+            localStorage.timeFrame = document.getElementById("beginTo").value+";"+document.getElementById("duration").value
             aceptar = true;
             window.close();
         }
@@ -113,7 +118,7 @@
     <div class="sub">
         <span class="title">Dura hasta</span><input type="number" id="duration" min="0" step="0.5" value="1" />
         <span>seg.</span>
-    </div>
+	</div>
     <div class="sub right">
         <button onclick="accept()" id="Aceptar">Aceptar</button>
         <button onclick="cancel()" id="Cancelar">Cancelar</button>

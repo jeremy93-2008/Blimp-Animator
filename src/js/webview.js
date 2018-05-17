@@ -32,27 +32,29 @@ function NuevoArchivo() {
             }, mensajeguardar);
     }
 }
-function AbrirArchivo() {
-
-}
 function mensajeguardar(num, chknum) {
     const webview = document.querySelector("#webview")
     if (num == 0) {
-		console.log("Guardar");
 		Guardar();
+		document.title = "blankProject.blimp - Blimp Animator"
         webview.innerHTML = "";
         InspectorEsconder(false);
         document.querySelector("#outline ul").innerHTML = "";
-        beginTo = 0;
+		beginTo = 0;
+		rutaArch = "";
 		duration = 0;
+		endTimeline = 0;
 		libreria = [];
 		undoList = [];
         timelinegui.anims = [];
     } else if (num == 1) {
-        webview.innerHTML = "";
+		webview.innerHTML = "";
+		document.title = "blankProject.blimp - Blimp Animator"
         InspectorEsconder(false);
         document.querySelector("#outline ul").innerHTML = "";
-        beginTo = 0;
+		beginTo = 0;
+		rutaArch = "";
+		endTimeline = 0;
 		duration = 0;
 		undoList = [];
 		libreria = [];
@@ -128,7 +130,7 @@ function imageView(src) {
 	image.style.overflow = "visible";
 	image.id = "elm-" + parseInt((Math.random() * 1000));
     if (src == null) {
-        dialog.showOpenDialog(
+        dialog.showOpenDialog(BrowserWindow.getAllWindows()[0],
             {
                 "title": "Elija una imagen",
                 "defaultPath": app.getPath("pictures"),
@@ -225,7 +227,7 @@ function multimediaView(name, src) {
 	tag.controls = "true";
 	tag.style.overflow = "visible";
     if (src == undefined) {
-        dialog.showOpenDialog(
+        dialog.showOpenDialog(BrowserWindow.getAllWindows()[0],
             {
                 "title": "Elija un " + name,
                 "defaultPath": app.getPath("documents"),
@@ -329,7 +331,7 @@ function PonerImagen(pathToElm, video) {
         filtro = ['mp4', 'ovg', 'ogg', 'mp3', 'wav', 'png', 'jpg', 'gif', 'bmp', 'svg', 'jpeg']
     else
         filtro = ['png', 'jpg', 'gif', 'bmp', 'svg', 'jpeg']
-    dialog.showOpenDialog(
+    dialog.showOpenDialog(BrowserWindow.getAllWindows()[0],
         {
             "title": "Elija un Contenido",
             "defaultPath": app.getAppPath() + "\\src\\img\\client",
@@ -358,7 +360,7 @@ function PonerImagen(pathToElm, video) {
                 image.src = "./img/client/" + path.win32.basename(pathFiles[0]);
                 if (annadir)
                     annadirALibreria(image, path.win32.basename(pathFiles[0]));
-                document.querySelector(pathToElm).value = ruta;
+				document.querySelector(pathToElm).value = ruta;
                 document.querySelector(pathToElm).dispatchEvent(evento);
             }
         })
@@ -779,7 +781,6 @@ function InspectorEsconder(elemento, bool) {
         if (elementos.style.display == "block")
             document.querySelector("#btn-inspector").style.animation = "orange 1s linear";
     }, 50)
-    recordUndo();
 }
 function newInfoToHTMLElement(that, HTMLobj, evt) {
     if (that.nodeName == "OPTION") {
@@ -834,6 +835,7 @@ function newInfoToHTMLElement(that, HTMLobj, evt) {
     }
 
 	cambio = "record";
+	recordUndo();
     VisibleInvisible(that, valor);
 }
 function DelElm()
@@ -845,6 +847,14 @@ function DelElm()
 			obj.remove();
 			let nombre =  obj.nodeName.toLowerCase() + "#" + obj.id + "." + obj.className;
 			document.querySelector("#outline *[identificador='"+nombre+"']").remove();
+			for(var a = 0;a < timelinegui.anims.length;a++)
+			{
+				if(nombre == timelinegui.anims[a].targetName)
+				{
+					timelinegui.anims.splice(a,1);
+					a--;
+				}
+			}
 		}
 	}else
 	{
