@@ -3,6 +3,7 @@ const { remote, clipboard } = require("electron");
 const dialog = remote.dialog;
 const { BrowserWindow } = remote;
 const app = remote.app;
+const keyboard = require("keyboardjs");
 const fs = require("fs");
 let libreria = [];
 let refListenerBinding = {};
@@ -1117,31 +1118,49 @@ function MoverObjetoTeclado(num, elm) {
             break;
     }
 }
-function KeyboardManager(evt) {
-	console.log(evt);
-	if (evt.code == "Delete")
-		if(elmSeleccionado != null)
+let defaultBinding = 
+{
+	"Cortar":"ctrl+x",
+	"Copiar":"ctrl+c",
+	"Pegar":"ctrl+v",
+	"DelBlimp":"delete",
+	"PegarSoloEstilo":"ctrl+alt+v",
+	"Deshacer":"ctrl+z",
+	"Rehacer":"ctrl+y",
+	"Construir":"f5",
+	"Reproducir":"f10"
+}
+let tableBinding = (localStorage.tableBinding == undefined)?defaultBinding:JSON.parse(localStorage.tableBinding);
+let bindKeyboard = false;
+function KeyboardBinding(event)
+{
+	if(!bindKeyboard)
+	{
+		keyboard.reset();
+		for(let bindKey in tableBinding)
+		{
+			let valor = tableBinding[bindKey]
+			keyboard.bind(valor,window[bindKey]);
+		}
+		bindKeyboard = true;
+	}
+}
+function DelBlimp()
+{
+	if(elmSeleccionado != null)
 			DelElm();
 		else
         	DelFrame();
-    else if (evt.ctrlKey == true && evt.code == "KeyX")
-        Cortar();
-    else if (evt.ctrlKey == true && evt.code == "KeyC")
-        Copiar();
-    else if (evt.ctrlKey == true && evt.code == "KeyV")
-		Pegar();
-	else if (evt.ctrlKey == true && evt.altKey == true && evt.code == "KeyV")
-        PegarSoloEstilo();
-    else if (evt.ctrlKey == true && evt.code == "KeyZ")
-        Deshacer();
-    else if (evt.ctrlKey == true && evt.code == "KeyY")
-        Rehacer();
-    else if (evt.code == "ArrowUp")
-        MovimientoTec(0);
-    else if (evt.code == "ArrowRight")
-        MovimientoTec(1);
-    else if (evt.code == "ArrowDown")
-        MovimientoTec(2);
-    else if (evt.code == "ArrowLeft")
-        MovimientoTec(3);
+}
+function KeyboardManager(evt) {
+	console.log(evt);
+	KeyboardBinding(evt);
+	if (evt.code == "ArrowUp")
+		MovimientoTec(0);
+	else if (evt.code == "ArrowRight")
+		MovimientoTec(1);
+	else if (evt.code == "ArrowDown")
+		MovimientoTec(2);
+	else if (evt.code == "ArrowLeft")
+		MovimientoTec(3);
 }

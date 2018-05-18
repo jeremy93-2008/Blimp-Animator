@@ -563,7 +563,7 @@ function Build(rutaPredefinida)
 		obj.removeAttribute("dura");
 		obj.removeAttribute("draggable");
 	}
-	if(rutaPredefinida == undefined)
+	if(rutaPredefinida == undefined || typeof(rutaPredefinida) != "string")
 	{
 			dialog.showSaveDialog(BrowserWindow.getAllWindows()[0],
 			{
