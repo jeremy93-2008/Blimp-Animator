@@ -198,6 +198,13 @@ function Deshacer() {
 					// Lo insertamos en el outline
 					container.addEventListener("mousedown", function (evt) { ActivaInspector(container, evt); });
 					Creacion(container);
+					// Reasignamos las timeline quepodia tener en referencia
+					let identificador = container.nodeName.toLowerCase()+"#"+container.id+"."+container.className;
+					for(let a = 0;a < timelinegui.anims.length;a++)
+					{
+						if(timelinegui.anims[a].targetName == identificador)
+							timelinegui.anims[a].target = container.style;
+					}
 				}
 				for (let estilo in jsonAnterior[elm]) {
 					if (estilo.indexOf("@") != -1) {
@@ -485,9 +492,18 @@ function Construir(rutaPredefinida)
 		Build(rutaPredefinida);
 	}
 }
+function MakeAnimationFromTimeline()
+{
+	let tabla = [];
+	for(let clave in timelinegui.anims)
+	{
+		tabla[clave] = timelinegui.anims[clave]
+	}
+	return tabla;
+}
 function Build(rutaPredefinida)
 {
-	let list_anims = timelinegui.anims.sort(CompararId);
+	let list_anims = MakeAnimationFromTimeline().sort(CompararId);
 	let css = "";
 	let percentageTable = [];
 	let numArr = [];

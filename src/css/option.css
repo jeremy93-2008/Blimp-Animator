@@ -121,6 +121,7 @@ h3
 .singleOption input[type=checkbox]
 {
 	-webkit-appearance: none;
+	appearance: none;
 	background: #4a515a;
 	border:solid 1px #292e33;
 	border-radius:5px;
