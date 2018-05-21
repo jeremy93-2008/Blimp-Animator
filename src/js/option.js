@@ -25,6 +25,8 @@ for(let obj of eachElm.split(";"))
 		document.getElementById("general").style.display = "none";	
 	}else
 	{
+		if(a==0)
+			cont.classList.add("selected");
 		document.getElementById("animation").style.display = "none";
 		document.getElementById("general").style.display = "block";	
 	}

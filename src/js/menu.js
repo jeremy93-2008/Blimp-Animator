@@ -642,6 +642,14 @@ function Ventana(state)
 	else if(state == "full")
 		BrowserWindow.getAllWindows()[0].setFullScreen((BrowserWindow.getAllWindows()[0].isFullScreen())?false:true);
 }
+function Ayuda()
+{
+	
+}
+function BuscarActualizaciones()
+{
+	
+}
 function Licencia() {
 	let CodeWindow = new BrowserWindow(
 		{

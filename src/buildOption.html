@@ -32,7 +32,7 @@
 			<div class="uninteract"></div>       
         </div>
         <div class="BasicContainer">
-			<div id="general">
+			<div id="general" style="overflow: auto;height: calc(100% - 120px);">
 				<h3>General</h3>
 				<div class="singleOption">
 					<span>Idioma</span>
@@ -56,7 +56,57 @@
 						</select>
 						<button><i class="fa fa-plus"></i></button>
 						<label>Plugins para extender Blimp</label>
-					</div>
+				</div>
+				<div class="singleOption">
+					<span>Atajos de teclado</span>
+					<label>Accesos rápidos a funciones de Blimp</label>
+					<table cellspacing="0" cellpadding="0">
+						<tr>
+							<td>Cortar</td>
+							<td><input class="subKey" id="Cortar" /></td>
+						</tr>
+						<tr>
+							<td>Copiar</td>
+							<td><input class="subKey" id="Copiar" /></td>
+						</tr>
+						<tr>
+							<td>Pegar</td>
+							<td><input class="subKey" id="Pegar" /></td>
+						</tr>
+						<tr>
+							<td>Pegar Sólo Estilos</td>
+							<td><input class="subKey" id="PegarSoloEstilo" /></td>
+						</tr>
+						<tr>
+							<td>Deshacer</td>
+							<td><input class="subKey" id="Deshacer" /></td>
+						</tr>
+						<tr>
+							<td>Rehacer</td>
+							<td><input class="subKey" id="Rehacer" /></td>
+						</tr>
+						<tr>
+							<td>Eliminar</td>
+							<td><input class="subKey" id="DelBlimp" /></td>
+						</tr>
+						<tr>
+							<td>Construir</td>
+							<td><input class="subKey" id="Construir" /></td>
+						</tr>
+						<tr>
+							<td>Reproducir</td>
+							<td><input class="subKey" id="Reproducir" /></td>
+						</tr>
+						<tr>
+							<td>Ayuda</td>
+							<td><input class="subKey" id="Ayuda"><</td>
+						</tr>
+						<tr>
+							<td>Buscar Actualizaciones</td>
+							<td><input class="subKey" id="BuscarActualizaciones"><</td>
+						</tr>
+					</table>
+				</div>
 			</div>
 			<div id="animation">
 				<h3>Animación</h3>

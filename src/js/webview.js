@@ -1130,10 +1130,16 @@ let defaultBinding =
 	"Construir":"f5",
 	"Reproducir":"f10"
 }
-let tableBinding = (localStorage.tableBinding == undefined)?defaultBinding:JSON.parse(localStorage.tableBinding);
+let tableBinding = null;
 let bindKeyboard = false;
 function KeyboardBinding(event)
 {
+	let oldTableBinding = JSON.stringify(tableBinding);
+	tableBinding = (localStorage.tableBinding == undefined)?defaultBinding:JSON.parse(localStorage.tableBinding);
+	if(oldTableBinding != JSON.stringify(tableBinding))
+	{
+		bindKeyboard = false;
+	}
 	if(!bindKeyboard)
 	{
 		keyboard.reset();

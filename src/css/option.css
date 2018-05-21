@@ -30,6 +30,7 @@ h3
 .Options
 {
 	width:108%;
+	height: 100%;
 }
 .BasicTab,.AdvancedTab
 {
@@ -56,6 +57,11 @@ h3
 {
 	text-align: justify;
 	padding: 10px 15px;
+	height:100%;
+}
+.BasicContainer
+{
+	width:90%;
 }
 .AdvancedContainer
 {
@@ -189,4 +195,12 @@ h3
 	transition: border .4s ease-in-out,box-shadow .4s ease-in-out;
 	border-radius:10px;
 	outline:solid 3px transparent;
+}
+table tr td
+{
+	border:solid 1px #eee;
+}
+table
+{
+	margin-top:10px;
 }
