@@ -50,18 +50,10 @@
 					<label>Tema de la interfaz de Blimp</label>
 				</div>
 				<div class="singleOption">
-						<span>Extensiones</span>
-						<select>
-							<option>En Desarrollo</option>
-						</select>
-						<button><i class="fa fa-plus"></i></button>
-						<label>Plugins para extender Blimp</label>
-				</div>
-				<div class="singleOption">
-					<span>Atajos de teclado</span>
+					<span style="margin-right: 10px;">Atajos de teclado</span>
 					<label>Accesos rápidos a funciones de Blimp</label>
 					<table cellspacing="0" cellpadding="0">
-						<tr>
+						<tr class="first">
 							<td>Cortar</td>
 							<td><input class="subKey" id="Cortar" /></td>
 						</tr>
@@ -98,14 +90,48 @@
 							<td><input class="subKey" id="Reproducir" /></td>
 						</tr>
 						<tr>
+							<td>Nuevo</td>
+							<td><input class="subKey" id="NuevoArchivo"></td>
+						</tr>
+						<tr>
+							<td>Abrir</td>
+							<td><input class="subKey" id="AbrirArchivo"></td>
+						</tr>
+						<tr>
+							<td>Guardar</td>
+							<td><input class="subKey" id="Guardar"></td>
+						</tr>
+						<tr>
+							<td>Cerrar</td>
+							<td><input class="subKey" id="Cerrar"></td>
+						</tr>
+						<tr>
+							<td>Opciones</td>
+							<td><input class="subKey" id="Opciones"></td>
+						</tr>
+						<tr>
 							<td>Ayuda</td>
-							<td><input class="subKey" id="Ayuda"><</td>
+							<td><input class="subKey" id="Ayuda"></td>
 						</tr>
 						<tr>
 							<td>Buscar Actualizaciones</td>
-							<td><input class="subKey" id="BuscarActualizaciones"><</td>
+							<td><input class="subKey" id="BuscarActualizaciones"></td>
 						</tr>
 					</table>
+					<button onclick="restablecer()">Restablecer por defecto</button>
+				</div>
+				<div class="singleOption">
+					<span>Extensiones</span>
+					<select>
+						<option>En Desarrollo</option>
+					</select>
+					<button><i class="fa fa-plus"></i></button>
+					<label>Plugins para extender Blimp</label>
+				</div>
+				<div class="singleOption">
+					<span>Actualización</span>
+					<button>Buscar Actualizaciones</button>
+					<label>La versión actual es v.0.1.0</label>
 				</div>
 			</div>
 			<div id="animation">
@@ -147,12 +173,12 @@
 					</select>
 				</div>
 				<div class="singleOption">
-					<button id="guardar">Guardar</button>
+					<button id="save">Guardar</button>
 				</div>
 			</div>
         </div>
         <div class="AdvancedContainer">
-            <div id="container" style="width:calc(90% - 175px);margin-left:175px;height:80%;border:1px solid grey"></div>
+            <div id="container" style="width:90%;height:80%;border:1px solid grey"></div>
         </div>
     </div>
     <script>

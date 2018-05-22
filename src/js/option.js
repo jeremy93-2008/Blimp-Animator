@@ -39,6 +39,7 @@ document.querySelector(".BasicTab").addEventListener("click", function()
 	this.style.zIndex = 1;
 	document.querySelector(".AdvancedTab").classList.remove("selected");
 	document.querySelector(".AdvancedTab").style.zIndex = 2
+	document.querySelector(".sidebarElm").style.transform = "translatex(0px)";
 	document.querySelector(".BasicContainer").style.display = "block";
 	document.querySelector(".AdvancedContainer").style.display = "none";
 })
@@ -47,6 +48,7 @@ document.querySelector(".AdvancedTab").addEventListener("click", function()
 	this.classList.add("selected");
 	this.style.zIndex = 2;
 	document.querySelector(".BasicTab").style.zIndex = 1
+	document.querySelector(".sidebarElm").style.transform = "translatex(-250px)";
 	document.querySelector(".BasicTab").classList.remove("selected");
 	document.querySelector(".AdvancedContainer").style.display = "block";
 	document.querySelector(".BasicContainer").style.display = "none";
@@ -120,3 +122,58 @@ document.querySelector("#guardar").addEventListener("click",function()
 	}
 	(new Storage("animation")).setData(buildAnimOption);
 })
+let defaultBinding = 
+{
+	"Cortar":"ctrl+x",
+	"Copiar":"ctrl+c",
+	"Pegar":"ctrl+v",
+	"DelBlimp":"delete",
+	"PegarSoloEstilo":"ctrl+alt+v",
+	"Deshacer":"ctrl+z",
+	"Rehacer":"ctrl+y",
+	"Construir":"f5",
+	"Reproducir":"f10",
+	"Jugar":"space",
+	"AddFrame":"ctrl+f",
+	"NuevoArchivo":"ctrl+n",
+	"Guardar":"ctrl+s",
+	"AbrirArchivo":"ctrl+o",
+	"Cerrar":"ctrl+w",
+	"Opciones":"ctrl+p",
+	"Ayuda":"f1",
+	"BuscarActualizaciones":"ctrl+f8"
+}
+let tableBinding = (localStorage.tableBinding == undefined)?defaultBinding:JSON.parse(localStorage.tableBinding);
+document.querySelectorAll(".subKey").forEach(function(elm)
+{
+	elm.value = tableBinding[elm.id];
+	elm.addEventListener("keydown",function(evt)
+	{
+		let txt = "";
+		if(evt.ctrlKey)
+			txt += "ctrl+"
+		if(evt.altKey)
+			txt += "alt+"
+		if(evt.shiftKey)
+			txt += "shift+"
+		txt += evt.key;
+		if(evt.key != "Control" && evt.key != "Alt" && evt.key != "Shift" && evt.key != "Meta" && evt.key != "Backspace" && evt.key != "AltGraph" && evt.key != "Enter")
+		{
+			this.value = txt.toLowerCase();
+			tableBinding[elm.id] = this.value;
+			localStorage.tableBinding = JSON.stringify(tableBinding);
+			console.log(defaultBinding);
+		}
+			
+		evt.preventDefault();
+	})
+});
+function restablecer()
+{
+	tableBinding = defaultBinding;
+	localStorage.tableBinding = JSON.stringify(tableBinding);
+	document.querySelectorAll(".subKey").forEach(function(elm)
+	{
+		elm.value = tableBinding[elm.id];
+	});	
+}

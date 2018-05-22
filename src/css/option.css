@@ -73,8 +73,10 @@ h3
 	margin-top:-15px;
 	padding:20px 0 20px 0px;
 	margin-right: 10px;
+	width:190px;
 	background: #4a515a;
 	height:100%;
+	transition: transform .3s ease-in-out;
 }
 .sidebarElm div
 {
@@ -149,7 +151,7 @@ h3
 	content:"\f00c";
 	color:white;
 }
-.singleOption #guardar
+.singleOption #save
 {
 	padding:5px 10px;
 	border:solid 1px rgb(114, 114, 114);
@@ -198,9 +200,27 @@ h3
 }
 table tr td
 {
-	border:solid 1px #eee;
+	padding:4px 8px;
+	border-bottom: solid 1px rgba(230,230,230,0.1);
+}
+table tr.first td
+{
+	border-top: solid 1px rgba(230,230,230,0.1);
 }
 table
 {
-	margin-top:10px;
+	margin-top:15px;
+}
+.subKey
+{
+    padding: 5px 10px;
+    font-family: "Open Sans";
+    border-radius: 10px;
+    border: solid 3px transparent;
+    outline: none;
+    transition: border-color .2s ease-in-out;
+}
+.subKey:focus
+{
+	border-color: rgb(10, 128, 196);
 }

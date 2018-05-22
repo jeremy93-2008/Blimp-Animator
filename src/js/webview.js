@@ -1128,9 +1128,18 @@ let defaultBinding =
 	"Deshacer":"ctrl+z",
 	"Rehacer":"ctrl+y",
 	"Construir":"f5",
-	"Reproducir":"f10"
+	"Reproducir":"f10",
+	"Jugar":"space",
+	"AddFrame":"ctrl+f",
+	"NuevoArchivo":"ctrl+n",
+	"Guardar":"ctrl+s",
+	"AbrirArchivo":"ctrl+o",
+	"Cerrar":"ctrl+w",
+	"Opciones":"ctrl+p",
+	"Ayuda":"f1",
+	"BuscarActualizaciones":"ctrl+f8"
 }
-let tableBinding = null;
+let tableBinding = defaultBinding;
 let bindKeyboard = false;
 function KeyboardBinding(event)
 {
@@ -1149,6 +1158,7 @@ function KeyboardBinding(event)
 			keyboard.bind(valor,window[bindKey]);
 		}
 		bindKeyboard = true;
+		localStorage.tableBinding = tableBinding;
 	}
 }
 function DelBlimp()
