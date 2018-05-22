@@ -5,9 +5,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/font.css" />
     <link rel="stylesheet" href="css/option.css" />
+	<link rel="stylesheet" href="css/notifToast.css" />
 	<script defer type="text/javascript" src="js/Storage.js"></script>
 	<script defer type="text/javascript" src="js/option.js"></script>
-    <link rel="stylesheet" data-name="vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
+	<script type="text/javascript" src="js/notifToast.js"></script>
+	<link rel="stylesheet" data-name="vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
 </head>
 
 <body>
@@ -118,7 +120,7 @@
 							<td><input class="subKey" id="BuscarActualizaciones"></td>
 						</tr>
 					</table>
-					<button onclick="restablecer()">Restablecer por defecto</button>
+					<button style="margin-top: 10px;margin-left:15px;" onclick="restablecer()">Restablecer por defecto</button>
 				</div>
 				<div class="singleOption">
 					<span>Extensiones</span>
@@ -126,7 +128,7 @@
 						<option>En Desarrollo</option>
 					</select>
 					<button><i class="fa fa-plus"></i></button>
-					<label>Plugins para extender Blimp</label>
+					<label>Plugins para Blimp</label>
 				</div>
 				<div class="singleOption">
 					<span>Actualización</span>
@@ -138,7 +140,7 @@
 				<h3>Animación</h3>
 				<div class="singleOption">
 					<span>Velocidad</span>
-					<select id="ease" class="opt">
+					<select id="timing-function" class="opt">
 						<option value="linear">Lineal</option>
 						<option value="ease-in">Comienzo Lento</option>
 						<option value="ease-out">Final Lento</option>
@@ -218,16 +220,17 @@
         amdRequire(['vs/editor/editor.main'], function () {
             var editor = monaco.editor.create(document.getElementById('container'), {
                 value: [
-                    '<h1>Hello World!</h1>',
-                    'Pon aqui el código HTML que quiere añadir'
+                    'body{',
+					'/* Put here some useful code */',
+					'}'
                 ].join('\n'),
-                language: 'html'
+                language: 'css'
             });
-            document.getElementById("Aceptar").addEventListener("click", function () {
+            /*document.getElementById("Aceptar").addEventListener("click", function () {
                 localStorage.codigo = editor.getValue();
                 console.log(editor.getValue());
                 window.close();
-            })
+            })*/
         });
     </script>
 </body>

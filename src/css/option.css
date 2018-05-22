@@ -198,6 +198,10 @@ h3
 	border-radius:10px;
 	outline:solid 3px transparent;
 }
+#general button:hover
+{
+	border-color: rgb(10, 128, 196);
+}
 table tr td
 {
 	padding:4px 8px;

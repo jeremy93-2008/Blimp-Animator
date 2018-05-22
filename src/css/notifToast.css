@@ -1,0 +1,386 @@
+/**
+	Notification Toast (c) 2018 Jeremy Auvray
+	**-------------------------------------**
+	notifToast is a Javascript/CSS library for non-blocking notifications.
+*/
+
+/**
+	Toast Style: Info, Warning, Error and Success 
+*/
+.notif
+{
+	background-color: #ddd;
+	z-index:10;
+}
+.notif .fa
+{
+	font-size: 28px;
+    margin-left: 10px;
+    margin-top: 2px;
+    vertical-align: middle;
+}
+.notif .fa-exclamation-triangle
+{
+	color: #71691f;
+}
+.notif .fa-times-circle-o
+{
+	color: white;
+}
+.notif .fa-check-circle-o
+{
+	color: #075f3f;
+}
+.notif .fa-info-circle
+{
+	color: #07677d;
+}
+.notif .closeButton
+{
+	position: absolute;
+    right: 0px;
+    top: 2px;
+    font-family: sans-serif;
+	cursor:pointer;
+	padding: 2 5;
+	font-size:12px;
+	font-weight:bold;
+}
+.notifText
+{
+	display:inline-block;
+	font-size: 28px;
+    margin-left: 10px;
+    margin-top: -18px;
+    vertical-align: middle;
+}
+.notif h4
+{
+	margin:3 4;
+}
+.notif div
+{
+	margin:3 9;
+}
+.notifInfo .closeButton
+{
+	color:white;
+}
+.notifInfo
+{
+	background: linear-gradient(to right, #36d1dc, #5b86e5);
+	border-color: #1882b7 !important;
+	box-shadow: 0px 0px 4px #0c70a5;
+}
+.notifWarn
+{
+	background: linear-gradient(to right, #cac531, #f3f9a7);
+	border-color: #7f8013 !important;
+	box-shadow: 0px 0px 4px #7a7b07;
+}
+.notifErr
+{
+	background: linear-gradient(to right, #cb356b, #bd3f32);
+	color:white;
+	border-color: #650121 !important;
+	box-shadow: 0px 0px 4px #922b50;	
+}
+.notifSucc
+{
+	background: linear-gradient(to left, #1d976c, #63dc90);
+	border-color: #015435 !important;
+	box-shadow: 0px 0px 4px #015435 ;	
+}
+.notifHistoryButton
+{
+	position: fixed;
+    top: 5;
+    left: 5;
+	padding:10;
+	font-size:18px;
+	background: linear-gradient(to top, rgba(35, 37, 38, 0.9), rgba(65, 67, 69, 0.9));
+	color:white;
+	border:solid 1px lightgray;
+	border-radius:10px;
+	box-shadow:0 0 4px black;
+	z-index:5;
+	cursor:pointer;
+}
+.notifHistoryPanel
+{
+	position:fixed;
+	top: 0px;
+	overflow: auto;
+    left: 0px;
+	background: linear-gradient(to top, rgba(35, 37, 38, 0.9), rgba(65, 67, 69, 0.9));
+	border-right:solid 1px lightgray;
+	box-shadow:0 0 10px black;
+	height:100%;
+	min-width:306px;
+	z-index:25;
+}
+.animationBeginHistoryPanel
+{
+	margin-top:-70%;
+	animation: showHist .5s ease-in-out forwards;
+}
+.notifHistoryPanel h3
+{
+	font-family: sans-serif;
+    text-align: center;
+    box-shadow: 0 0 10px black;
+    padding: 10px 2;
+	background: linear-gradient(to top, rgba(35, 37, 38, 0.4), rgba(65, 67, 69, 0.4));
+    font-weight: normal;
+    font-style: italic;
+    color: white;
+    margin-top: 0px;
+    text-shadow: 0 0 5px black;
+}
+.notifHistoryPanel .closeHist
+{
+	float: right;
+    top: 10px;
+    text-shadow: 0 0 5px black;
+	color:white;
+    font-family: sans-serif;
+    right: 12px;
+    font-weight: bold;
+    font-size: 15px;
+    position: absolute;
+	cursor:pointer;
+	padding: 2 5;
+}
+.histNotif 
+{
+    margin: 15px 7%;
+    padding: 5 10;
+    width: 78%;
+    border-radius: 5px;
+    box-shadow: 0 0 12px white;
+    background: linear-gradient(to bottom, rgba(210, 209, 209, 0.7), rgba(173, 173, 173, 0.7));
+    color: black;
+    box-shadow: initial;
+    border: solid 1px black;
+}
+.histSuccess .fa
+{
+	color: #1d976c;
+	text-shadow: 0 0 5px #f7f7f7;
+}
+.histError .fa
+{
+	color: #cb356b;
+	text-shadow: 0 0 5px #f7f7f7;
+}
+.histWarning .fa
+{
+	color: #ce8907;
+	text-shadow: 0 0 5px #f7f7f7;
+}
+.histInfo .fa
+{
+	color: #5b86e5;
+	text-shadow: 0 0 5px #f7f7f7;
+}
+.histNotif>.notifText>div
+{
+	margin-top: -18px;
+}
+.notifText .closeButton
+{
+    font-size: 12px;
+    font-family: sans-serif;
+    font-weight: bold;
+    padding: 2 5;
+    position: absolute;
+    margin-top: 5px;
+    right: 0px;
+	cursor:pointer;
+}
+.histDetail>.histNotifanimationNew
+{
+	position:relative;
+	left:-25px;
+	animation:newHist .5s ease-in-out forwards;
+}
+.histDetail>.histNotif>.notifText>.closeButton
+{
+	margin-top: -40px;
+    margin-right: 30px;
+}
+.histDetail>.histNotifanimationNew>.notifText>.closeButton
+{
+	margin-right: 5px;
+}
+/**
+	Animation Sequence - Toggle, Fade, Slide, Flip and Zoom - 
+*/
+.fade_start
+{
+	display:none;
+	opacity: 0;
+	animation:showToast .5s ease-in-out;
+}
+.fade_show
+{
+	display:block;
+	opacity: 1;
+}
+.slide_start
+{
+	margin-left:-102%;
+	animation: slideToast .3s ease-in-out forwards;
+}
+.flip_start
+{
+	transform: rotateX(-90deg);
+	animation: flipToast .5s ease-in-out;
+}
+.flip_show
+{
+	transform: rotateX(0deg);
+}
+.zoom_start
+{
+	transform: scale(0);
+	animation: zoomToast .5s ease-in-out forwards;
+}
+.toggle_hide
+{
+	margin-left:0;
+	transform: scale(1);
+	display:none;
+}
+.fade_hide
+{
+	margin-left:0;
+	transform: scale(1);
+	animation: hiddenToast .7s ease-in-out forwards;
+}
+.slide_hide
+{
+	margin-left:0;
+	transform: scale(1);
+	animation: slideToastOut .3s ease-in-out forwards;
+}
+.flip_hide
+{
+	margin-left:0;
+	transform: scale(1);
+	animation: flipToastOut .5s ease-in-out forwards;
+}
+.zoom_hide
+{
+	margin-left:0;
+	transform: scale(1);
+	animation: zoomToastOut .5s ease-in-out forwards;
+}
+@keyframes zoomToast
+{
+	from
+	{
+		transform: scale(0);
+	}
+	to
+	{
+		transform: scale(1);
+	}
+}
+@keyframes zoomToastOut
+{
+	from
+	{
+		transform: scale(1);
+	}
+	to
+	{
+		transform: scale(0);
+	}
+}
+@keyframes flipToast
+{
+	from
+	{
+		transform: rotateX(-90deg);
+	}
+	to
+	{
+		transform: rotateX(0deg);
+	}
+}
+@keyframes flipToastOut
+{
+	from
+	{
+		transform: rotateX(0deg);
+	}
+	to
+	{
+		transform: rotateX(90deg);
+	}
+}
+@keyframes slideToast
+{
+	from
+	{
+		margin-left:-102%;
+	}
+	to
+	{
+		margin-left:0;
+	}
+}
+@keyframes slideToastOut
+{
+	from
+	{
+		margin-left:0;
+	}
+	to
+	{
+		margin-left:-102%;
+	}
+}
+@keyframes hiddenToast
+{
+	from
+	{
+		opacity:1;
+	}
+	to
+	{
+		opacity:0;
+		display:none;
+	}
+}
+@keyframes showToast
+{
+	from
+	{
+		opacity:0;
+		display:block;
+	}
+	to
+	{
+		opacity:1;
+	}
+}
+@keyframes newHist
+{
+	50%
+	{
+		left:20px;
+	}
+	to
+	{
+		left:0px;
+	}
+}
+@keyframes showHist
+{
+	to
+	{
+		margin-top:0px;
+	}
+}

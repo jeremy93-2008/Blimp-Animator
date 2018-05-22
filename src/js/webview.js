@@ -14,6 +14,7 @@ function NuevoArchivo() {
     if (webview.innerHTML.trim() == "") {
 		webview.innerHTML = text;
 		undoList = [];
+		localStorage.animation = "";
 		libreria = [];
 		document.querySelector("#outline ul").innerHTML = "";
         timelinegui.anims = [];
@@ -43,6 +44,7 @@ function mensajeguardar(num, chknum) {
         document.querySelector("#outline ul").innerHTML = "";
 		beginTo = 0;
 		rutaArch = "";
+		localStorage.animation = "";
 		duration = 0;
 		endTimeline = 0;
 		libreria = [];
@@ -56,6 +58,7 @@ function mensajeguardar(num, chknum) {
 		beginTo = 0;
 		rutaArch = "";
 		endTimeline = 0;
+		localStorage.animation = "";
 		duration = 0;
 		undoList = [];
 		libreria = [];
@@ -1158,7 +1161,7 @@ function KeyboardBinding(event)
 			keyboard.bind(valor,window[bindKey]);
 		}
 		bindKeyboard = true;
-		localStorage.tableBinding = tableBinding;
+		localStorage.tableBinding = JSON.stringify(tableBinding);
 	}
 }
 function DelBlimp()

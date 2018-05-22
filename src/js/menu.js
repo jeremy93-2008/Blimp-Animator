@@ -8,7 +8,15 @@ let rutaArch = "";
 const extra = require("fs-extra");
 const path = require("path");
 const {shell} = require("electron").remote
-
+const defaultAnimOption = 
+{
+	"timing-function":"linear",
+	"delay":0,
+	"iteration-count":"infinite",
+	"direction":"normal",
+	"fill-mode":"none",
+	"moreCode":""
+};
 function Guardar(verDialogo)
 {
 	let lista_incluido = [];
@@ -38,6 +46,9 @@ function Guardar(verDialogo)
 	extra.writeJsonSync(app.getPath("temp")+"\\BlimpTemp\\html.bl",{"html":html});
 	lista_incluido.push(app.getPath("temp")+"\\BlimpTemp\\html.bl");
 	extra.writeJsonSync(app.getPath("temp")+"\\BlimpTemp\\timeline.bl",timeline);
+	lista_incluido.push(app.getPath("temp")+"\\BlimpTemp\\timeline.bl");
+	if(localStorage.animation != undefined && localStorage.animation != "")
+		extra.writeJsonSync(app.getPath("temp")+"\\BlimpTemp\\animationConfig.bl",localStorage.animation);
 	lista_incluido.push(app.getPath("temp")+"\\BlimpTemp\\timeline.bl");
 	for(let media of libreria)
 	{
@@ -72,6 +83,7 @@ function Guardar(verDialogo)
 }
 function AbrirArchivo()
 {
+	localStorage.animation = "";
 	document.title = document.title.replace("*","")
 	dialog.showOpenDialog(BrowserWindow.getAllWindows()[0],
 		{
@@ -110,6 +122,10 @@ function AbrirArchivo()
 					annadirALibreria(obj);
 			}
 			rutaArch = project
+			try
+			{
+				localStorage.animation = extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\animationConfig.bl")
+			}catch(ex){}
 			timelinegui.anims = [];
 			timelinegui.loadFile(extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\timeline.bl"));
 			timelinegui.stop(endTimeline);
@@ -563,8 +579,28 @@ function Build(rutaPredefinida)
 			if(clave != "outline-color" && clave != "outline-style" && clave != "outline-width")
 				css+= "\t"+clave+":"+elm.style[clave]+";\n";
 		}
+		let idOfAnim = elm.nodeName.toLowerCase()+"#"+elm.id+"."+elm.className
 		let identificador = "div"+elm.id+elm.className
-		css += "animation: "+identificador+" "+endTimeline+"s linear 0s infinite";
+		if(localStorage.animation != undefined)
+		{
+			let local = JSON.parse(localStorage.animation);
+			if(local[idOfAnim] != undefined)
+			{
+				css+= "\tanimation-name:"+identificador+";\n"
+				css+= "\tanimation-duration:"+endTimeline+"s;\n"
+				css+= "\tanimation-timing-function:"+local[idOfAnim]["timing-function"]+";\n"
+				css+= "\tanimation-delay:"+local[idOfAnim]["delay"]+"s;\n"
+				css+= "\tanimation-iteration-count:"+local[idOfAnim]["iteration-count"]+";\n"
+				css+= "\tanimation-direction:"+local[idOfAnim]["direction"]+";\n"
+				css+= "\tanimation-fill-mode:"+local[idOfAnim]["fill-mode"]+";"
+			}else
+			{
+				css += "\tanimation: "+identificador+" "+endTimeline+"s linear 0s infinite";
+			}
+		}else
+		{
+			css += "\tanimation: "+identificador+" "+endTimeline+"s linear 0s infinite";
+		}
 		css += "}\n"
 	}
 	let styleCss = css;
@@ -687,4 +723,35 @@ function Acerca() {
 		})
 	CodeWindow.loadURL(path.join(__dirname, "/about.html"))
 	CodeWindow.setMenu(null);
+}
+function Opciones(opt)
+{
+	if(opt == "animation")
+	{
+		let elm = "";
+		document.querySelectorAll("#webview *").forEach(function(el)
+		{
+			elm += el.nodeName.toLowerCase()+"#"+el.id+"."+el.className+";";
+		});
+		localStorage.eachElm = elm;
+		localStorage.option = "animation";
+		let CodeWindow = new BrowserWindow(
+		{
+			width: 740,
+			height: 540,
+			minWidth: 740,
+			minHeight: 540,
+			modal: true,
+			title: "Opciones de Construcción",
+			icon: "img/logo-32.png",
+			resizable: false,
+			minimizable: false,
+			parent: BrowserWindow.getAllWindows()[0],
+			backgroundColor: "#333",
+			nativeWindowOpen: true
+		})
+	CodeWindow.loadURL(path.join(__dirname, "/buildOption.html"))
+	CodeWindow.setMenu(null);
+	CodeWindow.webContents.openDevTools();
+	}
 }

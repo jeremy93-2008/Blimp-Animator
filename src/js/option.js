@@ -1,37 +1,57 @@
-let buildAnimOption = {};
 const defaultAnimOption = 
 {
-	"ease":"linear",
+	"timing-function":"linear",
 	"delay":0,
 	"iteration-count":"infinite",
 	"direction":"normal",
 	"fill-mode":"none",
 	"moreCode":""
 };
+let buildAnimOption = (localStorage.animation == undefined || localStorage.animation == "")?defaultAnimOption:JSON.parse(localStorage.animation);
 const div = document.querySelector(".sidebarElm");
 let eachElm = localStorage.eachElm;
 let a = 0;
-for(let obj of eachElm.split(";"))
+let hayElm = false;
+let Toast = new notifToast(
+	{"message":"Los datos se han guardado correctamente",
+	"fontTitle":"bold italic 15px arial",
+	"duration":3000,
+	"fontMessage":"12px arial",
+	"icon":true,
+	"closeButton":true});
+if(eachElm.indexOf(";") != -1)
 {
-	let cont = document.createElement("div");
-	cont.innerHTML = obj;
-	cont.setAttribute("identificador",obj);
-	div.appendChild(cont);
-	if(localStorage.option == "animation")
+	for(let obj of eachElm.split(";"))
 	{
-		if(a==0)
-			cont.classList.add("selected");
-		document.getElementById("animation").style.display = "block";
-		document.getElementById("general").style.display = "none";	
-	}else
-	{
-		if(a==0)
-			cont.classList.add("selected");
-		document.getElementById("animation").style.display = "none";
-		document.getElementById("general").style.display = "block";	
+		if(obj != "")
+		{
+			let cont = document.createElement("div");
+			cont.innerHTML = obj;
+			cont.setAttribute("identificador",obj);
+			div.appendChild(cont);
+			if(localStorage.option == "animation")
+			{
+				if(a==0)
+					cont.classList.add("selected");
+				document.getElementById("animation").style.display = "block";
+				document.getElementById("general").style.display = "none";	
+			}else
+			{
+				document.querySelector(".sidebarElm div").classList.add("selected");
+				document.getElementById("animation").style.display = "none";
+				document.getElementById("general").style.display = "block";	
+			}
+			hayElm = true;
+			a++;
+		}
 	}
-
-	a++;
+}
+if(!hayElm)
+{
+	document.querySelector(".sidebarElm div").classList.add("selected");
+	document.getElementById("animation").style.display = "none";
+	document.getElementById("general").style.display = "block";	
+	Toast.showWarning("No hay elemento que mostrar.")	
 }
 document.querySelector(".BasicTab").addEventListener("click", function()
 {
@@ -100,14 +120,40 @@ for(let btn of btn_list)
 						opt.checked = true;
 					else
 						opt.checked = false;
-					opt.value = buildAnimOption[btn.getAttribute("identificador")][opt.id]
+					let valor = buildAnimOption[btn.getAttribute("identificador")][opt.id];
+					opt.value = valor;
 				}
 			}
 		}
 		this.classList.add("selected");
 	})
+	if(btn.className.indexOf("selected") != -1)
+	{
+		if(buildAnimOption[btn.getAttribute("identificador")] == undefined)
+		{
+			let lista_opt = document.querySelectorAll(".opt")
+			for(let opt of lista_opt)
+			{
+				opt.value = defaultAnimOption[opt.id]
+				if(opt.id == "iteration-count")
+					opt.value = 0;
+			}
+		}else
+		{
+			let lista_opt = document.querySelectorAll(".opt")
+			for(let opt of lista_opt)
+			{
+				if(opt.getAttribute("type") == "checkbox" && buildAnimOption[btn.getAttribute("identificador")]["iteration-count"] == "infinite")
+					opt.checked = true;
+				else
+					opt.checked = false;
+				let valor = buildAnimOption[btn.getAttribute("identificador")][opt.id];
+				opt.value = valor;
+			}
+		}
+	}
 }
-document.querySelector("#guardar").addEventListener("click",function()
+document.querySelector("#save").addEventListener("click",function()
 {
 	let elm = document.querySelector(".sidebarElm .selected").getAttribute("identificador")
 	let lista_opt = document.querySelectorAll(".opt")
@@ -121,6 +167,7 @@ document.querySelector("#guardar").addEventListener("click",function()
 				buildAnimOption[elm][opt.id] = opt.value;
 	}
 	(new Storage("animation")).setData(buildAnimOption);
+	Toast.showSuccess("Los datos se han guardado correctamente.","");
 })
 let defaultBinding = 
 {
