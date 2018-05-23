@@ -115,7 +115,7 @@ window.addEventListener("load", function () {
 			ruta = true
 	}
 	if(typeof(ruta) == "string")
-		AbrirArchivoDefinido(ruta)
+        AbrirArchivoDefinido(ruta)
 })
 let refDiv = null;
 let refButton = null;

@@ -22,7 +22,7 @@ var Timeline = function() {
   this.fps = 30;
   this.loopInterval = setInterval(function() {
     self.update();
-  }, 1000/this.fps);
+  }, this.fps);
 };
 
 Timeline.getGlobalInstance = function() {

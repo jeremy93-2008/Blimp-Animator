@@ -333,7 +333,7 @@ Timeline.prototype.selectKeys = function(mouseX, mouseY) {
 };
 
 Timeline.prototype.preUpdate = function() {
-  this.updateGUI();
+    this.updateGUI();
 };
 
 Timeline.prototype.updateGUI = function() {

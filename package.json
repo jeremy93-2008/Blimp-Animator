@@ -13,7 +13,8 @@
   "author": "Jeremy Alvarez",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^1.8.4"
+    "electron": "^1.8.4",
+    "electron-rebuild": "^1.7.3"
   },
   "dependencies": {
     "adm-zip": "^0.4.11",
@@ -22,6 +23,7 @@
     "keyboardjs": "^2.4.1",
     "monaco-editor": "^0.12.0",
     "popper.js": "^1.14.3",
+    "request": "^2.87.0",
     "robotjs": "^0.5.1"
   }
 }
