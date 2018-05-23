@@ -247,7 +247,7 @@ function ModificarFrame()
   let id_for_elm = self.selectedKeys[0].track.parent.id;
   localStorage.habilitarBegin = "false"
   localStorage.timeFrame = beginTo+";"+duration+";"+ id_for_elm
-  if(beginTo > 0 || duration > 0)
+  if(beginTo > -1 || duration > -1)
   {
 	let AddWindow = new BrowserWindow(
 		{
@@ -302,7 +302,7 @@ function ModificarFrame()
 				  obj.endTime = obj.startTime + duration;
 				}
 			  }
-			  forStop = obj.endTime; 
+			  endTimeline = (endTimeline<obj.endTime)?obj.endTime:endTimeline; 
 			}
 		  }
 		  //Y ponemos en stop el timeline

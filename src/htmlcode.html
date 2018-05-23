@@ -1,13 +1,14 @@
 <html>
 <head>
     <title>Añadir Código HTML Personalizado</title>
-    <meta charset="utf-8" />
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="css/font.css" />
     <style>
         html,body
         {
             height:100%;
             overflow:hidden;
-            background: #3a3e3e;
+            background: #343a40;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             -khtml-user-select: none;
@@ -24,23 +25,26 @@
         }
         button
         {
-            background: linear-gradient(to top,#2c2d2d,#444);
-            border: solid 1px #7b7b7b;
-            padding: 3px 20px;
-            border-radius: 10px;
-            color: white;  
-            outline:none;   
+            padding:5px 10px;
+            border:solid 1px rgb(114, 114, 114);
+            background-color: #343a40;
+            color:white;
+            font-family: "Open Sans";
+            transition: border .4s ease-in-out,box-shadow .4s ease-in-out;
+            border-radius:10px;
+            outline:solid 3px transparent;
         }
         button:hover
         {
-            background: linear-gradient(to bottom,#2c2d2d,#444);       
-            cursor: pointer;     
+            border-color:rgb(10, 128, 196);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgb(10, 128, 196);
         }
     </style>
     <link rel="stylesheet" data-name="vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
 </head>
 <body>
-    <div id="container" style="width:100%;height:90%;border:1px solid grey"></div>
+    <div id="container" style="width:100%;height:87%;border:1px solid grey"></div>
     <div class="bottom">
         <button id="Aceptar">Aceptar</button>
         <button onclick="localStorage.codigo = 'null';window.close();">Cancelar</button>

@@ -49,6 +49,10 @@ function Guardar(verDialogo)
 	lista_incluido.push(app.getPath("temp")+"\\BlimpTemp\\timeline.bl");
 	if(localStorage.animation != undefined && localStorage.animation != "")
 		extra.writeJsonSync(app.getPath("temp")+"\\BlimpTemp\\animationConfig.bl",localStorage.animation);
+	if(localStorage.resolFrame != undefined && localStorage.resolFrame != "" && localStorage.resolFrame != "null")
+		extra.writeJsonSync(app.getPath("temp")+"\\BlimpTemp\\resolFrame.bl",localStorage.resolFrame);
+	if(localStorage.cssCode != undefined && localStorage.cssCode != "" && localStorage.cssCode != "null")
+		extra.writeJsonSync(app.getPath("temp")+"\\BlimpTemp\\code.bl",localStorage.cssCode);
 	lista_incluido.push(app.getPath("temp")+"\\BlimpTemp\\timeline.bl");
 	for(let media of libreria)
 	{
@@ -96,61 +100,85 @@ function AbrirArchivo()
 			],
 			"properties": ["openFile"]
 		}, function (pathFiles) {
-			let project = pathFiles[0];
-			let fich = new Zip(project);
-			document.querySelector("#outline ul").innerHTML = "";
-			undoList = [];
-			elmSeleccionado = null;
-			document.querySelector("#libreria ul").innerHTML = "";
-			if(extra.existsSync(app.getPath("temp")+"\\BlimpTemp"))
-			{
-				deleteFolderRecursive(app.getPath("temp")+"\\BlimpTemp")
-				extra.mkdirSync(app.getPath("temp")+"\\BlimpTemp");
-			}
-			fich.extractAllTo(app.getPath("temp")+"\\BlimpTemp");
-			let json = extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\html.bl");
-			document.querySelector("#webview").innerHTML = json.html;
-			endTimeline = 0;
-			for(let obj of document.querySelectorAll("#webview *"))
-			{
-				obj.style.outline = "";
-				if(parseFloat(obj.getAttribute("termina")) > endTimeline )
-					endTimeline = parseFloat(obj.getAttribute("termina"))
-				obj.addEventListener("mousedown", function (evt) { ActivaInspector(obj, evt); });
-				Creacion(obj);
-				if(obj.nodeName == "IMG" || obj.nodeName == "AUDIO" || obj.nodeName == "VIDEO")
-					annadirALibreria(obj);
-			}
-			rutaArch = project
-			try
-			{
-				localStorage.animation = extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\animationConfig.bl")
-			}catch(ex){}
-			timelinegui.anims = [];
-			timelinegui.loadFile(extra.readJsonSync(app.getPath("temp")+"\\BlimpTemp\\timeline.bl"));
-			timelinegui.stop(endTimeline);
-			//Read Medias and pass to local dir for edition
-			let local_media = extra.readdirSync(app.getPath("temp")+"/BlimpTemp/img/client");
-			for(let media of local_media)
-			{
-				extra.copySync(app.getPath("temp")+"/BlimpTemp/img/client/"+media,__dirname+"/img/client/"+media);
-			}
-			document.title = path.win32.basename(rutaArch)+" - Blimp Animator"
+			AbrirBlimp(pathFiles, deleteFolderRecursive);
 		});
-		function deleteFolderRecursive(path) {
-			if (extra.existsSync(path)) {
-			  extra.readdirSync(path).forEach(function(file, index){
-				var curPath = path + "/" + file;
-				if (extra.lstatSync(curPath).isDirectory()) { // recurse
-				  deleteFolderRecursive(curPath);
-				} else { // delete file
-				  extra.unlinkSync(curPath);
-				}
-			  });
-			  extra.rmdirSync(path);
-			}
-		  };
 }
+function AbrirArchivoDefinido(pathFile)
+{
+	let arr = [pathFile];
+	AbrirBlimp(arr,deleteFolderRecursive);
+}
+function deleteFolderRecursive(path) {
+	if (extra.existsSync(path)) {
+	  extra.readdirSync(path).forEach(function(file, index){
+		var curPath = path + "/" + file;
+		if (extra.lstatSync(curPath).isDirectory()) { // recurse
+		  deleteFolderRecursive(curPath);
+		} else { // delete file
+		  extra.unlinkSync(curPath);
+		}
+	  });
+	  extra.rmdirSync(path);
+	}
+  };
+function AbrirBlimp(pathFiles, deleteFolderRecursive) {
+	let project = pathFiles[0];
+	let fich = new Zip(project);
+	document.querySelector("#outline ul").innerHTML = "";
+	undoList = [];
+	elmSeleccionado = null;
+	document.querySelector("#libreria ul").innerHTML = "";
+	if (extra.existsSync(app.getPath("temp") + "\\BlimpTemp")) {
+		deleteFolderRecursive(app.getPath("temp") + "\\BlimpTemp");
+		extra.mkdirSync(app.getPath("temp") + "\\BlimpTemp");
+	}
+	fich.extractAllTo(app.getPath("temp") + "\\BlimpTemp");
+	let json = extra.readJsonSync(app.getPath("temp") + "\\BlimpTemp\\html.bl");
+	document.querySelector("#webview").innerHTML = json.html;
+	endTimeline = 0;
+	for (let obj of document.querySelectorAll("#webview *")) {
+		obj.style.outline = "";
+		let identificador = obj.parentNode.nodeName.toLowerCase()+"#"+obj.parentNode.id+"."+obj.parentNode.className
+		let elm = document.querySelector("#outline ul li[identificador='"+identificador+"']")
+		if(elm != undefined)
+			elm = document.querySelector("#"+obj.parentNode.id)
+		if(elm==undefined)
+			elmSeleccionado = null;
+		else
+			elmSeleccionado = elm;
+		if (parseFloat(obj.getAttribute("termina")) > endTimeline)
+			endTimeline = parseFloat(obj.getAttribute("termina"));
+		obj.addEventListener("mousedown", function (evt) { ActivaInspector(obj, evt); });
+		Creacion(obj);
+		if (obj.nodeName == "IMG" || obj.nodeName == "AUDIO" || obj.nodeName == "VIDEO")
+			annadirALibreria(obj);
+	}
+	rutaArch = project;
+	try {
+		localStorage.animation = extra.readJsonSync(app.getPath("temp") + "\\BlimpTemp\\animationConfig.bl");
+	}
+	catch (ex) { }
+	try {
+		localStorage.resolFrame = extra.readJsonSync(app.getPath("temp") + "\\BlimpTemp\\resolFrame.bl");
+		let tabla = localStorage.resolFrame.split(";");
+		FrameDefault(tabla[0], tabla[1]);
+	}
+	catch (ex) { }
+	try
+	{
+		localStorage.cssCode = extra.readJsonSync(app.getPath("temp") + "\\BlimpTemp\\code.bl");
+	}catch(ex){}
+	timelinegui.anims = [];
+	timelinegui.loadFile(extra.readJsonSync(app.getPath("temp") + "\\BlimpTemp\\timeline.bl"));
+	timelinegui.stop(endTimeline);
+	//Read Medias and pass to local dir for edition
+	let local_media = extra.readdirSync(app.getPath("temp") + "/BlimpTemp/img/client");
+	for (let media of local_media) {
+		extra.copySync(app.getPath("temp") + "/BlimpTemp/img/client/" + media, __dirname + "/img/client/" + media);
+	}
+	document.title = path.win32.basename(rutaArch) + " - Blimp Animator";
+}
+
 function Deshacer() {
 	if(endTimeline == timelinegui.time && !timelinegui.playing)
 	{
@@ -581,7 +609,7 @@ function Build(rutaPredefinida)
 		}
 		let idOfAnim = elm.nodeName.toLowerCase()+"#"+elm.id+"."+elm.className
 		let identificador = "div"+elm.id+elm.className
-		if(localStorage.animation != undefined)
+		if(localStorage.animation != undefined && localStorage.animation != "")
 		{
 			let local = JSON.parse(localStorage.animation);
 			if(local[idOfAnim] != undefined)
@@ -632,7 +660,8 @@ function Build(rutaPredefinida)
 				let htmlFile = "<html>\n\t<head>\n\t\t<title>"+titulo+"</title>\n\t\t<meta charset='utf-8' />\n\t\t<link rel='stylesheet' href='style.css' />\n\t</head>\n\t<body>"+doc.innerHTML+"\n\t</body>\n</html>"
 				let rutaDirectorio = pathFile.replace(path.win32.basename(pathFile),"")
 				extra.writeFileSync(pathFile,htmlFile,"utf-8");
-				let cssFile = styleCss+fotogramaCSS;
+				let code = (localStorage.cssCode == undefined || localStorage.cssCode == "")?"":localStorage.cssCode;
+				let cssFile =styleCss+fotogramaCSS+ code+"\n";
 				extra.writeFileSync(rutaDirectorio+"style.css",cssFile,"utf-8")
 				try
 				{
@@ -650,7 +679,8 @@ function Build(rutaPredefinida)
 		let htmlFile = "<html>\n\t<head>\n\t\t<title>"+titulo+"</title>\n\t\t<meta charset='utf-8' />\n\t\t<link rel='stylesheet' href='style.css' />\n\t</head>\n\t<body>"+doc.innerHTML+"\n\t</body>\n</html>"
 		let rutaDirectorio = rutaPredefinida.replace(path.win32.basename(rutaPredefinida),"")
 		extra.writeFileSync(rutaPredefinida,htmlFile,"utf-8");
-		let cssFile = styleCss+fotogramaCSS;
+		let code = (localStorage.cssCode == undefined || localStorage.cssCode == "")?"":localStorage.cssCode;
+		let cssFile = styleCss+fotogramaCSS+code+"\n";
 		extra.writeFileSync(rutaDirectorio+"style.css",cssFile,"utf-8")
 		try
 		{
@@ -724,6 +754,38 @@ function Acerca() {
 	CodeWindow.loadURL(path.join(__dirname, "/about.html"))
 	CodeWindow.setMenu(null);
 }
+function SetTamanio()
+{
+	if(localStorage.resolFrame == undefined || localStorage.resolFrame == "")
+		localStorage.resolFrame = "1024;320"
+	let CodeWindow = new BrowserWindow(
+		{
+			width: 320,
+			height: 200,
+			minWidth: 320,
+			minHeight: 200,
+			modal: true,
+			title: "Editar Resolución de Trabajo",
+			icon: "img/logo-32.png",
+			resizable: false,
+			minimizable: false,
+			parent: BrowserWindow.getAllWindows()[0],
+			backgroundColor: "#333",
+			nativeWindowOpen: true
+		})
+	CodeWindow.loadURL(path.join(__dirname, "/setSize.html"))
+	CodeWindow.setMenu(null);
+	CodeWindow.on('closed', function () 
+	{
+		if(localStorage.resolFrame != "null")
+		{
+			let tabla = localStorage.resolFrame.split(";")
+			document.querySelector("#webview").style.width = tabla[0]+"px"
+			document.querySelector("#webview").style.height = tabla[1]+"px"
+			document.querySelector("#resolucion").innerHTML = "w:"+tabla[0]+"px"+" h:"+tabla[1]+"px";
+		}
+	});
+}
 function Opciones(opt)
 {
 	if(opt == "animation")
@@ -752,6 +814,60 @@ function Opciones(opt)
 		})
 	CodeWindow.loadURL(path.join(__dirname, "/buildOption.html"))
 	CodeWindow.setMenu(null);
-	CodeWindow.webContents.openDevTools();
+	}else
+	{
+		let elm = "";
+		document.querySelectorAll("#webview *").forEach(function(el)
+		{
+			elm += el.nodeName.toLowerCase()+"#"+el.id+"."+el.className+";";
+		});
+		localStorage.eachElm = elm;
+		localStorage.option = "general";
+		let CodeWindow = new BrowserWindow(
+		{
+			width: 740,
+			height: 540,
+			minWidth: 740,
+			minHeight: 540,
+			modal: true,
+			title: "Preferencias",
+			icon: "img/logo-32.png",
+			resizable: false,
+			minimizable: false,
+			parent: BrowserWindow.getAllWindows()[0],
+			backgroundColor: "#333",
+			nativeWindowOpen: true
+		})
+		CodeWindow.loadURL(path.join(__dirname, "/buildOption.html"))
+		CodeWindow.webContents.openDevTools();
+		CodeWindow.setMenu(null);
 	}
+}
+var request = require('request');
+function BuscarActualizaciones()
+{
+	let client = request("http://www.alva-interactive.com.es/blimp/version.txt",function(error,response,body)
+	{
+		let txtVersion = Number(response.body.replace(".",""))
+		let currentVersion = Number(remote.app.getVersion().replace(".",""));
+		if(txtVersion > currentVersion)
+			MessageBox("Blimp Animator","Se ha encontrado una versión más reciente disponible. ¿Desea descargarla?.","warning",["OK","Cancelar"],function(x)
+			{
+				if(x==0)
+				{
+					let install = request("http://www.alva-interactive.com.es/blimp/installer.exe",function(error,response,body)
+					{
+						const process = require('child_process');   
+						var ls = process.exec(app.getPath("temp")+"\\inst.exe");	
+					}).pipe(extra.createWriteStream(app.getPath("temp")+"\\inst.exe"))
+				}
+					
+			});
+		else
+			MessageBox("Blimp Animator","Actualmente, no hay actualizaciones disponibles.","info",["OK"],function(){});
+	});
+}
+function Cerrar()
+{
+	window.close();
 }

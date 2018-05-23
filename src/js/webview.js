@@ -16,6 +16,7 @@ function NuevoArchivo() {
 		undoList = [];
 		localStorage.animation = "";
 		libreria = [];
+		FrameDefault();
 		document.querySelector("#outline ul").innerHTML = "";
         timelinegui.anims = [];
         //timelinegui.tracks = [];
@@ -38,7 +39,8 @@ function mensajeguardar(num, chknum) {
     const webview = document.querySelector("#webview")
     if (num == 0) {
 		Guardar();
-		document.title = "blankProject.blimp - Blimp Animator"
+		localStorage.cssCode = "";
+		document.title = "new.blimp - Blimp Animator"
         webview.innerHTML = "";
         InspectorEsconder(false);
         document.querySelector("#outline ul").innerHTML = "";
@@ -47,17 +49,20 @@ function mensajeguardar(num, chknum) {
 		localStorage.animation = "";
 		duration = 0;
 		endTimeline = 0;
+		FrameDefault();
 		libreria = [];
 		undoList = [];
         timelinegui.anims = [];
     } else if (num == 1) {
 		webview.innerHTML = "";
-		document.title = "blankProject.blimp - Blimp Animator"
+		localStorage.cssCode = "";
+		document.title = "new.blimp - Blimp Animator"
         InspectorEsconder(false);
         document.querySelector("#outline ul").innerHTML = "";
 		beginTo = 0;
 		rutaArch = "";
 		endTimeline = 0;
+		FrameDefault();
 		localStorage.animation = "";
 		duration = 0;
 		undoList = [];
@@ -66,6 +71,17 @@ function mensajeguardar(num, chknum) {
     } else {
         console.log("Se cancelo la operación");
     }
+}
+function FrameDefault(width,height)
+{
+	if(width == undefined && height == undefined)
+		localStorage.resolFrame = "1024;320"
+	else
+		localStorage.resolFrame = width+";"+height
+	let tabla = localStorage.resolFrame.split(";")
+	document.querySelector("#webview").style.width = tabla[0]+"px"
+	document.querySelector("#webview").style.height = tabla[1]+"px"
+	document.querySelector("#resolucion").innerHTML = "w:"+tabla[0]+"px"+" h:"+tabla[1]+"px";
 }
 function circleView() {
     let webview = document.querySelector("#webview")
@@ -673,7 +689,7 @@ function annadirALibreria(img, texto) {
         ruta = "img/play-button.png";
 	}
 	libreria.push(img.src);
-    new_img.innerHTML = "<div ondblclick='AbrirImagen(\"" + img.src + "\")'><img fuente='" + img.src.replace(/\//g, "\\").replace(__dirname, ".").replace("file:\\\\\\", "") + "' class='library' src='" + ruta + "' style='width: 35px;margin-right: 5px;border: solid 3px #868585;border-radius: 10px;' ><b style='display: inline-block;width: 71px;max-width:71px;'>" + textoImg + "</b><button onclick='AnnadirContenido(this.parentNode)' title='Añadir este contenido al lienzo' class='deleteImg'><i class=\"fa fa-plus\" aria-hidden=\"true\"></i></button><button onclick='EliminarContenido(this.parentNode)' title='Eliminar este contenido' class='deleteImg'><i class='fa fa-times' aria-hidden='true'></i></button></div>";
+    new_img.innerHTML = "<div title='"+img.src.split("/")[img.src.split("/").length - 1]+"' ondblclick='AbrirImagen(\"" + img.src + "\")'><img fuente='" + img.src.replace(/\//g, "\\").replace(__dirname, ".").replace("file:\\\\\\", "") + "' class='library' src='" + ruta + "' style='width: 35px;margin-right: 5px;border: solid 3px #868585;border-radius: 10px;' ><b style='display: inline-block;width: 71px;max-width:71px;'>" + textoImg + "</b><button onclick='AnnadirContenido(this.parentNode)' title='Añadir este contenido al lienzo' class='deleteImg'><i class=\"fa fa-plus\" aria-hidden=\"true\"></i></button><button onclick='EliminarContenido(this.parentNode)' title='Eliminar este contenido' class='deleteImg'><i class='fa fa-times' aria-hidden='true'></i></button></div>";
     list.appendChild(new_img);
 }
 function EliminarContenido(that) {

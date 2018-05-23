@@ -7,6 +7,13 @@ html,body
 	overflow: hidden;
 	font-size: 14px;
 	height:100%;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	cursor: default;
 } 
 h1
 {
@@ -62,6 +69,22 @@ h3
 .BasicContainer
 {
 	width:90%;
+}
+#general::-webkit-scrollbar
+{
+    background: #343a40;
+}
+#general::-webkit-scrollbar-thumb
+{
+    background: #464646;
+}
+#general::-webkit-scrollbar-track
+{
+    background: #505961;
+}
+#general::-webkit-scrollbar-corner
+{
+    background: #343a40;
 }
 .AdvancedContainer
 {

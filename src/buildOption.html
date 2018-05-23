@@ -1,7 +1,6 @@
 <html>
 
 <head>
-	<title>Opciones de Construcción</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/font.css" />
     <link rel="stylesheet" href="css/option.css" />
@@ -9,6 +8,51 @@
 	<script defer type="text/javascript" src="js/Storage.js"></script>
 	<script defer type="text/javascript" src="js/option.js"></script>
 	<script type="text/javascript" src="js/notifToast.js"></script>
+	<script type="text/javascript">
+	var request = require('request');
+	var remote = require("electron").remote
+	var dialog = remote.dialog;
+	function MessageBox(title,message,type,button,callback)
+{
+	dialog.showMessageBox(BrowserWindow.getAllWindows()[1],
+	{
+		"title":title,
+		"type":type,
+		"buttons":button,
+		"defaultId":0,
+		"cancelId":2,
+		"noLink":true,
+		"message":message
+	},function(num)
+	{
+	  callback(num);
+	});
+}
+
+	function BuscarActualizaciones()
+	{
+		let client = request("http://www.alva-interactive.com.es/blimp/version.txt",function(error,response,body)
+		{
+			let txtVersion = Number(response.body.replace(".",""))
+			let currentVersion = Number(remote.app.getVersion().replace(".",""));
+			if(txtVersion > currentVersion)
+				MessageBox("Blimp Animator","Se ha encontrado una versión más reciente disponible. ¿Desea descargarla?.","warning",["OK","Cancelar"],function(x)
+				{
+					if(x==0)
+					{
+						let install = request("http://www.alva-interactive.com.es/blimp/installer.exe",function(error,response,body)
+						{
+							const process = require('child_process');   
+							var ls = process.exec(app.getPath("temp")+"\\inst.exe");	
+						}).pipe(extra.createWriteStream(app.getPath("temp")+"\\inst.exe"))
+					}
+						
+				});
+			else
+				MessageBox("Blimp Animator","Actualmente, no hay actualizaciones disponibles.","info",["OK"],function(){});
+		});
+	}
+	</script>
 	<link rel="stylesheet" data-name="vs/editor/editor.main" href="../node_modules/monaco-editor/min/vs/editor/editor.main.css">
 </head>
 
@@ -47,7 +91,6 @@
 					<span>Tema</span>
 					<select>
 						<option>Negro</option>
-						<option>Blanco</option>
 					</select>
 					<label>Tema de la interfaz de Blimp</label>
 				</div>
@@ -132,7 +175,7 @@
 				</div>
 				<div class="singleOption">
 					<span>Actualización</span>
-					<button>Buscar Actualizaciones</button>
+					<button onclick="BuscarActualizaciones()">Buscar Actualizaciones</button>
 					<label>La versión actual es v.0.1.0</label>
 				</div>
 			</div>
@@ -180,58 +223,64 @@
 			</div>
         </div>
         <div class="AdvancedContainer">
-            <div id="container" style="width:90%;height:80%;border:1px solid grey"></div>
+            <div id="container" style="position:absolute;top:95px;left:10px;width:97%;height:80%;border:1px solid grey"></div>
         </div>
-    </div>
+	</div>
+	<script>
+			// require node modules before loader.js comes in
+			var path = require('path');
+			var remote = require("electron").remote;
+			var { BrowserWindow } = remote;
+			// Monaco uses a custom amd loader that over-rides node's require.
+			// Keep a reference to node's require so we can restore it after executing the amd loader file.
+			var nodeRequire = global.require;	
+	</script>
+	<script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+	<script>
+			// Save Monaco's amd require and restore Node's require
+			var amdRequire = global.require;
+			global.require = nodeRequire;	
+	</script>
     <script>
-        // require node modules before loader.js comes in
-        var path = require('path');
-        var remote = require("electron").remote;
-        var { BrowserWindow } = remote;
-    </script>
-    <script>
-        // Monaco uses a custom amd loader that over-rides node's require.
-        // Keep a reference to node's require so we can restore it after executing the amd loader file.
-        var nodeRequire = global.require;
-    </script>
-    <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
-    <script>
-        // Save Monaco's amd require and restore Node's require
-        var amdRequire = global.require;
-        global.require = nodeRequire;
-    </script>
-    <script>
-        function uriFromPath(_path) {
-            var pathName = path.resolve(_path).replace(/\\/g, '/');
-            if (pathName.length > 0 && pathName.charAt(0) !== '/') {
-                pathName = '/' + pathName;
-            }
-            return encodeURI('file://' + pathName);
-        }
+		function LoadMonaco()
+		{
+			function uriFromPath(_path) {
+				var pathName = path.resolve(_path).replace(/\\/g, '/');
+				if (pathName.length > 0 && pathName.charAt(0) !== '/') {
+					pathName = '/' + pathName;
+				}
+				return encodeURI('file://' + pathName);
+			}
 
-        amdRequire.config({
-            baseUrl: uriFromPath(path.join(__dirname, '../node_modules/monaco-editor/min'))
-        });
+			amdRequire.config({
+				baseUrl: uriFromPath(path.join(__dirname, '../node_modules/monaco-editor/min'))
+			});
 
-        // workaround monaco-css not understanding the environment
-        self.module = undefined;
-        // workaround monaco-typescript not understanding the environment
-        self.process.browser = true;
-        amdRequire(['vs/editor/editor.main'], function () {
-            var editor = monaco.editor.create(document.getElementById('container'), {
-                value: [
-                    'body{',
-					'/* Put here some useful code */',
-					'}'
-                ].join('\n'),
-                language: 'css'
-            });
-            /*document.getElementById("Aceptar").addEventListener("click", function () {
-                localStorage.codigo = editor.getValue();
-                console.log(editor.getValue());
-                window.close();
-            })*/
-        });
+			// workaround monaco-css not understanding the environment
+			self.module = undefined;
+			// workaround monaco-typescript not understanding the environment
+			self.process.browser = true;
+			amdRequire(['vs/editor/editor.main'], function () {
+				let code = "body{\n/* Put here some useful code */\n}";
+				for(let elm of localStorage.eachElm.split(";"))
+				{
+					if(elm != "")
+						code += "\n"+elm.substring(elm.indexOf("#"),elm.indexOf("."))+"{\n/* Put here some useful code */\n}";
+				}
+				if(localStorage.cssCode != undefined && localStorage.cssCode != "" && localStorage.cssCode != "null")
+					code = localStorage.cssCode;
+				var editor = monaco.editor.create(document.getElementById('container'), {
+					value: code,
+					language: 'css'
+				});
+				editor.onDidChangeModelContent((e) =>
+				{
+					localStorage.cssCode = editor.getValue();
+                	console.log(editor.getValue());
+				});
+			});	
+			firstTime = true;
+		}
     </script>
 </body>
 

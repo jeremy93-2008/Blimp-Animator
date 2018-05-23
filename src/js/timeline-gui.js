@@ -459,9 +459,9 @@ Timeline.prototype.updateGUI = function() {
   this.c.fill();
 
   //tracks scrollbar
-  this.drawRect(this.canvas.width - this.tracksScrollWidth, this.headerHeight + 1, this.tracksScrollWidth, this.tracksScrollHeight, "#343a40");
+  this.drawRect(this.canvas.width - this.tracksScrollWidth, this.headerHeight + 1, this.tracksScrollWidth, this.tracksScrollHeight, "red");
   if (this.tracksScrollThumbHeight < this.tracksScrollHeight) {
-    this.drawRect(this.canvas.width - this.tracksScrollWidth, this.headerHeight + 1 + this.tracksScrollThumbPos, this.tracksScrollWidth, this.tracksScrollThumbHeight, "#5c6670");
+    this.drawRect(this.canvas.width - this.tracksScrollWidth, this.headerHeight + 1 + this.tracksScrollThumbPos, this.tracksScrollWidth, this.tracksScrollThumbHeight, "red");
   }
 
   //time scrollbar
@@ -500,20 +500,20 @@ Timeline.prototype.drawTrack = function(track, y) {
   var xshift = 5;
   if (track.type == "object") {
     //object track header background
-    this.drawRect(0, y - this.trackLabelHeight + 1, this.trackLabelWidth, this.trackLabelHeight-1, "#FFFFFF");
+    this.drawRect(0, y - this.trackLabelHeight + 1, this.trackLabelWidth, this.trackLabelHeight-1, "#343a40");
     //label color
-    this.c.fillStyle = "#000000";
+    this.c.fillStyle = "#fff";
   }
   else {
     xshift += 10;
     //label color
-    this.c.fillStyle = "#22272a";
+    this.c.fillStyle = "#343a40";
   }
 
   //bottom track line
-  this.drawLine(0, y, this.canvas.width, y, "#FFFFFF");
+  this.drawLine(0, y, this.canvas.width, y, "#343a40");
   //draw track label
-  this.c.fillStyle = "#fff";
+  this.c.fillStyle = "#343a40";
   this.c.fillText((track.name.length<=16)?track.name:(track.name.substring(0,13)+"..."), xshift, y - this.trackLabelHeight/4);
 
   //if it's property track then draw anims
@@ -534,7 +534,6 @@ Timeline.prototype.drawTrack = function(track, y) {
 
 
 Timeline.prototype.drawLine = function(x1, y1, x2, y2, color) {
-  this.c.strokeStyle = "#22272a";
   this.c.beginPath();
   this.c.moveTo(x1+0.5, y1+0.5);
   this.c.lineTo(x2+0.5, y2+0.5);
@@ -542,12 +541,11 @@ Timeline.prototype.drawLine = function(x1, y1, x2, y2, color) {
 };
 
 Timeline.prototype.drawRect = function(x, y, w, h, color) {
-  this.c.fillStyle = "#22272a";
-  this.c.fillRect(x, y, w, h);
+    this.c.fillStyle=color;
+	this.c.fillRect(x, y, w, h);
 };
 
 Timeline.prototype.drawCenteredRect = function(x, y, w, h, color) {
-  this.c.fillStyle = "#343a40";
   this.c.fillRect(x-w/2, y-h/2, w, h);
 };
 

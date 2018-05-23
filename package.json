@@ -1,6 +1,6 @@
 {
   "name": "stock",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A animation CSS3 designer",
   "main": "src/main.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "adm-zip": "^0.4.11",
+    "child-process": "^1.0.2",
     "fs-extra": "^6.0.0",
     "keyboardjs": "^2.4.1",
     "monaco-editor": "^0.12.0",

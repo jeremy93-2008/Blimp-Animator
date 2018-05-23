@@ -63,6 +63,7 @@ document.querySelector(".BasicTab").addEventListener("click", function()
 	document.querySelector(".BasicContainer").style.display = "block";
 	document.querySelector(".AdvancedContainer").style.display = "none";
 })
+let firstTime = false;
 document.querySelector(".AdvancedTab").addEventListener("click", function()
 {
 	this.classList.add("selected");
@@ -72,6 +73,8 @@ document.querySelector(".AdvancedTab").addEventListener("click", function()
 	document.querySelector(".BasicTab").classList.remove("selected");
 	document.querySelector(".AdvancedContainer").style.display = "block";
 	document.querySelector(".BasicContainer").style.display = "none";
+	if(!firstTime)
+		LoadMonaco();
 })
 document.querySelector(".check").addEventListener("click",function(evt)
 {

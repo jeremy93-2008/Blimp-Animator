@@ -102,7 +102,20 @@ window.addEventListener("load", function () {
 	CargarMultiSeleccion();
 	CargarDrop();
 	// Ponemos un nombre nuevo de proyecto
-	document.title = "blankProject.blimp - "+document.title
+	document.title = "new.blimp - "+document.title
+	//Reinicializamos el tamaño del lienzo
+	localStorage.resolFrame = "1024;320"
+	//Recuperamos si un argumento quiere abrir una ruta
+	let ruta = false;
+	for(let elm of remote.process.argv)
+	{
+		if(ruta)
+			ruta = elm;
+		if(elm == "-open")
+			ruta = true
+	}
+	if(typeof(ruta) == "string")
+		AbrirArchivoDefinido(ruta)
 })
 let refDiv = null;
 let refButton = null;
