@@ -1,0 +1,21 @@
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\bin\Debug\Blimp Update.exe
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\bin\Debug\Blimp Update.pdb
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\obj\Debug\Blimp_Update.Form1.resources
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\obj\Debug\Blimp_Update.Properties.Resources.resources
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\obj\Debug\Blimp Update.csproj.GenerateResource.cache
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\obj\Debug\Blimp Update.csproj.CoreCompileInputs.cache
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\obj\Debug\Blimp Update.exe
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\obj\Debug\Blimp Update.pdb
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\Jeremy\source\repos\Blimp Update\Blimp Update\obj\Debug\Blimp Update.csproj.CopyComplete
+D:\documentos\stock\Blimp Update\Blimp Update\bin\Debug\Blimp Update.exe
+D:\documentos\stock\Blimp Update\Blimp Update\bin\Debug\Blimp Update.pdb
+D:\documentos\stock\Blimp Update\Blimp Update\bin\Debug\ICSharpCode.SharpZipLib.dll
+D:\documentos\stock\Blimp Update\Blimp Update\obj\Debug\Blimp_Update.Form1.resources
+D:\documentos\stock\Blimp Update\Blimp Update\obj\Debug\Blimp_Update.Properties.Resources.resources
+D:\documentos\stock\Blimp Update\Blimp Update\obj\Debug\Blimp Update.csproj.GenerateResource.cache
+D:\documentos\stock\Blimp Update\Blimp Update\obj\Debug\Blimp Update.csproj.CoreCompileInputs.cache
+D:\documentos\stock\Blimp Update\Blimp Update\obj\Debug\Blimp Update.csproj.CopyComplete
+D:\documentos\stock\Blimp Update\Blimp Update\obj\Debug\Blimp Update.exe
+D:\documentos\stock\Blimp Update\Blimp Update\obj\Debug\Blimp Update.pdb
+D:\documentos\stock\Blimp Update\Blimp Update\obj\Debug\Blimp Update.csprojResolveAssemblyReference.cache

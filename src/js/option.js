@@ -171,7 +171,7 @@ for(let btn of btn_list)
 }
 if(localStorage.guiaLienzo == undefined || localStorage.guiaLienzo == "")
 {
-	document.querySelector("#linea").setAttribute("checked")
+	document.querySelector("#linea").setAttribute("checked","true")
 	localStorage.guiaLienzo = "true";
 }else
 {

@@ -844,6 +844,7 @@ function Opciones(opt)
 		})
 		CodeWindow.loadURL(path.join(__dirname, "/buildOption.html"))
 		CodeWindow.setMenu(null);
+		CodeWindow.webContents.openDevTools();
 		CodeWindow.on("closed",function()
 		{
 			AplicarOpciones();
@@ -877,11 +878,8 @@ function BuscarActualizaciones()
 			{
 				if(x==0)
 				{
-					let install = request("http://www.alva-interactive.com.es/blimp/installer.exe",function(error,response,body)
-					{
-						const process = require('child_process');   
-						var ls = process.exec(app.getPath("temp")+"\\inst.exe");	
-					}).pipe(extra.createWriteStream(app.getPath("temp")+"\\inst.exe"))
+					const process = require('child_process');   
+					var ls = process.execFile(path.dirname(app.getPath("exe"))+"\\Blimp Update.exe");
 				}
 					
 			});
