@@ -1,0 +1,102 @@
+.bg-dark,.inspector_menu button
+{
+	background: #eee !important;
+	color:#555;
+}
+.bg-dark .selected
+{
+	background: #bbb;
+}
+.top
+{
+	border-bottom: solid 1px #dcdcdc;
+}
+.top ul li ul
+{
+	border:solid 1px #dcdcdc;
+}
+.top ul li ul li.separator
+{
+	border-color:#dcdcdc;	
+}
+.top ul li ul li:hover, .top .selected, #menu .selected, #menu .right .selected,.inspector_menu .selected,#outline .selected
+{
+	background: #bbb !important;
+	color:#555;	
+}
+#menu button,#menu-timeline button, #menu .right button
+{
+	color:#555;	
+}
+#resolucion
+{
+	background: #eee;
+	border-color:#dcdcdc;	
+	color:#555;
+}
+#inspector, #outline,#libreria,#libreria b,#libreria button
+{
+	color:#555;
+	border-color:#dcdcdc !important;
+	background: #eee !important;
+}
+#menu
+{
+	border-bottom: solid 1px #dcdcdc;
+}
+#inspector .elemento input,#inspector .elemento select
+{
+	background: #eee;
+	color:#555;
+	border-color: lightgray;
+}
+.eyedropper
+{
+	color:#555;
+}
+#inspector::-webkit-scrollbar,#outline::-webkit-scrollbar
+{
+    background: #ddd;
+}
+#inspector::-webkit-scrollbar-track,#outline::-webkit-scrollbar-track
+{
+    background: #bbb;
+}
+#inspector::-webkit-scrollbar-thumb,#outline::-webkit-scrollbar-thumb
+{
+    background: #ddd;
+}
+#renderer::-webkit-scrollbar
+{
+    background: #dcdcdc;
+}
+#renderer::-webkit-scrollbar-thumb
+{
+    background: #ddd;
+}
+#renderer::-webkit-scrollbar-track
+{
+    background: #bbb;
+}
+#renderer::-webkit-scrollbar-corner
+{
+    background: #ddd;
+}
+#timeline-control
+{
+	background-color: #eee;
+}
+.keyframe_control
+{
+	background: #eee;
+}
+.keyframe_control i
+{
+	color:#555;
+}
+#menu
+{
+	color:#555;
+	border-bottom:solid 1px #dcdcdc;
+	background-color: #eee;
+}

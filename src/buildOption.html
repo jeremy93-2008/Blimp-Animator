@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="css/font.css" />
     <link rel="stylesheet" href="css/option.css" />
 	<link rel="stylesheet" href="css/notifToast.css" />
+	<link rel="stylesheet" href="css/theme/white.css"/>
 	<script defer type="text/javascript" src="js/Storage.js"></script>
 	<script defer type="text/javascript" src="js/option.js"></script>
 	<script type="text/javascript" src="js/notifToast.js"></script>
@@ -89,10 +90,16 @@
 				</div>
 				<div class="singleOption">
 					<span>Tema</span>
-					<select>
+					<select id="DropTheme" onchange="Tema(this)">
 						<option>Negro</option>
+						<option value="white">Blanco</option>
 					</select>
 					<label>Tema de la interfaz de Blimp</label>
+				</div>
+				<div class="singleOption">
+					<span>Lineas en Lienzo</span>
+					<input style="margin-left:15px" type="checkbox" id="linea" />
+					<label>Lineas guias en el lienzo</label>
 				</div>
 				<div class="singleOption">
 					<span style="margin-right: 10px;">Atajos de teclado</span>

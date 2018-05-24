@@ -3,6 +3,18 @@
     <title>Añadir Código HTML Personalizado</title>
 	<meta charset="utf-8" />
 	<link rel="stylesheet" href="css/font.css" />
+	<script>
+		if(localStorage.Tema != undefined && localStorage.Tema != "")
+		{
+			if(localStorage.Tema != "Negro")
+			{
+				let estilo = document.createElement("link");
+				estilo.setAttribute("rel","stylesheet")
+				estilo.setAttribute("href","css/theme/white-modal.css");
+				document.querySelector("head").appendChild(estilo)
+			}
+		}
+	</script>
     <style>
         html,body
         {

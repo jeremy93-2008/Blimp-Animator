@@ -78,7 +78,7 @@
         {
             text-align: center;
         }
-    </style>
+	</style>
     <script>
         let aceptar = false;
         function accept()
@@ -103,18 +103,28 @@
                 document.getElementById("bwidth").value = arr[0]
                 document.getElementById("bheight").value = arr[1]
             }
-        }
+		}
+		if(localStorage.Tema != undefined && localStorage.Tema != "")
+		{
+			if(localStorage.Tema != "Negro")
+			{
+				let estilo = document.createElement("link");
+				estilo.setAttribute("rel","stylesheet")
+				estilo.setAttribute("href","css/theme/white-modal.css");
+				document.querySelector("head").appendChild(estilo)
+			}
+		}
         window.onload = cargar;
         window.onunload = cancel;
     </script>
 </head>
 <body style="background: #343a40;">
     <div class="sub first">
-        <span class="title">Ancho</span><input type="number" id="bwidth" min="0" step="1" value="1024" />
+        <span class="title" style="width:50px">Ancho</span><input type="number" id="bwidth" min="0" step="1" value="1024" />
         <span>px</span>
     </div>
     <div class="sub">
-        <span class="title">Alto</span><input type="number" id="bheight" min="0" step="1" value="320" />
+        <span class="title" style="width:50px">Alto</span><input type="number" id="bheight" min="0" step="1" value="320" />
         <span>px</span>
 	</div>
     <div class="sub right">

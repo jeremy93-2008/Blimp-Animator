@@ -115,7 +115,8 @@ window.addEventListener("load", function () {
 			ruta = true
 	}
 	if(typeof(ruta) == "string")
-        AbrirArchivoDefinido(ruta)
+		AbrirArchivoDefinido(ruta)
+	ChangeColorinTimeline();
 })
 let refDiv = null;
 let refButton = null;
@@ -190,4 +191,32 @@ function CargarDrop()
 	const newLine = document.getElementById("outline");
 	newLine.setAttribute("ondragover","Soltar(event)");
 	newLine.setAttribute("ondrop","SoltarOutlineWeb(this,event)");
+}
+function ChangeColorinTimeline()
+{
+	if(localStorage.Tema != undefined && localStorage.Tema != "")
+	{
+		if(localStorage.Tema != "Negro")
+		{
+			let estilo = document.createElement("link");
+			estilo.setAttribute("rel","stylesheet")
+			estilo.setAttribute("href","css/theme/white.css");
+			document.querySelector("head").appendChild(estilo)
+		}else
+		{
+			let enlace = document.querySelector("link[href*=white]")
+			if(enlace != undefined)
+			{
+				enlace.remove();
+			}		
+		}
+	} 
+	window.setTimeout(function()
+	{
+		Time_contrast = window.getComputedStyle(document.querySelector("#menu")).getPropertyValue("background-color")
+		Time_back = window.getComputedStyle(document.querySelector("#menu")).getPropertyValue("background-color")
+		Time_dark = window.getComputedStyle(document.querySelector("#menu")).getPropertyValue("border-bottom-color")
+		Time_light = window.getComputedStyle(document.querySelector("#menu")).getPropertyValue("color")		
+	},350)
+
 }

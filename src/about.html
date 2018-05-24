@@ -106,6 +106,18 @@
 			background: #222;
 		}
 	</style>
+	<script>
+		if(localStorage.Tema != undefined && localStorage.Tema != "")
+		{
+			if(localStorage.Tema != "Negro")
+			{
+				let estilo = document.createElement("link");
+				estilo.setAttribute("rel","stylesheet")
+				estilo.setAttribute("href","css/theme/white-modal.css");
+				document.querySelector("head").appendChild(estilo)
+			}
+		}
+	</script>
 </head>
 <body>
 	<div style="text-align: center"><img draggable="false" src="img/logo-512.png" width="128px"></div>

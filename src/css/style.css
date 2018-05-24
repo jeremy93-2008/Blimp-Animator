@@ -106,6 +106,12 @@ ul li
 {
     height:550px;
 }
+#menu
+{
+	color:#eee;
+	border-bottom:solid 1px #262b30;
+	background-color: #343a40;
+}
 #menu-timeline
 {
     text-align: right;

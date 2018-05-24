@@ -814,6 +814,10 @@ function Opciones(opt)
 		})
 	CodeWindow.loadURL(path.join(__dirname, "/buildOption.html"))
 	CodeWindow.setMenu(null);
+	CodeWindow.on("closed",function()
+	{
+		AplicarOpciones();
+	})
 	}else
 	{
 		let elm = "";
@@ -839,9 +843,27 @@ function Opciones(opt)
 			nativeWindowOpen: true
 		})
 		CodeWindow.loadURL(path.join(__dirname, "/buildOption.html"))
-		CodeWindow.webContents.openDevTools();
 		CodeWindow.setMenu(null);
+		CodeWindow.on("closed",function()
+		{
+			AplicarOpciones();
+		})
 	}
+}
+function AplicarOpciones()
+{
+	let guia = localStorage.guiaLienzo
+	if(guia == "true")
+	{
+		document.querySelector("#renderer").style.backgroundSize = "45px 45px";
+		document.querySelector("#renderer").style.backgroundImage = "linear-gradient(to right, #ddd 1px, transparent 1px)";
+	}else
+	{
+		document.querySelector("#renderer").style.backgroundSize = "none";
+		document.querySelector("#renderer").style.backgroundImage = "none";
+	}
+	ChangeColorinTimeline();
+	location.refresh();
 }
 var request = require('request');
 function BuscarActualizaciones()

@@ -1,5 +1,5 @@
 {
-  "name": "stock",
+  "name": "blimp_animator",
   "version": "0.1.0",
   "description": "A animation CSS3 designer",
   "main": "src/main.js",
@@ -11,7 +11,7 @@
     "Electron"
   ],
   "author": "Jeremy Alvarez",
-  "license": "CC0-1.0",
+  "license": "MPL-2.0",
   "devDependencies": {
     "electron": "^1.8.4",
     "electron-rebuild": "^1.7.3"

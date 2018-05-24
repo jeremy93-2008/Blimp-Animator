@@ -2,7 +2,7 @@
 <head>
     <title>Ver Licencia MPL v.2.0</title>
     <link rel="stylesheet" href="css/font.css" />
-    <meta charset="utf-8"/>
+	<meta charset="utf-8"/>
 	<style>
 		body
         {
@@ -89,6 +89,18 @@
 			background: #222;
 		}
 	</style>
+	<script>
+			if(localStorage.Tema != undefined && localStorage.Tema != "")
+			{
+				if(localStorage.Tema != "Negro")
+				{
+					let estilo = document.createElement("link");
+					estilo.setAttribute("rel","stylesheet")
+					estilo.setAttribute("href","css/theme/white-modal.css");
+					document.querySelector("head").appendChild(estilo)
+				}
+			}
+		</script>
 </head>
 <body>
 	<h1 id="mozilla-public-license-version-2.0">Mozilla Public License<br>Version 2.0</h1>

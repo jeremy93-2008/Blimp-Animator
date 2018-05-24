@@ -89,7 +89,7 @@
 		{
 			background: #343a40;
 		}
-    </style>
+	</style>
     <script>
         let aceptar = false;
         function accept()
@@ -120,13 +120,23 @@
                 document.getElementById("duration").value = arr[1]
                 document.querySelector("h4").innerHTML = arr[2]
             }
-        }
+		}
+		if(localStorage.Tema != undefined && localStorage.Tema != "")
+		{
+			if(localStorage.Tema != "Negro")
+			{
+				let estilo = document.createElement("link");
+				estilo.setAttribute("rel","stylesheet")
+				estilo.setAttribute("href","css/theme/white-modal.css");
+				document.querySelector("head").appendChild(estilo)
+			}
+		}
         window.onload = cargar;
         window.onunload = cancel;
     </script>
 </head>
 <body style="background: #343a40;">
-    <h4 style="height:32px;overflow:auto">div#elm-647.default</h4>
+    <h4 style="height:32px;overflow:auto;font-size:16px;">div#elm-647.default</h4>
     <div class="sub">
         <span class="title">Comienza en</span><input type="number" id="beginTo" min="0" step="0.5" value="0" />
         <span>seg.</span>

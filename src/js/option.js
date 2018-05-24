@@ -19,6 +19,19 @@ let Toast = new notifToast(
 	"fontMessage":"12px arial",
 	"icon":true,
 	"closeButton":true});
+
+if(localStorage.Tema != undefined && localStorage.Tema != "")
+{
+	if(localStorage.Tema != "Negro")
+	{
+		let estilo = document.createElement("link");
+		estilo.setAttribute("rel","stylesheet")
+		estilo.setAttribute("href","css/theme/white-modal.css");
+		document.querySelector("head").appendChild(estilo)
+	}
+	document.querySelector("#DropTheme").value = localStorage.Tema
+}
+
 if(eachElm.indexOf(";") != -1)
 {
 	for(let obj of eachElm.split(";"))
@@ -156,6 +169,27 @@ for(let btn of btn_list)
 		}
 	}
 }
+if(localStorage.guiaLienzo == undefined || localStorage.guiaLienzo == "")
+{
+	document.querySelector("#linea").setAttribute("checked")
+	localStorage.guiaLienzo = "true";
+}else
+{
+	if(localStorage.guiaLienzo == "true")
+	{
+		document.querySelector("#linea").setAttribute("checked","true")
+	}else
+	{
+		document.querySelector("#linea").removeAttribute("checked")
+	}
+}
+document.querySelector("#linea").addEventListener("change",function()
+{
+	if(this.checked)
+		localStorage.guiaLienzo = "true"
+	else
+		localStorage.guiaLienzo = "false"
+})
 document.querySelector("#save").addEventListener("click",function()
 {
 	let elm = document.querySelector(".sidebarElm .selected").getAttribute("identificador")
@@ -226,4 +260,9 @@ function restablecer()
 	{
 		elm.value = tableBinding[elm.id];
 	});	
+}
+function Tema(that)
+{
+	localStorage.Tema = that.value;
+	Toast.showSuccess("Los datos se han guardado correctamente.","");
 }
