@@ -7,19 +7,19 @@
 {
 	background: #bbb;
 }
-.top
+body .top
 {
 	border-bottom: solid 1px #dcdcdc;
 }
-.top ul li ul
+body .top ul li ul
 {
 	border:solid 1px #dcdcdc;
 }
-.top ul li ul li.separator
+body .top ul li ul li.separator
 {
 	border-color:#dcdcdc;	
 }
-.top ul li ul li:hover, .top .selected, #menu .selected, #menu .right .selected,.inspector_menu .selected,#outline .selected
+body .top ul li ul li:hover, .top .selected, #menu .selected, #menu .right .selected,.inspector_menu .selected,#outline .selected
 {
 	background: #bbb !important;
 	color:#555;	
@@ -28,7 +28,7 @@
 {
 	color:#555;	
 }
-#resolucion
+body #resolucion
 {
 	background: #eee;
 	border-color:#dcdcdc;	
@@ -44,7 +44,10 @@
 {
 	border-bottom: solid 1px #dcdcdc;
 }
-#inspector .elemento input,#inspector .elemento select
+span,button,b{
+	color:#555 !important;
+}
+body #inspector .elemento input,body #inspector .elemento select
 {
 	background: #eee;
 	color:#555;
@@ -56,47 +59,47 @@
 }
 #inspector::-webkit-scrollbar,#outline::-webkit-scrollbar
 {
-    background: #ddd;
+    background: #ddd !important;
 }
 #inspector::-webkit-scrollbar-track,#outline::-webkit-scrollbar-track
 {
-    background: #bbb;
+    background: #bbb !important;
 }
 #inspector::-webkit-scrollbar-thumb,#outline::-webkit-scrollbar-thumb
 {
-    background: #ddd;
+    background: #ddd !important;
 }
 #renderer::-webkit-scrollbar
 {
-    background: #dcdcdc;
+    background: #dcdcdc !important;
 }
 #renderer::-webkit-scrollbar-thumb
 {
-    background: #ddd;
+    background: #ddd !important;
 }
 #renderer::-webkit-scrollbar-track
 {
-    background: #bbb;
+    background: #bbb !important;
 }
 #renderer::-webkit-scrollbar-corner
 {
-    background: #ddd;
+    background: #ddd !important;
 }
 #timeline-control
 {
-	background-color: #eee;
+	background-color: #eee !important;
 }
 .keyframe_control
 {
-	background: #eee;
+	background: #eee !important;
 }
 .keyframe_control i
 {
-	color:#555;
+	color:#555 !important;
 }
 #menu
 {
-	color:#555;
-	border-bottom:solid 1px #dcdcdc;
-	background-color: #eee;
+	color:#555 !important;
+	border-bottom:solid 1px #dcdcdc !important;
+	background-color: #eee !important;
 }

@@ -31,7 +31,10 @@ if(localStorage.Tema != undefined && localStorage.Tema != "")
 	}
 	document.querySelector("#DropTheme").value = localStorage.Tema
 }
-
+if(localStorage.lang != undefined && localStorage.lang != "")
+{
+	document.querySelector("#IdiomaSel").value = localStorage.lang
+}
 if(eachElm.indexOf(";") != -1)
 {
 	for(let obj of eachElm.split(";"))
@@ -265,4 +268,9 @@ function Tema(that)
 {
 	localStorage.Tema = that.value;
 	Toast.showSuccess("Los datos se han guardado correctamente.","");
+}
+function Idioma(that)
+{
+	localStorage.lang = that.value;
+	Toast.showSuccess("El idioma se ha cambiado correctamente.","");
 }

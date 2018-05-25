@@ -5,10 +5,10 @@
     <link rel="stylesheet" href="css/font.css" />
     <link rel="stylesheet" href="css/option.css" />
 	<link rel="stylesheet" href="css/notifToast.css" />
-	<link rel="stylesheet" href="css/theme/white.css"/>
 	<script defer type="text/javascript" src="js/Storage.js"></script>
 	<script defer type="text/javascript" src="js/option.js"></script>
 	<script type="text/javascript" src="js/notifToast.js"></script>
+	<script defer type="text/javascript" src="i18n/local.js"></script>
 	<script type="text/javascript">
 	var request = require('request');
 	var remote = require("electron").remote
@@ -67,12 +67,12 @@
 	-> aplica estilos? none backwards forwards both
 	-->
     <div class="Options">
-        <h1>Opciones</h1>
+        <h1><span>Opciones</span></h1>
         <div class="BasicTab selected">
-            Básico
+            <span>Básico</span>
         </div>
         <div class="AdvancedTab">
-            Avanzado
+            <span>Avanzado</span>
         </div>
         <div class="sidebarElm">
 			<div>General</div>
@@ -83,8 +83,9 @@
 				<h3>General</h3>
 				<div class="singleOption">
 					<span>Idioma</span>
-					<select>
-						<option>Español</option>
+					<select id="IdiomaSel" onchange="Idioma(this)">
+						<option value="en">English</option>
+						<option value="es">Español</option>
 					</select>
 					<label>Idioma usada por la interfaz de Blimp</label>
 				</div>
@@ -102,7 +103,7 @@
 					<label>Lineas guias en el lienzo</label>
 				</div>
 				<div class="singleOption">
-					<span style="margin-right: 10px;">Atajos de teclado</span>
+					<span style="margin-right: 10px;font-size:14px;">Atajos de teclado</span>
 					<label>Accesos rápidos a funciones de Blimp</label>
 					<table cellspacing="0" cellpadding="0">
 						<tr class="first">
@@ -183,11 +184,11 @@
 				<div class="singleOption">
 					<span>Actualización</span>
 					<button onclick="BuscarActualizaciones()">Buscar Actualizaciones</button>
-					<label>La versión actual es v.0.1.0</label>
+					<label>v.0.1.0</label>
 				</div>
 			</div>
 			<div id="animation">
-				<h3>Animación</h3>
+				<h3><span>Animación</span></h3>
 				<div class="singleOption">
 					<span>Velocidad</span>
 					<select id="timing-function" class="opt">

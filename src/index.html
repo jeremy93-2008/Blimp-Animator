@@ -14,7 +14,8 @@
     <script type="text/javascript" src="js/timeline.js"></script>
     <script type="text/javascript" src="js/timeline-gui.js"></script>
     <script type="text/javascript" src="js/keyframe.js"></script>
-    <script type="text/javascript" src="js/menu.js"></script>
+	<script type="text/javascript" src="js/menu.js"></script>
+	<script defer type="text/javascript" src="i18n/local.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
 	<link rel="stylesheet" href="css/font.css"/>
 	<!--<link rel="stylesheet" href="css/theme/white.css"/>-->
@@ -65,7 +66,7 @@
 				  <li class="separator"></li>
                   <li onclick="CambiarPanel('inspector')"><span>Inspector</span></li>
 				  <li onclick="CambiarPanel('outline')"><span>Elementos</span></li>		
-				  <li onclick="CambiarPanel('libreria')"><span>Libreria</span></li>				  
+				  <li onclick="CambiarPanel('libreria')"><span>Librería</span></li>				  
                 </ul>
 			</li>
 			<li>
@@ -112,8 +113,8 @@
              <button onclick="multimediaView('video')" title="Inserta un video"><i class="fa fa-film"></i></button>
              <button onclick="htmlView()" title="Insertar un trozo de código personalizado"><i class="fa fa-code"></i></button>
              <div class="separator"></div>
-             <button onclick="Reproducir()" title="Reproduce la animación"><i class="fa fa-play"></i></button>
-			 <button onclick="Construir()" title="Construye la animación en HTML/CSS"><i class="fa fa-cog"></i></button>
+             <button onclick="Reproducir()" title="Reproducir en navegador"><i class="fa fa-play"></i></button>
+			 <button onclick="Construir()" title="Construir la animación"><i class="fa fa-cog"></i></button>
 			 <div class="separator"></div>
 			 <span ondblclick="SetTamanio()" title="Esta es la resolución con la cual se trabaja la animación" id="resolucion">w:1024px h:320px</span>
              <div class="right">
@@ -137,7 +138,7 @@
               </div>
             </div>
             <div id="inspector" style="max-width:262px;position: relative;z-index:5;" class="col-sm-3 back-black">
-              <div class="nothing" style="display:block;">No hay ningún elemento seleccionado</div>
+              <div class="nothing" style="display:block;"><span>No hay ningún elemento seleccionado</span></div>
               <div class="elemento" style="display: none;padding: 0 16% 0 7%;">
                 <span id="titulo" class="nombre">div#nombre.espacio</span>
                 <span>ID</span><input class="elm id_elm" type="text" />

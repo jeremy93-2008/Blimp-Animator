@@ -844,7 +844,6 @@ function Opciones(opt)
 		})
 		CodeWindow.loadURL(path.join(__dirname, "/buildOption.html"))
 		CodeWindow.setMenu(null);
-		CodeWindow.webContents.openDevTools();
 		CodeWindow.on("closed",function()
 		{
 			AplicarOpciones();

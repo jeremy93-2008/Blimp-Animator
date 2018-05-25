@@ -515,7 +515,9 @@ function ActivaInspector(that, evt) {
     } else {
         elementos.querySelector("#titulo").innerHTML = that.nodeName.toLowerCase() + "#" + that.id + "." + that.className;
     }
-    GenerarInspector(that, elementos, (tabla.length > 0) ? tabla : false);
+	GenerarInspector(that, elementos, (tabla.length > 0) ? tabla : false);
+	Geti18nForElm(inspector);
+	Geti18nForElm(elementos);
     evt.stopPropagation();
 }
 function GenerarInspector(that, list, tabla) {

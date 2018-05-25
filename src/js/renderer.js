@@ -3,7 +3,7 @@ let robot = require('robotjs');
 
 let openedMenu = false;
 let currentMenu = "";
-
+ChangeColorinTimeline();
 window.addEventListener("load", function () {
     let listLI = document.querySelectorAll(".top>ul>li");
     for (let li of listLI) {
@@ -116,7 +116,7 @@ window.addEventListener("load", function () {
 	}
 	if(typeof(ruta) == "string")
 		AbrirArchivoDefinido(ruta)
-	ChangeColorinTimeline();
+	
 })
 let refDiv = null;
 let refButton = null;
