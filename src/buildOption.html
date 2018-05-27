@@ -6,9 +6,9 @@
     <link rel="stylesheet" href="css/option.css" />
 	<link rel="stylesheet" href="css/notifToast.css" />
 	<script defer type="text/javascript" src="js/Storage.js"></script>
+	<script defer type="text/javascript" src="i18n/local.js"></script>
 	<script defer type="text/javascript" src="js/option.js"></script>
 	<script type="text/javascript" src="js/notifToast.js"></script>
-	<script defer type="text/javascript" src="i18n/local.js"></script>
 	<script type="text/javascript">
 	var request = require('request');
 	var remote = require("electron").remote
@@ -92,7 +92,7 @@
 				<div class="singleOption">
 					<span>Tema</span>
 					<select id="DropTheme" onchange="Tema(this)">
-						<option>Negro</option>
+						<option value="Negro">Negro</option>
 						<option value="white">Blanco</option>
 					</select>
 					<label>Tema de la interfaz de Blimp</label>
@@ -269,7 +269,7 @@
 			// workaround monaco-typescript not understanding the environment
 			self.process.browser = true;
 			amdRequire(['vs/editor/editor.main'], function () {
-				let code = "body{\n/* Put here some useful code */\n}";
+				let code = "body{\n/* Put here some useful code */\n}\n#blimp_container{\n/* Put here some useful code */\n}";
 				for(let elm of localStorage.eachElm.split(";"))
 				{
 					if(elm != "")

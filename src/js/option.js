@@ -67,7 +67,7 @@ if(!hayElm)
 	document.querySelector(".sidebarElm div").classList.add("selected");
 	document.getElementById("animation").style.display = "none";
 	document.getElementById("general").style.display = "block";	
-	Toast.showWarning("No hay elemento que mostrar.")	
+	Toast.showWarning(__("No hay elemento que mostrar."))	
 }
 document.querySelector(".BasicTab").addEventListener("click", function()
 {
@@ -207,7 +207,7 @@ document.querySelector("#save").addEventListener("click",function()
 				buildAnimOption[elm][opt.id] = opt.value;
 	}
 	(new Storage("animation")).setData(buildAnimOption);
-	Toast.showSuccess("Los datos se han guardado correctamente.","");
+	Toast.showSuccess(__("Los datos se han guardado correctamente."),"");
 })
 let defaultBinding = 
 {
@@ -267,10 +267,11 @@ function restablecer()
 function Tema(that)
 {
 	localStorage.Tema = that.value;
-	Toast.showSuccess("Los datos se han guardado correctamente.","");
+	Toast.showSuccess(__("Los datos se han guardado correctamente."),"");
 }
 function Idioma(that)
 {
 	localStorage.lang = that.value;
-	Toast.showSuccess("El idioma se ha cambiado correctamente.","");
+	localStorage.reloadMain = "true";
+	Toast.showSuccess(__("El idioma se ha cambiado correctamente."),"");
 }

@@ -27,7 +27,7 @@ function setLang(s)
 }
 function Geti18n()
 {
-	//Look after span, attr=title and button
+	//Look after span, attr=title, button, label and td
 	let lista_span = document.querySelectorAll("body span,body button,body option,body label,body td");
 	for(let span of lista_span)
 	{
@@ -62,12 +62,15 @@ function reloadJSON()
 {
 	json = extra.readJsonSync(__dirname+"/i18n/trad/"+default_lang+".json");
 }
-function $_(clave)
+function __(clave)
 {
-	GetSpecificTrad(clave);
+	return GetSpecificTrad(clave);
 }
 function GetSpecificTrad(clave)
 {
-	return json[clave];
+	if(json[clave] != undefined)
+		return json[clave];
+	else
+		return clave;
 }
 Geti18n()

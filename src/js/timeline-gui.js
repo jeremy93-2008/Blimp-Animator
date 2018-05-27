@@ -900,10 +900,11 @@ Timeline.prototype.rebuildTrackAnimsFromKeys = function(track,time,primeravez) {
 Timeline.prototype.exportCode = function() {
 	let lista = document.querySelectorAll("#webview *").length;
 	let cont = document.querySelectorAll("#webview *[dura='true']").length;
-	let num = (this.anims.length/15)/cont;
-	MessageBox("Información sobre la animación","Duración de la animación: "+endTimeline
-	+"s\nNúmero de elementos: "+lista+"\nNúmero de elementos animados: "+cont
-	+"\nFotogramas claves máximo: "+num,"info",["OK"],function(){})
+  let num = (this.anims.length/15)/cont;
+  num = (isNaN(num))?0:num;
+	MessageBox(__("Información sobre la animación"),__("Duración de la animación: ")+endTimeline
+	+"s\n"+__("Número de elementos: ")+lista+"\n"+__("Número de elementos animados: ")+cont
+	+"\n"+__("Fotogramas claves máximo: ")+num,"info",["OK"],function(){})
 };
 
 Timeline.prototype.save = function() {

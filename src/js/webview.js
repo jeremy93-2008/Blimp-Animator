@@ -152,7 +152,7 @@ function imageView(src) {
     if (src == null) {
         dialog.showOpenDialog(BrowserWindow.getAllWindows()[0],
             {
-                "title": "Elija una imagen",
+                "title": __("Elija una imagen"),
                 "defaultPath": app.getPath("pictures"),
                 "filters": [{
                     name: 'Imagen',
@@ -165,8 +165,8 @@ function imageView(src) {
                     let annadir = true;
                     if (document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(pathFiles[0])) != -1)
                         annadir = false;
-                    extra.copySync(pathFiles[0], __dirname + "/img/client/" + path.win32.basename(pathFiles[0]));
-                    image.src = "./img/client/" + path.win32.basename(pathFiles[0]);
+                    extra.copySync(pathFiles[0], app.getPath("userData") + "/img/" + path.win32.basename(pathFiles[0]));
+                    image.src = app.getPath("userData")+"/img/" + path.win32.basename(pathFiles[0]);
 					image.style.width = "150px";
                     image.style.position = "relative";
                     if(elmSeleccionado != null)
@@ -192,7 +192,7 @@ function imageView(src) {
         let annadir = true;
         if (document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(src)) != -1)
             annadir = false;
-        image.src = "./img/client/" + path.win32.basename(src);
+        image.src = app.getPath("userData")+"/img/" + path.win32.basename(src);
         image.style.width = "150px";
         image.style.position = "relative";
         image.addEventListener("mousedown", function (evt) { ActivaInspector(image, evt); });
@@ -249,7 +249,7 @@ function multimediaView(name, src) {
     if (src == undefined) {
         dialog.showOpenDialog(BrowserWindow.getAllWindows()[0],
             {
-                "title": "Elija un " + name,
+                "title": __("Elija un ") + name,
                 "defaultPath": app.getPath("documents"),
                 "filters": [{
                     name: 'Multimedia',
@@ -262,8 +262,8 @@ function multimediaView(name, src) {
                     let annadir = true;
                     if (document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(pathFiles[0])) != -1)
                         annadir = false;
-                    extra.copySync(pathFiles[0], __dirname + "/img/client/" + path.win32.basename(pathFiles[0]));
-                    tag.src = __dirname + "/img/client/" + path.win32.basename(pathFiles[0]);
+                    extra.copySync(pathFiles[0], app.getPath("userData") + "/img/" + path.win32.basename(pathFiles[0]));
+                    tag.src = app.getPath("userData") + "/img/" + path.win32.basename(pathFiles[0]);
                     if(elmSeleccionado != null)
                     {
                         if(Array.isArray(elmSeleccionado))
@@ -287,7 +287,7 @@ function multimediaView(name, src) {
         let annadir = true;
         if (document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(src)) != -1)
             annadir = false;
-        tag.src = __dirname + "/img/client/" + path.win32.basename(src);
+        tag.src = app.getPath("userData") + "/img/" + path.win32.basename(src);
         tag.addEventListener("mousedown", function (evt) { ActivaInspector(tag, evt); });
         webview.appendChild(tag);
         if (annadir)
@@ -305,7 +305,7 @@ function htmlView() {
             minWidth: 680,
             minHeight: 420,
             modal: true,
-            title: "Añadir Código HTML personalizado",
+            title: __("Añadir Código HTML personalizado"),
             icon: "img/logo-32.png",
             resizable: false,
             minimizable: false,
@@ -353,8 +353,8 @@ function PonerImagen(pathToElm, video) {
         filtro = ['png', 'jpg', 'gif', 'bmp', 'svg', 'jpeg']
     dialog.showOpenDialog(BrowserWindow.getAllWindows()[0],
         {
-            "title": "Elija un Contenido",
-            "defaultPath": app.getAppPath() + "\\src\\img\\client",
+            "title": __("Elija un Contenido"),
+            "defaultPath": app.getPath("userData") + "\\img",
             "filters": [{
                 name: 'Contenido',
                 extensions: filtro
@@ -367,8 +367,8 @@ function PonerImagen(pathToElm, video) {
                 let annadir = true;
                 if (document.querySelector("#libreria ul").innerHTML.indexOf(path.win32.basename(pathFiles[0])) != -1)
                     annadir = false;
-                extra.copySync(pathFiles[0], __dirname + "/img/client/" + path.win32.basename(pathFiles[0]));
-                let ruta = "./img/client/" + path.win32.basename(pathFiles[0]);
+                extra.copySync(pathFiles[0], __dirname + "/img/" + path.win32.basename(pathFiles[0]));
+                let ruta = "./img/" + path.win32.basename(pathFiles[0]);
                 let image = "";
                 let imageArray = ['.png', '.jpg', '.gif', '.bmp', '.svg', '.jpeg'];
                 let ext = ruta.substring(ruta.lastIndexOf("."));
@@ -377,7 +377,7 @@ function PonerImagen(pathToElm, video) {
                 } else {
                     image = document.createElement("img");
                 }
-                image.src = "./img/client/" + path.win32.basename(pathFiles[0]);
+                image.src = app.getPath("userData")+"/img/" + path.win32.basename(pathFiles[0]);
                 if (annadir)
                     annadirALibreria(image, path.win32.basename(pathFiles[0]));
 				document.querySelector(pathToElm).value = ruta;
@@ -431,7 +431,9 @@ function Creacion(elm) {
     {
         newLine.innerHTML = "<div style='width: 8px;height: 8px;display: inline-block;margin-right: 5px;background: #868585;border-radius:50%;'></div><b>" + elm.nodeName.toLowerCase() + "#" + elm.id + "." + elm.className + "</b>";
     }
-	lista_elm.appendChild(newLine)
+    lista_elm.appendChild(newLine)
+    if (document.title.indexOf("●") == -1)
+        document.title = "● " + document.title;
 }
 function Soltar(evt)
 {
@@ -586,6 +588,12 @@ function GenerarInspector(that, list, tabla) {
                 else
                     valorObj = true;
             }
+            if (clase == "loop") {
+                if (that.getAttribute("loop") == null)
+                    valorObj = false;
+                else
+                    valorObj = true;
+            }
             if (clase == "controls") {
                 if (that.getAttribute("controls") == null)
                     valorObj = false;
@@ -700,19 +708,19 @@ function EliminarContenido(that) {
     if (objLigados.length > 0) {
         dialog.showMessageBox(BrowserWindow.getAllWindows()[0],
             {
-                "title": "Atención",
+                "title": __("Atención"),
                 "type": "warning",
-                "buttons": ["Aceptar", "Cancelar"],
+                "buttons": [__("Aceptar"), __("Cancelar")],
                 "defaultId": 1,
                 "cancelId": 1,
                 "noLink": true,
-                "message": "Si borra este contenido multimedia, los objetos relacionados pueden dejar de funcionar. ¿Desea eliminar este contenido?"
+                "message": __("Si borra este contenido multimedia, los objetos relacionados pueden dejar de funcionar. ¿Desea eliminar este contenido?")
             }, function (num) {
                 if (num == 0) {
                     let fichero = __dirname + "\\img\\client\\" + ruta.split("\\")[ruta.split("\\").length - 1];
+                    that.parentNode.remove();
                     if (extra.existsSync(fichero)) {
                         extra.removeSync(fichero);
-                        that.parentNode.remove();
                         for (let obj of objLigados)
                             obj.src = obj.src + "#";
                     }
@@ -841,8 +849,8 @@ function newInfoToHTMLElement(that, HTMLobj, evt) {
         for (let obj of HTMLobj) {
             if (clase == "id" || clase == "class" || clase == "src")
                 obj.setAttribute(clase, valor);
-            else if (clase == "autoplay" || clase == "controls")
-                (valor == "true") ? obj.setAttribute(clase, valor) : obj.removeAttribute(clase);
+            else if (clase == "autoplay" || clase == "controls" || clase == "loop")
+                if(valor == "true"){HTMLobj.setAttribute(clase, "");if(clase=="autoplay")HTMLobj.setAttribute("muted","");}else{HTMLobj.removeAttribute(clase);}
             else
                 obj.style[clase] = valor;
         }
@@ -850,8 +858,8 @@ function newInfoToHTMLElement(that, HTMLobj, evt) {
     else {
         if (clase == "id" || clase == "class" || clase == "src")
             HTMLobj.setAttribute(clase, valor);
-        else if (clase == "autoplay" || clase == "controls")
-            (valor == "true") ? HTMLobj.setAttribute(clase, valor) : HTMLobj.removeAttribute(clase);
+        else if (clase == "autoplay" || clase == "controls" || clase == "loop")
+            if(valor == "true"){HTMLobj.setAttribute(clase, "");if(clase=="autoplay")HTMLobj.setAttribute("muted","");}else{HTMLobj.removeAttribute(clase);}
         else
             HTMLobj.style[clase] = valor;
     }
@@ -1190,7 +1198,6 @@ function DelBlimp()
         	DelFrame();
 }
 function KeyboardManager(evt) {
-	console.log(evt);
 	KeyboardBinding(evt);
 	if (evt.code == "ArrowUp")
 		MovimientoTec(0);

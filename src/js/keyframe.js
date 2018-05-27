@@ -44,7 +44,7 @@ function AnnadirFrame()
         minimizable:false,
         parent:BrowserWindow.getAllWindows()[0],
 				backgroundColor: "#333",
-				title:"Añadir fotograma clave",
+				title:__("Añadir fotograma clave"),
         nativeWindowOpen: true,
       })
     AddWindow.loadURL(path.join(__dirname,"/newFrame.html"))
@@ -158,7 +158,7 @@ function AnnadirFrame()
     })
   }else
   {
-	MessageBox("Información","No se ha seleccionado ningún elemento para crear el fotograma clave.","info",["OK"],function(){});
+	MessageBox(__("Información"),__("No se ha seleccionado ningún elemento para crear el fotograma clave."),"info",["OK"],function(){});
   }
 }
 function devolverNumeroTexto(obj,prop)
@@ -177,26 +177,40 @@ function DelFrame()
   {
     dialog.showMessageBox(BrowserWindow.getAllWindows()[0],
             {
-                "title":"Atención",
+                "title":"__(Atención)",
                 "type":"warning",
-                "buttons":["Sí","No","Cancelar"],
+                "buttons":[__("Sí"),"No",__("Cancelar")],
                 "defaultId":0,
                 "cancelId":2,
                 "noLink":true,
-                "message":"¿Está seguro que desea borrar esta animación? \n"+infoDel
+                "message":__("¿Está seguro que desea borrar esta animación?")+" \n"+infoDel
             },function(num)
             {
               if(num==0)
               {
                 let time = self.selectedKeys[0].time;
-				let identifiador = self.selectedKeys[0].track.parent.id;
-				BorrarFrame(time,identifiador);
+								let identificador = self.selectedKeys[0].track.parent.id;
+								let client_id = identificador.match(/#[a-z|0-9|\-|\_]+/g)[0];
+								BorrarFrame(time,identificador);
+								document.querySelector(client_id).setAttribute("termina",duracionAnimationMax(identificador))
               }
             });
   }else
   {
-	  MessageBox("Información","No se ha seleccionado ningún fotograma clave para su eliminación.","info",["OK"],function(){});
+	  MessageBox(__("Información"),__("No se ha seleccionado ningún fotograma clave para su eliminación."),"info",["OK"],function(){});
   }
+}
+function duracionAnimationMax(identificador)
+{
+	let ret = 0;
+	for(let obj of timelinegui.anims)
+	{
+		if(obj.targetName == identificador && ret < obj.endTime)
+		{
+			ret = obj.endTime;
+		}
+	}
+	return ret;
 }
 /**
  * Borra una sección delimitada en segundos de un punto en la secuencia de animación para un elemento dado
@@ -258,7 +272,7 @@ function ModificarFrame()
 		  modal:true,
 		  icon:"img/logo-32.png",
 		  resizable:false,
-		  title: "Modificar fotograma clave",
+		  title: __("Modificar fotograma clave"),
 		  minimizable:false,
 		  parent:BrowserWindow.getAllWindows()[0],
 		  backgroundColor: "#333",
@@ -315,7 +329,7 @@ function ModificarFrame()
 	  })
   }else
   {
-	MessageBox("Información","No se puede modificar el frame base de la animación.","info",["OK"],function(){});
+	MessageBox(__("Información"),__("No se puede modificar el frame base de la animación."),"info",["OK"],function(){});
   }
 }
 function MostrarSeleccionSeccion(selected)
