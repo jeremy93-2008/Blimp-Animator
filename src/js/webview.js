@@ -559,7 +559,9 @@ function GenerarInspector(that, list, tabla) {
             if (clase != "id" && clase != "class" && clase != "src")
                 if (elm.type == "number")
                     if (clase == "box-shadow" || clase == "text-shadow")
-                        elm.value = parseFloat(computed.getPropertyValue(clase).replace("rgb(0, 0, 0) 0px 0px ", "").replace(" 0px", "").replace("px", "").trim()) || 0;
+						elm.value = parseFloat(computed.getPropertyValue(clase).replace("rgb(0, 0, 0) 0px 0px ", "").replace(" 0px", "").replace("px", "").trim()) || 0;
+					else if(clase=="transform")
+						elm.value = parseFloat(that.style[clase].replace(elm.getAttribute("pre"),"".replace(elm.getAttribute("post"),""))) || 0;
                     else
                         elm.value = parseFloat(computed.getPropertyValue(clase).replace("px", "").replace("%", "").trim()) || 0;
                 else if (elm.type == "color")
