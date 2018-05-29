@@ -147,7 +147,7 @@ function AbrirBlimp(pathFiles, deleteFolderRecursive) {
 			endTimeline = parseFloat(obj.getAttribute("termina"));
 		obj.addEventListener("mousedown", function (evt) { ActivaInspector(obj, evt); });
 		Creacion(obj);
-		if (obj.nodeName == "IMG" || obj.nodeName == "AUDIO" || obj.nodeName == "VIDEO"){}
+		if (obj.nodeName == "IMG" || obj.nodeName == "AUDIO" || obj.nodeName == "VIDEO")
 			annadirALibreria(obj);
 	}
 	rutaArch = project;

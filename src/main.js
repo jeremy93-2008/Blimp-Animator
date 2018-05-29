@@ -32,7 +32,7 @@ function createWindow () {
     center: true,
     slashes: true
   }))
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
 
   mainWindow.setMenu(null);
 
