@@ -65,40 +65,7 @@ function AnnadirFrame()
 					{
 						for(let obj of elmSeleccionado)
 						{
-							let identificador = "div#"+obj.id+"."+obj.className;
-							let json = {};
-							for(let prop of txtStyle)
-							{
-								let valor = obj.style[prop];
-									if(prop == "opacity")
-										json[prop] = (prop!="opacity")?valor:(valor=="")?1:valor;
-									else if(prop == "transform")
-										json[prop] = (valor=="")?"rotate(0deg)":valor;
-									else if(prop == "height")
-										json[prop] = (valor=="")?devolverNumeroTexto(obj,prop):Number(valor.replace("px",""));
-									else if(valor == "black")
-										json[prop] = "rgb(0,0,0)";
-									else if(valor == "" && prop.indexOf("-shadow") != -1)
-										json[prop] = "black 0px 0px 0px";
-									else if(valor != "" && prop.indexOf("-shadow") != -1)
-										json[prop] = valor;
-									else if(valor == "" && prop == "z-index")
-										json[prop] = 0;
-									else if(valor == "" && prop == "font-weight")
-										json[prop] = 400;                
-									else if(valor == "")
-										json[prop] = devolverNumeroTexto(obj,prop);
-									else if(valor.indexOf("px") != -1)
-										json[prop] = Number(valor.replace("px",""));
-									else
-										json[prop] = valor;
-							}
-							//Añadimos este frame como clave
-							anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
-							// Sumamos uno al contador de Frame
-							numFrame++;
-							obj.setAttribute("termina",parseFloat(arr[0]) + parseFloat(arr[1]));
-							obj.setAttribute("dura","true");
+							addKeyFrame(obj,arr)
 						}
 						// Ponemos el timeline en pausa
 						beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
@@ -108,51 +75,18 @@ function AnnadirFrame()
 					}else
 					{
 						let obj = el;
-						let identificador = "div#"+obj.id+"."+obj.className;
-						let json = {};
-						for(let prop of txtStyle)
-						{
-							let valor = obj.style[prop];
-								if(prop == "opacity")
-									json[prop] = (prop!="opacity")?valor:(valor=="")?1:valor;
-								else if(prop == "transform")
-									json[prop] = (valor=="")?"rotate(0deg)":valor;
-								else if(prop == "height")
-									json[prop] = (valor=="")?devolverNumeroTexto(obj,prop):Number(valor.replace("px",""));
-								else if(valor == "black")
-									json[prop] = "rgb(0,0,0)";
-								else if(valor == "" && prop.indexOf("-shadow") != -1)
-									json[prop] = "black 0px 0px 0px";
-								else if(valor != "" && prop.indexOf("-shadow") != -1)
-									json[prop] = valor;
-								else if(valor == "" && prop == "z-index")
-									json[prop] = 0;
-								else if(valor == "" && prop == "font-weight")
-									json[prop] = 400;                
-								else if(valor == "")
-									json[prop] = devolverNumeroTexto(obj,prop);
-								else if(valor.indexOf("px") != -1)
-									json[prop] = Number(valor.replace("px",""));
-								else
-									json[prop] = valor;
-						}
-						//Añadimos este frame como clave
-						anim(identificador,obj.style,timelinegui).to(beginTo,json,duration);
+						addKeyFrame(obj, arr);
 						// Ponemos el timeline en pausa
-						beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
-						if(beginTo>endTimeline)
-							endTimeline = beginTo 
+						beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);		
+						if (beginTo > endTimeline)
+							endTimeline = beginTo;
 						timelinegui.stop(endTimeline);
-						// Sumamos uno al contador de Frame
-						numFrame++;
-						obj.setAttribute("termina",parseFloat(arr[0]) + parseFloat(arr[1]));
-						obj.setAttribute("dura","true");
-						recordUndoTimeLine();					
+						recordUndoTimeLine();			
 					}     
         }
         beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
 		duration = 1;
-		
+		timelineSortByTime();
       }
       AddWindow = null
     })
@@ -160,6 +94,48 @@ function AnnadirFrame()
   {
 	MessageBox(__("Información"),__("No se ha seleccionado ningún elemento para crear el fotograma clave."),"info",["OK"],function(){});
   }
+}
+function addKeyFrame(obj, arr) {
+	let identificador = "div#" + obj.id + "." + obj.className;
+	let json = {};
+	for (let prop of txtStyle) {
+		let valor = obj.style[prop];
+		if (prop == "opacity")
+			json[prop] = (prop != "opacity") ? valor : (valor == "") ? 1 : valor;
+		else if (prop == "transform")
+			json[prop] = (valor == "") ? "rotate(0deg)" : valor;
+		else if (prop == "height")
+			json[prop] = (valor == "") ? devolverNumeroTexto(obj, prop) : Number(valor.replace("px", ""));
+		else if (valor == "black")
+			json[prop] = "rgb(0,0,0)";
+		else if (valor == "" && prop.indexOf("-shadow") != -1)
+			json[prop] = "black 0px 0px 0px";
+		else if (valor != "" && prop.indexOf("-shadow") != -1)
+			json[prop] = valor;
+		else if (valor == "" && prop == "z-index")
+			json[prop] = 0;
+		else if (valor == "" && prop == "font-weight")
+			json[prop] = 400;
+		else if (valor == "")
+			json[prop] = devolverNumeroTexto(obj, prop);
+		else if (valor.indexOf("px") != -1)
+			json[prop] = Number(valor.replace("px", ""));
+		else
+			json[prop] = valor;
+	}
+	//Añadimos este frame como clave
+	anim(identificador, obj.style, timelinegui).to(beginTo, json, duration);
+	obj.setAttribute("termina", parseFloat(arr[0]) + parseFloat(arr[1]));
+	obj.setAttribute("dura", "true");
+	// Sumamos uno al contador de Frame
+	numFrame++;
+}
+function timelineSortByTime()
+{
+	timelinegui.anims.sort(function(a, b)
+	{
+		return a.endTime > b.endTime;
+	});
 }
 function devolverNumeroTexto(obj,prop)
 {
@@ -177,7 +153,7 @@ function DelFrame()
   {
     dialog.showMessageBox(BrowserWindow.getAllWindows()[0],
             {
-                "title":"__(Atención)",
+                "title":__("Atención"),
                 "type":"warning",
                 "buttons":[__("Sí"),"No",__("Cancelar")],
                 "defaultId":0,
@@ -435,7 +411,8 @@ function ModoReproduccion(activo)
 	container.style.top = "0"
 	container.style.left = "0"
 	container.style.padding = "21px"
-	container.style.zIndex = "150"
+	//Bug Fix #5 - Get Down zIndex to not overlay menu
+	container.style.zIndex = "9"
 	container.innerHTML="<strong>Modo reproducción</strong>";
 	if(activo)
 	{
