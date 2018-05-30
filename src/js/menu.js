@@ -68,9 +68,13 @@ function Guardar(verDialogo) {
 				}
 				]
 			}, function (pathFile) {
-				comprimido.writeZip(pathFile);
-				rutaArch = pathFile;
-				document.title = path.win32.basename(rutaArch) + " - Blimp Animator"
+				// Bug Fix #4 - Verificamos si la ruta es null para no sobreescribir la ruta buena predefinida de guardado
+				if(pathFile != null)
+				{
+					comprimido.writeZip(pathFile);
+					rutaArch = pathFile;
+					document.title = path.win32.basename(rutaArch) + " - Blimp Animator"
+				}
 			})
 	} else {
 		comprimido.writeZip(rutaArch);
@@ -88,8 +92,7 @@ function AbrirArchivo() {
 			"filters": [{
 				name: __('Archivos de guardado Blimp'),
 				extensions: ['blimp']
-			}
-			],
+			}],
 			"properties": ["openFile"]
 		}, function (pathFiles) {
 			AbrirBlimp(pathFiles, deleteFolderRecursive);
@@ -147,7 +150,8 @@ function AbrirBlimp(pathFiles, deleteFolderRecursive) {
 			endTimeline = parseFloat(obj.getAttribute("termina"));
 		obj.addEventListener("mousedown", function (evt) { ActivaInspector(obj, evt); });
 		Creacion(obj);
-		if (obj.nodeName == "IMG" || obj.nodeName == "AUDIO" || obj.nodeName == "VIDEO"){}
+		// Bug Fix #1 - Error sintactico que consistia en que el if tenia bracket al final, y no tenia que haber tenido
+		if (obj.nodeName == "IMG" || obj.nodeName == "AUDIO" || obj.nodeName == "VIDEO")
 			annadirALibreria(obj);
 	}
 	rutaArch = project;
@@ -587,59 +591,43 @@ function Build(rutaPredefinida) {
 				}
 				]
 			}, function (pathFile) {
-				let titulo = (rutaArch != "") ? path.win32.basename(rutaArch) : "WebProject";
-				let tablaResol= localStorage.resolFrame ;
-				if(tablaResol == undefined || tablaResol == "")
-				{
-					tablaResol = "background:white;position:absolute;overflow:hidden;width:1024px;height:320px;";
-				}else
-				{
-					tablaResol = tablaResol.split(";");
-					tablaResol = "background:white;position:absolute;overflow:hidden;width:"+tablaResol[0]+"px;height:"+tablaResol[1]+"px;";
-				}
-				let html = Reemplazar(doc.innerHTML,app.getPath("userData"),".");
-				let htmlFile = "<html>\n\t<head>\n\t\t<title>" + titulo + "</title>\n\t\t<meta charset='utf-8' />\n\t\t<link rel='stylesheet' href='style.css' />\n\t</head>\n\t<body style='background-color:lightgray'><div id='blimp_container' style='"+tablaResol+"'>" + html + "</div>\n\t</body>\n</html>"
-				let rutaDirectorio = pathFile.replace(path.win32.basename(pathFile), "")
-				extra.writeFileSync(pathFile, htmlFile, "utf-8");
-				let code = (localStorage.cssCode == undefined || localStorage.cssCode == "") ? "" : localStorage.cssCode;
-				let cssFile = styleCss + fotogramaCSS + code + "\n";
-				extra.writeFileSync(rutaDirectorio + "style.css", cssFile, "utf-8")
-				try {
-					extra.mkdirSync(rutaDirectorio + "img");
-				} catch (ex) { console.log("Directorios ya creados"); }
-				for (let media of libreria) {
-					try
-					{
-						extra.copySync(media.replace("file:///", ""), rutaDirectorio + "img/" + path.win32.basename(media.replace(/%20/g," ")));
-					}catch(ex){}
-				}
+				ExportacionArchivos(pathFile);
 			})
 	} else {
+		// Bug Fix #2 - Problema a la hora de exportar, Refactorizacion y parametrizació n para la ruta de salida
+		ExportacionArchivos();
+	}
+
+
+	function ExportacionArchivos(ruta) {
+		if(ruta != undefined)
+			rutaPredefinida = ruta;
 		let titulo = (rutaArch != "") ? path.win32.basename(rutaArch) : "WebProject";
-		let tablaResol= localStorage.resolFrame ;
-		if(tablaResol == undefined || tablaResol == "")
-		{
+		let tablaResol = localStorage.resolFrame;
+		if (tablaResol == undefined || tablaResol == "") {
 			tablaResol = "background:white;position:absolute;overflow:hidden;width:1024px;height:320px;";
-		}else
-		{
-			tablaResol = tablaResol.split(";");
-			tablaResol = "background:white;position:absolute;overflow:hidden;width:"+tablaResol[0]+"px;height:"+tablaResol[1]+"px;";
 		}
-		let html = Reemplazar(doc.innerHTML,app.getPath("userData"),".");
-		let htmlFile = "<html>\n\t<head>\n\t\t<title>" + titulo + "</title>\n\t\t<meta charset='utf-8' />\n\t\t<link rel='stylesheet' href='style.css' />\n\t</head>\n\t<body style='background-color:lightgray'><div id='blimp_container' style='"+tablaResol+"'>" + html + "</div>\n\t</body>\n</html>"
-		let rutaDirectorio = rutaPredefinida.replace(path.win32.basename(rutaPredefinida), "")
+		else {
+			tablaResol = tablaResol.split(";");
+			tablaResol = "background:white;position:absolute;overflow:hidden;width:" + tablaResol[0] + "px;height:" + tablaResol[1] + "px;";
+		}
+		let html = Reemplazar(doc.innerHTML, app.getPath("userData"), ".");
+		let htmlFile = "<html>\n\t<head>\n\t\t<title>" + titulo + "</title>\n\t\t<meta charset='utf-8' />\n\t\t<link rel='stylesheet' href='style.css' />\n\t</head>\n\t<body style='background-color:lightgray'><div id='blimp_container' style='" + tablaResol + "'>" + html + "</div>\n\t</body>\n</html>";
+		let rutaDirectorio = rutaPredefinida.replace(path.win32.basename(rutaPredefinida), "");
 		extra.writeFileSync(rutaPredefinida, htmlFile, "utf-8");
 		let code = (localStorage.cssCode == undefined || localStorage.cssCode == "") ? "" : localStorage.cssCode;
 		let cssFile = styleCss + fotogramaCSS + code + "\n";
-		extra.writeFileSync(rutaDirectorio + "style.css", cssFile, "utf-8")
+		extra.writeFileSync(rutaDirectorio + "style.css", cssFile, "utf-8");
 		try {
 			extra.mkdirSync(rutaDirectorio + "img");
-		} catch (ex) { console.log("Directorios ya creados"); }
+		}
+		catch (ex) {
+			console.log("Directorios ya creados");
+		}
 		for (let media of libreria) {
-			extra.copySync(media.replace("file:///", "").replace("%20"," "), rutaDirectorio + "img/" + path.win32.basename(media.replace(/%20/g," ")));
+			extra.copySync(media.replace("file:///", "").replace("%20", " "), rutaDirectorio + "img/" + path.win32.basename(media.replace(/%20/g, " ")));
 		}
 	}
-
 }
 function CambiarPanel(name) {
 	var evento = new Event("click");

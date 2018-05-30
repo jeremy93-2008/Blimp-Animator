@@ -1108,9 +1108,17 @@ function SeleccionarElementosEnArea(top, left, width, height) {
     let elmsSelecc = [];
     for (let obj of list) {
         let ancho = Number(obj.style.width.replace("px", ""));
-        let alto = Number(obj.style.height.replace("px", ""));
-        let arriba = Number(obj.style.top.replace("px", ""));
-        let izq = Number(obj.style.left.replace("px", ""));
+		let alto = Number(obj.style.height.replace("px", ""));
+		let arriba = Number(obj.style.top.replace("px", ""));
+		let izq = Number(obj.style.left.replace("px", ""));
+		// Bug Fix #3 - Verificamos si el elemento no está contenido en un elemento padre, en cuyo caso le añadimos la posicion X,Y del padre y asi sucesivamente hasta llegar al div webview que corresponde a la raiz del Diseñador
+		let padre = obj.parentNode;
+		while(padre.id != "webview")
+		{
+			arriba += Number(padre.style.top.replace("px",""));
+			izq += Number(padre.style.left.replace("px",""));
+			padre = padre.parentNode;
+		}
 
         /**Ahora vemos si cada elemento está dentro de la caja de selección */
         if ((arriba > top && arriba < (top + height)) && (izq > left && izq < (left + width))) {
