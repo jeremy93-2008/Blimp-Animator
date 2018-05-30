@@ -1,0 +1,41 @@
+<html>
+<head>
+    <title>TimelineGUI</title>
+    <script defer type="text/javascript" src="js/timeline_animation.js"></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <style>
+        .default
+        {
+            border:solid 1px black;
+            width:50px;
+            height: 50px;
+            margin: 10px;
+        }
+    </style>
+</head> 
+<body>
+    <div id="timeline">
+        <div id="left">
+            <div id="controller">
+                <button><i class="fa fa-play"></i></button>
+                <button><i class="fa fa-pause"></i></button>
+                <button><i class="fa fa-stop"></i></button>
+                <button><i class="fa fa-bars"></i></button>
+            </div>
+            <div id="elements"></div>
+        </div>
+        <div id="linespan">
+            <div id="line-container">
+                <div id="timespan"></div>
+                <div id="slide"></div>
+            </div>
+        </div>
+    </div>
+    <div id="prueba">
+        <div id="elm65" class="default"></div>
+        <div id="elm85" class="default"></div>
+    </div>
+</body>
+</html>
