@@ -38,26 +38,26 @@ body
     width: calc(100% - 165px);
     height: 100%;
     vertical-align: top;
-    overflow: auto;
+    overflow: hidden;
     display: inline-block;
 }
 #line-container
 {
     height: 100%;
 }
-#linespan::-webkit-scrollbar,#elements::-webkit-scrollbar
+#slidescroll::-webkit-scrollbar,#elements::-webkit-scrollbar
 {
     background: #343a40;
 }
-#linespan::-webkit-scrollbar-thumb,#elements::-webkit-scrollbar-thumb
+#slidescroll::-webkit-scrollbar-thumb,#elements::-webkit-scrollbar-thumb
 {
     background: #464646;
 }
-#linespan::-webkit-scrollbar-track,#elements::-webkit-scrollbar-track
+#slidescroll::-webkit-scrollbar-track,#elements::-webkit-scrollbar-track
 {
     background: #505961;
 }
-#linespan::-webkit-scrollbar-corner,#elements::-webkit-scrollbar-corner
+#slidescroll::-webkit-scrollbar-corner,#elements::-webkit-scrollbar-corner
 {
     background: #343a40;
 }
@@ -80,7 +80,7 @@ body
     margin-top: 5px;
     margin-left: -5px;
     margin-right: -8px;
-    height: calc(100% - 20px);
+    height: calc(100% - 38px);
     overflow:hidden;
 }
 #elements div
@@ -106,9 +106,25 @@ body
     font-size:12px;
     background-color: #555;
 }
+#slidescroll
+{
+	width:100%;
+	overflow: auto;
+}
 #slide
 {
-    height: calc(100% - 50px);
+    height: calc(100% - 40px);
     width:100%;
 }
-/*6C15C9 1572C9 c96c15*/
+#slidescrollcontain
+{
+	height: 76%;
+}
+#currentTime
+{
+    position: absolute;
+    color: #888;
+    margin-top: 14px;
+    margin-left: -25px;
+    font-size: 12px;
+}
