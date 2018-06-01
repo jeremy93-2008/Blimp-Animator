@@ -18,21 +18,24 @@
 </head> 
 <body>
     <div id="timeline">
+		<div id="control-time">
+			<div id="currentTime">0s</div>
+		</div>
         <div id="left">
             <div id="controller">
-                <button><i id="play" class="fa fa-play"></i></button>
-                <button><i id="pause" class="fa fa-pause"></i></button>
-                <button><i class="fa fa-stop"></i></button>
+                <button id="play"><i class="fa fa-play"></i></button>
+                <button id="pause"><i class="fa fa-pause"></i></button>
+                <button id="stop"><i class="fa fa-stop"></i></button>
                 <button><i class="fa fa-bars"></i></button>
             </div>
             <div id="elements"></div>
         </div>
         <div id="linespan">
             <div id="line-container">
-				<div id="currentTime">0s</div>
 				<div id="timespan"></div>
 				<div id="slidescroll">
 					<div id="slidescrollcontain">
+						<div id="slide-tracker"></div>
 						<div id="slide"></div>
 					</div>
 				</div>
