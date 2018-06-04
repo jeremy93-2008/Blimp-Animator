@@ -5,6 +5,7 @@ function Timeline()
 	let maxTime = 12;
 	let num_color = 0;
 	let intervalo;
+	let scrollEnabled = false;
 	let tiempo_segundo = 0;
 	let elm_oculto = [];
 	let animation = 
@@ -97,15 +98,6 @@ function Timeline()
 			"targetName":"div#elm105.default",
 			"prefix":"px",
 			"target":document.querySelector("#elm105").style
-		},
-		{
-			"startValue":"",
-			"endValue":"url('')",
-			"startTime":1,
-			"endTime":3.5,
-			"propertyName":"background-image",
-			"targetName":"div#elm105.default",
-			"target":document.querySelector("#elm105").style
 		}
 	];
 	CargarTimeline();
@@ -137,6 +129,9 @@ function Timeline()
 			contenedor.appendChild(segundo.cloneNode(true));
 			let texto = document.createElement("span")
 			texto.className = "sec";
+			texto.style.display = "inline-block";
+			texto.style.cursor = "pointer";
+			texto.onclick = function(){Tracker((sec+1),true);};
 			texto.innerHTML = (sec+1)+"s";
 			contenedor.appendChild(texto);
 		}
@@ -277,14 +272,16 @@ function Timeline()
 			})
 		});
 	}
-	function MaximoTiempo()
+	function MaximoTiempo(time)
 	{
+		if(time == undefined)
+			time = 0;
 		let res = 0;
 		for(let anims of animation)
 		{
 			res = (res<anims.endTime)?anims.endTime:res;
 		}
-		return res;
+		return res-Number(time.toFixed(2));
 	}
 	function CargarControles()
 	{
@@ -292,40 +289,75 @@ function Timeline()
 		document.querySelector("#pause").addEventListener("click",function(){pause();})
 		document.querySelector("#stop").addEventListener("click",function(){stop();})
 	}
-	function CargarAnimacion()
+	function CargarAnimacion(time)
 	{
 		sortAnimation();
+		let animate = convertInKeyframeModule(time);
 		let currentTarget = "";
 		let currentTime = -1;
+		let currentStartTime = -1;
 		let texto = "";
-		for(let anims of animation)
+		let startAnimation = "";
+		for(let anims of animate)
 		{
 			let pasokeyframe = false;
 			if(currentTarget == "" || currentTarget != anims.targetName)
 			{
 				if(currentTarget != anims.targetName && currentTarget != "")
-					texto += "}}";
+					texto += "}"+startAnimation+"}";
 				texto += "\n@keyframes "+anims.targetName.replace("#","").replace(".","")+" {\n";
 				currentTarget = anims.targetName;
-				anims.target.animation = anims.targetName.replace("#","").replace(".","")+" "+MaximoTiempo()+"s ease 0s infinite normal none paused";
+				anims.target.animation = anims.targetName.replace("#","").replace(".","")+" "+MaximoTiempo(time)+"s ease 0s infinite normal none paused";
 				pasokeyframe = true;
 			}
-			if(currentTime == -1 || currentTime != anims.endTime)
+			if(currentTime == -1 || currentTime != anims.time)
 			{
-				if(currentTime != anims.endTime && currentTime != -1 && !pasokeyframe)
+				if(currentTime != anims.time && currentTime != -1 && !pasokeyframe)
 					texto += "}\n";
-				let porcentaje = ((MaximoTiempo()/anims.endTime)*10);
+				let porcentaje = ((anims.time*100)/MaximoTiempo(time));
+				porcentaje = (porcentaje==Infinity)?0:porcentaje;
 				texto += porcentaje.toFixed(2)+"% {\n";
-				currentTime = anims.endTime
+				currentTime = anims.time
 			}
-			if(anims.endTime == currentTime)
+			if(anims.time == currentTime)
 			{
 				let prefijo = (anims.prefix==undefined?"":anims.prefix)
-				texto += anims.propertyName+":"+anims.endValue+prefijo+";\n";
+				texto += anims.propertyName+":"+anims.value+prefijo+";\n";
 			}
 		}
 		texto += "}}";
 		cssEstilo.innerHTML = texto;
+		console.log(animate);
+	}
+	function convertInKeyframeModule(time)
+	{
+		if(time == undefined)
+			time = 0;
+		let animationKey = [];
+		for(anims of animation)
+		{
+			if(anims.startTime >= time)
+			{
+				animationKey.push({
+					"value":anims.startValue,
+					"time":parseInt(anims.startTime-time),
+					"propertyName":anims.propertyName,
+					"targetName":anims.targetName,
+					"prefix":anims.prefix,
+					"target":anims.target});
+			}
+			if(anims.endTime >= time)
+			{
+				animationKey.push({
+					"value":anims.endValue,
+					"time":parseInt(anims.endTime-time),
+					"propertyName":anims.propertyName,
+					"targetName":anims.targetName,
+					"prefix":anims.prefix,
+					"target":anims.target});
+			}
+		}
+		return animationKey;
 	}
 	function play()
 	{
@@ -340,7 +372,9 @@ function Timeline()
 			if((tiempo_segundo.toFixed(2)) >= MaximoTiempo())
 			{
 				tiempo_segundo = 0;
+				stop();
 			}
+			Tracker(tiempo_segundo);
 		},10);
 	}
 	function pause()
@@ -350,6 +384,7 @@ function Timeline()
 			anims.target.animationPlayState = "paused";
 		}
 		clearInterval(intervalo);
+		ActualizarAnimacion(tiempo_segundo);
 	}
 	function stop()
 	{
@@ -364,6 +399,7 @@ function Timeline()
 		window.setTimeout(function()
 		{
 			CargarAnimacion();
+			Tracker(0.15);
 		},400)
 	}
 	function CargarTracker()
@@ -375,11 +411,33 @@ function Timeline()
 				let x2 = (ev.clientX-175)+document.querySelector("#slidescroll").scrollLeft;
 				if(x2 > 0)
 					document.querySelector("#slide-tracker").style.left = x2+"px"
+				ActualizarAnimacion((x2/155));
 			}
 			document.body.onmouseup = function()
 			{
 				document.body.onmousemove = null;
 			}
 		})
+	}
+	function Tracker(sec,actualiza)
+	{
+		document.querySelector("#slide-tracker").style.left = ((160*sec)-20)+"px"
+		if(((160*sec)-20) > document.querySelector("#slidescroll").offsetWidth-80)
+		{
+			let num = ((160*sec)-20);
+			document.querySelector("#slidescroll").scrollLeft = num-document.querySelector("#slidescroll").offsetWidth+80;
+		}
+		if(sec < 1)
+		{
+			document.querySelector("#slidescroll").scrollLeft = 0;
+		}
+		if(actualiza != undefined && actualiza == true)
+			ActualizarAnimacion(sec);
+	}
+	function ActualizarAnimacion(sec)
+	{
+		CargarAnimacion(sec);
+		tiempo_segundo = sec;
+		document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
 	}
 }
