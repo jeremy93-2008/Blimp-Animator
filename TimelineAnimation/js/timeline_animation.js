@@ -8,6 +8,7 @@ function Timeline()
 	let scrollEnabled = false;
 	let tiempo_segundo = 0;
 	let elm_oculto = [];
+	let playing = false;
 	let animation = 
 	[
 		{
@@ -281,7 +282,10 @@ function Timeline()
 		{
 			res = (res<anims.endTime)?anims.endTime:res;
 		}
-		return res-Number(time.toFixed(2));
+		if(time >= 0)
+			return res-Number(time.toFixed(2));
+		else
+			return res;
 	}
 	function CargarControles()
 	{
@@ -340,7 +344,7 @@ function Timeline()
 			{
 				animationKey.push({
 					"value":anims.startValue,
-					"time":parseInt(anims.startTime-time),
+					"time":(anims.startTime-time).toFixed(2),
 					"propertyName":anims.propertyName,
 					"targetName":anims.targetName,
 					"prefix":anims.prefix,
@@ -350,7 +354,7 @@ function Timeline()
 			{
 				animationKey.push({
 					"value":anims.endValue,
-					"time":parseInt(anims.endTime-time),
+					"time":(anims.endTime-time).toFixed(2),
 					"propertyName":anims.propertyName,
 					"targetName":anims.targetName,
 					"prefix":anims.prefix,
@@ -376,6 +380,7 @@ function Timeline()
 			}
 			Tracker(tiempo_segundo);
 		},10);
+		playing = true;
 	}
 	function pause()
 	{
@@ -384,7 +389,7 @@ function Timeline()
 			anims.target.animationPlayState = "paused";
 		}
 		clearInterval(intervalo);
-		ActualizarAnimacion(tiempo_segundo);
+		playing = false;
 	}
 	function stop()
 	{
@@ -401,6 +406,7 @@ function Timeline()
 			CargarAnimacion();
 			Tracker(0.15);
 		},400)
+		playing = false;
 	}
 	function CargarTracker()
 	{
@@ -411,7 +417,7 @@ function Timeline()
 				let x2 = (ev.clientX-175)+document.querySelector("#slidescroll").scrollLeft;
 				if(x2 > 0)
 					document.querySelector("#slide-tracker").style.left = x2+"px"
-				ActualizarAnimacion((x2/155));
+				ActualizarAnimacion((x2/160));
 			}
 			document.body.onmouseup = function()
 			{
@@ -436,8 +442,11 @@ function Timeline()
 	}
 	function ActualizarAnimacion(sec)
 	{
-		CargarAnimacion(sec);
-		tiempo_segundo = sec;
-		document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
+		if(!playing)
+		{
+			CargarAnimacion(sec);
+			tiempo_segundo = sec;
+			document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
+		}
 	}
 }
