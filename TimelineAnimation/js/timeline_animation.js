@@ -136,8 +136,8 @@ function Timeline()
 			texto.innerHTML = (sec+1)+"s";
 			contenedor.appendChild(texto);
 		}
-		document.querySelector("#timespan").style.width = (165*maxTime)+"px";
-		document.querySelector("#slidescrollcontain").style.width = (165*maxTime)+"px";
+		document.querySelector("#timespan").style.width = (153*maxTime)+"px";
+		document.querySelector("#slidescrollcontain").style.width = (153*maxTime)+"px";
 	}
 	function sortAnimation()
 	{
@@ -295,6 +295,8 @@ function Timeline()
 	}
 	function CargarAnimacion(time)
 	{
+		if(time < 0)
+			time = 0;
 		sortAnimation();
 		let animate = convertInKeyframeModule(time);
 		let currentTarget = "";
@@ -311,7 +313,7 @@ function Timeline()
 					texto += "}"+startAnimation+"}";
 				texto += "\n@keyframes "+anims.targetName.replace("#","").replace(".","")+" {\n";
 				currentTarget = anims.targetName;
-				anims.target.animation = anims.targetName.replace("#","").replace(".","")+" "+MaximoTiempo(time)+"s ease 0s infinite normal none paused";
+				anims.target.animation = anims.targetName.replace("#","").replace(".","")+" "+MaximoTiempo(time)+"s ease 0s infinite normal backwards paused";
 				pasokeyframe = true;
 			}
 			if(currentTime == -1 || currentTime != anims.time)
@@ -363,23 +365,27 @@ function Timeline()
 		}
 		return animationKey;
 	}
-	function play()
+	function play(played)
 	{
 		for(let anims of animation)
 		{
 			anims.target.animationPlayState = "running";
 		}
-		intervalo = window.setInterval(function()
+		if(played == undefined)
 		{
-			tiempo_segundo += 0.01; 
-			document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
-			if((tiempo_segundo.toFixed(2)) >= MaximoTiempo())
+			intervalo = window.setInterval(function()
 			{
-				tiempo_segundo = 0;
-				stop();
-			}
-			Tracker(tiempo_segundo);
-		},10);
+				tiempo_segundo += 0.01; 
+				document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
+				if((tiempo_segundo.toFixed(2)) >= MaximoTiempo())
+				{
+					tiempo_segundo = 0;
+					stop();
+				}
+				Tracker(tiempo_segundo);
+			},10);
+		}
+		
 		playing = true;
 	}
 	function pause()
@@ -405,8 +411,43 @@ function Timeline()
 		{
 			CargarAnimacion();
 			Tracker(0.15);
-		},400)
+		},100)
 		playing = false;
+	}
+	function restart(sec)
+	{
+		for(let anims of animation)
+		{
+			anims.target.animation = "";
+			anims.target.animationPlayState = "";
+		}
+		window.setTimeout(()=>
+		{
+			CargarAnimacion(sec);
+			//ocultarElementos(true);
+			play(false);
+			window.setTimeout(()=>
+			{
+				pause();
+				//ocultarElementos(false);
+			},45);
+		},50)
+	}
+	function ocultarElementos(ocultar)
+	{
+		if(ocultar)
+		{
+			for(let anims of animation)
+			{
+				anims.target.opacity = "0";
+			}
+		}else
+		{
+			for(let anims of animation)
+			{
+				anims.target.opacity = "1";
+			}
+		}
 	}
 	function CargarTracker()
 	{
@@ -417,7 +458,7 @@ function Timeline()
 				let x2 = (ev.clientX-175)+document.querySelector("#slidescroll").scrollLeft;
 				if(x2 > 0)
 					document.querySelector("#slide-tracker").style.left = x2+"px"
-				ActualizarAnimacion((x2/160));
+				ActualizarAnimacion((x2/151));
 			}
 			document.body.onmouseup = function()
 			{
@@ -427,11 +468,11 @@ function Timeline()
 	}
 	function Tracker(sec,actualiza)
 	{
-		document.querySelector("#slide-tracker").style.left = ((160*sec)-20)+"px"
-		if(((160*sec)-20) > document.querySelector("#slidescroll").offsetWidth-80)
+		document.querySelector("#slide-tracker").style.left = ((151*sec)-20)+"px"
+		if(((151*sec)-20) > document.querySelector("#slidescroll").offsetWidth-80)
 		{
-			let num = ((160*sec)-20);
-			document.querySelector("#slidescroll").scrollLeft = num-document.querySelector("#slidescroll").offsetWidth+80;
+			let num = ((151*sec)-20);
+			document.querySelector("#slidescroll").scrollLeft = num+document.querySelector("#slidescroll").offsetWidth-80;
 		}
 		if(sec < 1)
 		{
@@ -444,7 +485,9 @@ function Timeline()
 	{
 		if(!playing)
 		{
-			CargarAnimacion(sec);
+			if(sec < 0)
+				sec = 0;
+			restart(sec);
 			tiempo_segundo = sec;
 			document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
 		}
