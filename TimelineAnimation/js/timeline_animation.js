@@ -8,6 +8,7 @@ function Timeline()
 	let scrollEnabled = false;
 	let tiempo_segundo = 0;
 	let elm_oculto = [];
+	let first_style = {};
 	let playing = false;
 	let animation = 
 	[
@@ -92,7 +93,7 @@ function Timeline()
 		},
 		{
 			"startValue":"0",
-			"endValue":"50",
+			"endValue":"10",
 			"startTime":0,
 			"endTime":1.5,
 			"propertyName":"border-radius",
@@ -113,8 +114,30 @@ function Timeline()
 		document.querySelector("#currentTime").innerHTML = "0.00 s / "+MaximoTiempo()+" s";
 		document.head.appendChild(cssEstilo)
 		CargarAnimacion();
+		GuardarEstilos();
 		CargarControles();
 		CargarTracker();
+	}
+	function GuardarEstilos()
+	{
+		let arr = getStyleModifierOfAnimation();
+		let currentTarget = "";
+		for(let anims of animation)
+		{
+			if(currentTarget != anims.targetName)
+			{
+				let elm = document.querySelector(anims.targetName);
+				let valores = [];
+				for(let val of arr)
+				{
+					valores.push(window.getComputedStyle(elm).getPropertyValue(val));
+				}
+				first_style[anims.targetName] = valores;
+				currentTarget = anims.targetName;
+			}
+
+		}
+		console.log(first_style);
 	}
 	function CargarTiempo()
 	{
@@ -293,10 +316,19 @@ function Timeline()
 		document.querySelector("#pause").addEventListener("click",function(){pause();})
 		document.querySelector("#stop").addEventListener("click",function(){stop();})
 	}
-	function CargarAnimacion(time)
+	/**
+	 * Carga la animación Keyframe según un tiempo y una duración
+	 * @param {Number} time en segundo
+	 * @param {Number} maxDuration en milisegundos
+	 */
+	function CargarAnimacion(time,maxDuration)
 	{
-		if(time < 0)
+		let time_track = time;
+		if(time < 0 || maxDuration != undefined)
 			time = 0;
+		let duration = MaximoTiempo(time);
+		if(maxDuration != undefined)
+			duration = (maxDuration/1000).toFixed(2)
 		sortAnimation();
 		let animate = convertInKeyframeModule(time);
 		let currentTarget = "";
@@ -313,7 +345,7 @@ function Timeline()
 					texto += "}"+startAnimation+"}";
 				texto += "\n@keyframes "+anims.targetName.replace("#","").replace(".","")+" {\n";
 				currentTarget = anims.targetName;
-				anims.target.animation = anims.targetName.replace("#","").replace(".","")+" "+MaximoTiempo(time)+"s ease 0s infinite normal backwards paused";
+				anims.target.animation = anims.targetName.replace("#","").replace(".","")+" "+duration+"s ease 0s infinite normal backwards paused";
 				pasokeyframe = true;
 			}
 			if(currentTime == -1 || currentTime != anims.time)
@@ -333,6 +365,16 @@ function Timeline()
 		}
 		texto += "}}";
 		cssEstilo.innerHTML = texto;
+		if(maxDuration != undefined)
+		{
+			let track_slide = ((time_track*Number(duration))/MaximoTiempo())*1000;
+			play(false);
+			window.setTimeout(()=>
+			{
+				pause();
+				changeStyleToCurrentComputedStyle();
+			},track_slide);
+		}
 		console.log(animate);
 	}
 	function convertInKeyframeModule(time)
@@ -367,6 +409,8 @@ function Timeline()
 	}
 	function play(played)
 	{
+		if(played == undefined)
+			CargarAnimacion(tiempo_segundo)
 		for(let anims of animation)
 		{
 			anims.target.animationPlayState = "running";
@@ -409,7 +453,8 @@ function Timeline()
 		}
 		window.setTimeout(function()
 		{
-			CargarAnimacion();
+			restartStyle();
+			CargarAnimacion(0);
 			Tracker(0.15);
 		},100)
 		playing = false;
@@ -423,15 +468,39 @@ function Timeline()
 		}
 		window.setTimeout(()=>
 		{
-			CargarAnimacion(sec);
-			//ocultarElementos(true);
-			play(false);
-			window.setTimeout(()=>
-			{
-				pause();
-				//ocultarElementos(false);
-			},45);
+			CargarAnimacion(sec,300);
 		},50)
+	}
+	function changeStyleToCurrentComputedStyle()
+	{
+		let arr = getStyleModifierOfAnimation();
+		for(let anims of animation)
+		{
+			let elm = document.querySelector(anims.targetName);
+			for(let estilo of arr)
+				elm.style[estilo] = window.getComputedStyle(elm).getPropertyValue(estilo)
+		}
+	}
+	function getStyleModifierOfAnimation()
+	{
+		let res = [];
+		for(let anims of animation)
+			if(res.indexOf(anims.propertyName) == -1)
+				res.push(anims.propertyName)
+		return res;
+	}
+	function restartStyle()
+	{
+		let arr = getStyleModifierOfAnimation();
+		for(let obj in first_style)
+		{
+			let elm = document.querySelector(obj);
+			let valores = first_style[obj]
+			for(let i = 0;i < arr.length;i++)
+			{
+				elm.style[arr[i]] = valores[i]
+			}
+		}
 	}
 	function ocultarElementos(ocultar)
 	{
