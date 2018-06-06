@@ -3,13 +3,9 @@ function Timeline()
 {
 	let cssEstilo = document.createElement("style");
 	let maxTime = 12;
-	let num_color = 0;
-	let intervalo;
-	let scrollEnabled = false;
 	let tiempo_segundo = 0;
+	let animationRunning = [];
 	let elm_oculto = [];
-	let first_style = {};
-	let playing = false;
 	let animation = 
 	[
 		{
@@ -108,36 +104,13 @@ function Timeline()
 		if(localStorage.maxTime != undefined && localStorage.maxTime == "")
 			maxTime = Number(localStorage.maxTime);
 		CargarTiempo();
-		sortAnimation();
 		CargarLineasdeTiempo();
 		CargarScroll();
 		document.querySelector("#currentTime").innerHTML = "0.00 s / "+MaximoTiempo()+" s";
 		document.head.appendChild(cssEstilo)
 		CargarAnimacion();
-		GuardarEstilos();
 		CargarControles();
 		CargarTracker();
-	}
-	function GuardarEstilos()
-	{
-		let arr = getStyleModifierOfAnimation();
-		let currentTarget = "";
-		for(let anims of animation)
-		{
-			if(currentTarget != anims.targetName)
-			{
-				let elm = document.querySelector(anims.targetName);
-				let valores = [];
-				for(let val of arr)
-				{
-					valores.push(window.getComputedStyle(elm).getPropertyValue(val));
-				}
-				first_style[anims.targetName] = valores;
-				currentTarget = anims.targetName;
-			}
-
-		}
-		console.log(first_style);
 	}
 	function CargarTiempo()
 	{
@@ -162,11 +135,13 @@ function Timeline()
 		document.querySelector("#timespan").style.width = (153*maxTime)+"px";
 		document.querySelector("#slidescrollcontain").style.width = (153*maxTime)+"px";
 	}
-	function sortAnimation()
+	function sortAnimation(anims)
 	{
-		animation = animation.sort(function(a,b)
+		return anims.sort(function(a,b)
 		{
-			return (a.targetName.localeCompare(b.targetName)==0?(a.propertyName.localeCompare(b.propertyName)):(a.targetName.localeCompare(b.targetName)));
+			let num = Number(a.time);
+			let num2 = Number(b.time);
+			return (num>num2)?1:(num==num2)?0:-1;
 		});
 	}
 	function CargarLineasdeTiempo()
@@ -213,7 +188,6 @@ function Timeline()
 					border.className="salta";
 					border.setAttribute("target-"+currentTarget.replace("#","").replace(".",""),"");
 					document.querySelector("#slide").appendChild(border);
-					num_color++;
 					if(!nuevoHeader)
 						top = 0;
 					//Creamos el track y añadimos el tiempo en el track del objeto JSON
@@ -296,19 +270,14 @@ function Timeline()
 			})
 		});
 	}
-	function MaximoTiempo(time)
+	function MaximoTiempo()
 	{
-		if(time == undefined)
-			time = 0;
 		let res = 0;
 		for(let anims of animation)
 		{
 			res = (res<anims.endTime)?anims.endTime:res;
 		}
-		if(time >= 0)
-			return res-Number(time.toFixed(2));
-		else
-			return res;
+		return res;
 	}
 	function CargarControles()
 	{
@@ -318,69 +287,46 @@ function Timeline()
 	}
 	/**
 	 * Carga la animación Keyframe según un tiempo y una duración
-	 * @param {Number} time en segundo
-	 * @param {Number} maxDuration en milisegundos
 	 */
-	function CargarAnimacion(time,maxDuration)
+	function CargarAnimacion()
 	{
-		let time_track = time;
-		if(time < 0 || maxDuration != undefined)
-			time = 0;
-		let duration = MaximoTiempo(time);
-		if(maxDuration != undefined)
-			duration = (maxDuration/1000).toFixed(2)
-		sortAnimation();
-		let animate = convertInKeyframeModule(time);
-		let currentTarget = "";
-		let currentTime = -1;
-		let currentStartTime = -1;
-		let texto = "";
-		let startAnimation = "";
+		let animate = convertInKeyframeModule();
+		animate = sortAnimation(animate);
+		let propertyChange = {};
+		let oldElm = null;
+		let conf = 
+		{
+			duration: MaximoTiempo()*1000,
+			iterations:Infinity
+		};
 		for(let anims of animate)
 		{
-			let pasokeyframe = false;
-			if(currentTarget == "" || currentTarget != anims.targetName)
-			{
-				if(currentTarget != anims.targetName && currentTarget != "")
-					texto += "}"+startAnimation+"}";
-				texto += "\n@keyframes "+anims.targetName.replace("#","").replace(".","")+" {\n";
-				currentTarget = anims.targetName;
-				anims.target.animation = anims.targetName.replace("#","").replace(".","")+" "+duration+"s ease 0s infinite normal backwards paused";
-				pasokeyframe = true;
-			}
-			if(currentTime == -1 || currentTime != anims.time)
-			{
-				if(currentTime != anims.time && currentTime != -1 && !pasokeyframe)
-					texto += "}\n";
-				let porcentaje = ((anims.time*100)/MaximoTiempo(time));
-				porcentaje = (porcentaje==Infinity)?0:porcentaje;
-				texto += porcentaje.toFixed(2)+"% {\n";
-				currentTime = anims.time
-			}
-			if(anims.time == currentTime)
-			{
-				let prefijo = (anims.prefix==undefined?"":anims.prefix)
-				texto += anims.propertyName+":"+anims.value+prefijo+";\n";
-			}
+			let obj = {};
+			obj[convertInJavascript(anims.propertyName)] = anims.value+anims.prefix;
+			obj["offset"] = anims.time/MaximoTiempo();
+			if(propertyChange[anims.targetName] == null)
+				propertyChange[anims.targetName] = [];
+			propertyChange[anims.targetName].push(obj);
 		}
-		texto += "}}";
-		cssEstilo.innerHTML = texto;
-		if(maxDuration != undefined)
+		for(let elm in propertyChange)
 		{
-			let track_slide = ((time_track*Number(duration))/MaximoTiempo())*1000;
-			play(false);
-			window.setTimeout(()=>
-			{
-				pause();
-				changeStyleToCurrentComputedStyle();
-			},track_slide);
+			let obj = document.querySelector(elm);
+			let json = propertyChange[elm];
+			console.log(obj);
+			console.log(json);
+			animationRunning.push(obj.animate(json,conf));
 		}
-		console.log(animate);
 	}
-	function convertInKeyframeModule(time)
+	function convertInJavascript(name)
 	{
-		if(time == undefined)
-			time = 0;
+		let num = name.indexOf("-")
+		name = name.substring(0,num)+name.substring(num+1)
+		name = name.replace(name[num],name[num].toUpperCase());
+		return name;
+	}
+	function convertInKeyframeModule()
+	{
+		let time = 0;
 		let animationKey = [];
 		for(anims of animation)
 		{
@@ -409,77 +355,17 @@ function Timeline()
 	}
 	function play(played)
 	{
-		if(played == undefined)
-			CargarAnimacion(tiempo_segundo)
-		for(let anims of animation)
-		{
-			anims.target.animationPlayState = "running";
-		}
-		if(played == undefined)
-		{
-			intervalo = window.setInterval(function()
-			{
-				tiempo_segundo += 0.01; 
-				document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
-				if((tiempo_segundo.toFixed(2)) >= MaximoTiempo())
-				{
-					tiempo_segundo = 0;
-					stop();
-				}
-				Tracker(tiempo_segundo);
-			},10);
-		}
-		
+
 		playing = true;
 	}
 	function pause()
 	{
-		for(let anims of animation)
-		{
-			anims.target.animationPlayState = "paused";
-		}
-		clearInterval(intervalo);
 		playing = false;
 	}
 	function stop()
 	{
-		clearInterval(intervalo);
-		tiempo_segundo = 0;
-		document.querySelector("#currentTime").innerHTML = "0.00 s / "+MaximoTiempo()+" s";
-		for(let anims of animation)
-		{
-			anims.target.animation = "";
-			anims.target.animationPlayState = "";
-		}
-		window.setTimeout(function()
-		{
-			restartStyle();
-			CargarAnimacion(0);
-			Tracker(0.15);
-		},100)
+		
 		playing = false;
-	}
-	function restart(sec)
-	{
-		for(let anims of animation)
-		{
-			anims.target.animation = "";
-			anims.target.animationPlayState = "";
-		}
-		window.setTimeout(()=>
-		{
-			CargarAnimacion(sec,300);
-		},50)
-	}
-	function changeStyleToCurrentComputedStyle()
-	{
-		let arr = getStyleModifierOfAnimation();
-		for(let anims of animation)
-		{
-			let elm = document.querySelector(anims.targetName);
-			for(let estilo of arr)
-				elm.style[estilo] = window.getComputedStyle(elm).getPropertyValue(estilo)
-		}
 	}
 	function getStyleModifierOfAnimation()
 	{
@@ -488,35 +374,6 @@ function Timeline()
 			if(res.indexOf(anims.propertyName) == -1)
 				res.push(anims.propertyName)
 		return res;
-	}
-	function restartStyle()
-	{
-		let arr = getStyleModifierOfAnimation();
-		for(let obj in first_style)
-		{
-			let elm = document.querySelector(obj);
-			let valores = first_style[obj]
-			for(let i = 0;i < arr.length;i++)
-			{
-				elm.style[arr[i]] = valores[i]
-			}
-		}
-	}
-	function ocultarElementos(ocultar)
-	{
-		if(ocultar)
-		{
-			for(let anims of animation)
-			{
-				anims.target.opacity = "0";
-			}
-		}else
-		{
-			for(let anims of animation)
-			{
-				anims.target.opacity = "1";
-			}
-		}
 	}
 	function CargarTracker()
 	{
@@ -552,13 +409,6 @@ function Timeline()
 	}
 	function ActualizarAnimacion(sec)
 	{
-		if(!playing)
-		{
-			if(sec < 0)
-				sec = 0;
-			restart(sec);
-			tiempo_segundo = sec;
-			document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
-		}
+		document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
 	}
 }
