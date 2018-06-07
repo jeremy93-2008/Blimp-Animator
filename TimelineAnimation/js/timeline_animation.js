@@ -4,6 +4,7 @@ function Timeline()
 	let cssEstilo = document.createElement("style");
 	let maxTime = 12;
 	let tiempo_segundo = 0;
+	let intervalo = null;
 	let animationRunning = [];
 	let elm_oculto = [];
 	let animation = 
@@ -421,6 +422,7 @@ function Timeline()
 		{
 			anims.pause();
 		}
+		clearInterval(intervalo);
 		playing = false;
 	}
 	function stop()
@@ -430,6 +432,7 @@ function Timeline()
 			anims.currentTime = 0;
 			anims.pause();
 		}
+		clearInterval(intervalo);
 		playing = false;
 	}
 	function getStyleModifierOfAnimation()
@@ -488,15 +491,25 @@ function Timeline()
 	}
 	function CambiarAnimacion(oldTime,start,end,elm)
 	{
+		let time = animationRunning[0].currentTime
+		animationRunning = [];
 		for(let anims of animation)
 		{
 			let tag = elm.getAttribute("nodo").replace("target-","");
 			if(anims.targetName.replace("#","").replace(".","") == tag)
+			{
 				if(anims.propertyName == elm.getAttribute("property"))
-					if(anims.startTime == oldTime)
-						console.log(anims);
+				{
+					if(anims.startTime > oldTime-0.1 && anims.startTime < oldTime+0.1)
+					{
+						anims.startTime = Number(start.toFixed(2));
+						anims.endTime = Number(end.toFixed(2));
+					}
+				}			
+			}
 		}
-		//CargarAnimacion();
+		CargarAnimacion();
+		Tracker(time/1000,true);
 	}
 	function MoverSlide(elm,event)
 	{
@@ -505,7 +518,7 @@ function Timeline()
 		elm.style.outline = "solid 2px #eee";
 		document.body.onmousemove = function(event)
 		{
-			//let old = Number(elm.style.marginLeft.replace("px",""));
+			let old = Number(elm.style.marginLeft.replace("px",""));
 			let x2 = event.clientX;
 			let xFinal = x2-x;
 			if((margen+xFinal) > 0)
@@ -513,7 +526,7 @@ function Timeline()
 				elm.style.marginLeft = margen+xFinal;
 				let start = Number(elm.style.marginLeft.replace("px",""))/151;
 				let end = (elm.offsetWidth+Number(elm.style.marginLeft.replace("px","")))/151;
-				CambiarAnimacion(Number((margen/151).toFixed(2)),start,end,elm);
+				CambiarAnimacion(Number((old/151).toFixed(2)),start,end,elm);
 			}	
 		}
 		document.body.onmouseup = function()
