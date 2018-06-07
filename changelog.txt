@@ -1,8 +1,8 @@
 Build and Play Animation --> Hecho
 Preferences --> Hecho
 Build Preferences --> Hecho
-AutoUpdate --> Mas o menos hecho, pero mejor hacerlo con ASAR m�s que con ejecutable
-Language Pack
+AutoUpdate --> Hecho
+Language Pack --> Hecho
 KeyBoard Binding --> Hecho
 Extension Pack
 Tema --> Hecho

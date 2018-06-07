@@ -103,6 +103,7 @@ function Timeline()
 	{
 		if(localStorage.maxTime != undefined && localStorage.maxTime == "")
 			maxTime = Number(localStorage.maxTime);
+		sortByNameAnimation();
 		CargarTiempo();
 		CargarLineasdeTiempo();
 		CargarScroll();
@@ -134,6 +135,13 @@ function Timeline()
 		}
 		document.querySelector("#timespan").style.width = (153*maxTime)+"px";
 		document.querySelector("#slidescrollcontain").style.width = (153*maxTime)+"px";
+	}
+	function sortByNameAnimation()
+	{
+		animation = animation.sort(function(a,b)
+		{
+			return (a.targetName.localeCompare(b.targetName)==0?(a.propertyName.localeCompare(b.propertyName)):(a.targetName.localeCompare(b.targetName)));
+		});
 	}
 	function sortAnimation(anims)
 	{
@@ -213,6 +221,8 @@ function Timeline()
 		timeSlide.style.width = (ancho * duration) + "px";
 		timeSlide.style.height = "24px";
 		timeSlide.setAttribute(tag,"")
+		timeSlide.setAttribute("nodo",tag)
+		timeSlide.setAttribute("property",anims.propertyName)
 		timeSlide.style.marginLeft = (ancho*anims.startTime)+"px";
 		timeSlide.style.borderRadius = "10px";
 		timeSlide.style.cursor = "move";
@@ -221,6 +231,7 @@ function Timeline()
 		timeSlide.style.verticalAlign = "top";
 		timeSlide.style.marginRight = "10px";
 		timeSlide.style.marginBottom = "5px";
+		timeSlide.onmousedown = function(){MoverSlide(timeSlide,event)};
 		num_color = (num_color>4)?0:num_color;
 		timeSlide.style.backgroundColor = color[num_color]
 		document.querySelector("#slide").appendChild(timeSlide);
@@ -298,31 +309,64 @@ function Timeline()
 		{
 			duration: MaximoTiempo()*1000,
 			iterations:Infinity
-		};
+		}
 		for(let anims of animate)
 		{
 			let obj = {};
-			obj[convertInJavascript(anims.propertyName)] = anims.value+anims.prefix;
-			obj["offset"] = anims.time/MaximoTiempo();
+			let prefijo = (anims.prefix==undefined)?"":anims.prefix;
+			obj[convertInJavascript(anims.propertyName)] = anims.value+prefijo;
+			obj["offset"] = anims.time/MaximoTiempo();			
 			if(propertyChange[anims.targetName] == null)
+			{
 				propertyChange[anims.targetName] = [];
+				propertyChange[anims.targetName].push(addCommonLineInAnim());
+			}
 			propertyChange[anims.targetName].push(obj);
 		}
+		console.log(propertyChange);
 		for(let elm in propertyChange)
 		{
+			propertyChange[elm].push(addCommonLineInAnim());
 			let obj = document.querySelector(elm);
 			let json = propertyChange[elm];
-			console.log(obj);
-			console.log(json);
-			animationRunning.push(obj.animate(json,conf));
+			let anim = obj.animate(json,conf);
+			anim.id = elm;
+			anim.pause();
+			animationRunning.push(anim);
+			console.log(anim);
 		}
+	}
+	function addCommonLineInAnim()
+	{
+		let ob = {};
+		let arr = getStyleModifierOfAnimation()
+		for(let str of arr)
+		{
+			if(str.indexOf("color") != -1)
+				ob[convertInJavascript(str)] = "#fff";
+			else if(str.indexOf("transform") != -1 || str.indexOf("box-shadow") != -1 || str.indexOf("text-shadow") != -1)
+				ob[convertInJavascript(str)] = "none";
+			else
+				ob[convertInJavascript(str)] = "0";
+		}
+		return ob;
 	}
 	function convertInJavascript(name)
 	{
-		let num = name.indexOf("-")
-		name = name.substring(0,num)+name.substring(num+1)
-		name = name.replace(name[num],name[num].toUpperCase());
-		return name;
+		let txt = "";
+		let tabla = name.split("-")
+		for(let i = 0; i < tabla.length;i++)
+		{
+			if(i == 0)
+			{
+				txt += tabla[i]
+			}else
+			{
+				let char = tabla[i][0].toUpperCase();
+				txt += char+tabla[i].substring(1);
+			}
+		}
+		return txt;
 	}
 	function convertInKeyframeModule()
 	{
@@ -353,18 +397,39 @@ function Timeline()
 		}
 		return animationKey;
 	}
-	function play(played)
+	function play()
 	{
-
+		for(let anims of animationRunning)
+		{
+			anims.play();
+		}
+		intervalo = window.setInterval(function()
+		{
+			tiempo_segundo = animationRunning[0].currentTime/1000;
+			document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
+			if((tiempo_segundo.toFixed(2)) >= MaximoTiempo())
+			{
+				tiempo_segundo = 0;
+			}
+			Tracker(tiempo_segundo);
+		},10);
 		playing = true;
 	}
 	function pause()
 	{
+		for(let anims of animationRunning)
+		{
+			anims.pause();
+		}
 		playing = false;
 	}
 	function stop()
 	{
-		
+		for(let anims of animationRunning)
+		{
+			anims.currentTime = 0;
+			anims.pause();
+		}
 		playing = false;
 	}
 	function getStyleModifierOfAnimation()
@@ -389,12 +454,14 @@ function Timeline()
 			document.body.onmouseup = function()
 			{
 				document.body.onmousemove = null;
+				document.body.onmouseup = null;
 			}
 		})
 	}
 	function Tracker(sec,actualiza)
 	{
-		document.querySelector("#slide-tracker").style.left = ((151*sec)-20)+"px"
+		console.log(sec);
+		document.querySelector("#slide-tracker").style.left = (151*sec)+"px"
 		if(((151*sec)-20) > document.querySelector("#slidescroll").offsetWidth-80)
 		{
 			let num = ((151*sec)-20);
@@ -404,11 +471,56 @@ function Timeline()
 		{
 			document.querySelector("#slidescroll").scrollLeft = 0;
 		}
-		if(actualiza != undefined && actualiza == true)
+		if(actualiza)
 			ActualizarAnimacion(sec);
 	}
 	function ActualizarAnimacion(sec)
 	{
+		if(sec < 0)
+			sec = 0;
+		tiempo_segundo = sec;
+		console.log(tiempo_segundo);
+		for(let anims of animationRunning)
+		{
+			anims.currentTime = sec*1000;
+		}
 		document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
+	}
+	function CambiarAnimacion(oldTime,start,end,elm)
+	{
+		for(let anims of animation)
+		{
+			let tag = elm.getAttribute("nodo").replace("target-","");
+			if(anims.targetName.replace("#","").replace(".","") == tag)
+				if(anims.propertyName == elm.getAttribute("property"))
+					if(anims.startTime == oldTime)
+						console.log(anims);
+		}
+		//CargarAnimacion();
+	}
+	function MoverSlide(elm,event)
+	{
+		let x = event.clientX;
+		let margen = Number(elm.style.marginLeft.replace("px",""));
+		elm.style.outline = "solid 2px #eee";
+		document.body.onmousemove = function(event)
+		{
+			//let old = Number(elm.style.marginLeft.replace("px",""));
+			let x2 = event.clientX;
+			let xFinal = x2-x;
+			if((margen+xFinal) > 0)
+			{
+				elm.style.marginLeft = margen+xFinal;
+				let start = Number(elm.style.marginLeft.replace("px",""))/151;
+				let end = (elm.offsetWidth+Number(elm.style.marginLeft.replace("px","")))/151;
+				CambiarAnimacion(Number((margen/151).toFixed(2)),start,end,elm);
+			}	
+		}
+		document.body.onmouseup = function()
+		{
+			elm.style.outline = "none";
+			document.body.onmousemove = null;
+			document.body.onmouseup = null;
+		}
 	}
 }

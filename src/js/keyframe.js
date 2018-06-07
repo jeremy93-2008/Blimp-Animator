@@ -72,6 +72,7 @@ function AnnadirFrame()
 						if(beginTo>endTimeline)
 							endTimeline = beginTo 
 						timelinegui.stop(endTimeline);
+						recordUndoTimeLine();	
 					}else
 					{
 						let obj = el;
