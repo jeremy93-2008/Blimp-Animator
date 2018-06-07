@@ -102,21 +102,23 @@ function Timeline()
 	CargarTimeline();
 	function CargarTimeline()
 	{
-		if(localStorage.maxTime != undefined && localStorage.maxTime == "")
-			maxTime = Number(localStorage.maxTime);
+		maxTime = (Number(MaximoTiempo()+1)>maxTime)?Number(MaximoTiempo()+1):maxTime;
 		sortByNameAnimation();
 		CargarTiempo();
 		CargarLineasdeTiempo();
 		CargarScroll();
-		document.querySelector("#currentTime").innerHTML = "0.00 s / "+MaximoTiempo()+" s";
+		document.querySelector("#currentTime").innerHTML = "0.00 s / <input type='number' id='MaximoTiempoInput' value='"+MaximoTiempo()+"' /> s";
 		document.head.appendChild(cssEstilo)
 		CargarAnimacion();
 		CargarControles();
 		CargarTracker();
 	}
-	function CargarTiempo()
+	function CargarTiempo(tiempo)
 	{
 		let contenedor = document.querySelector("#timespan");
+		contenedor.innerHTML = "";
+		if(tiempo != undefined)
+			maxTime = tiempo;
 		for(let sec = 0;sec < maxTime;sec++)
 		{
 			let segundo = document.createElement("div");
@@ -221,6 +223,7 @@ function Timeline()
 		let timeSlide = document.createElement("div");
 		timeSlide.style.width = (ancho * duration) + "px";
 		timeSlide.style.height = "24px";
+		timeSlide.title = "Deje pulsado el botón izquierdo del ratón para mover la pista, y Ctrl+Dejar pulsado para cambiar su duración";
 		timeSlide.setAttribute(tag,"")
 		timeSlide.setAttribute("nodo",tag)
 		timeSlide.setAttribute("property",anims.propertyName)
@@ -296,6 +299,30 @@ function Timeline()
 		document.querySelector("#play").addEventListener("click",function(){play();})
 		document.querySelector("#pause").addEventListener("click",function(){pause();})
 		document.querySelector("#stop").addEventListener("click",function(){stop();})
+		document.querySelector("#MaximoTiempoInput").addEventListener("keydown",function(event)
+		{
+			if(event.key == "Enter")
+			{
+				CambiarTiempo(this);
+			}
+		});
+		document.querySelector("#MaximoTiempoInput").addEventListener("blur",function()
+		{
+			CambiarTiempo(this);
+		});
+		function CambiarTiempo(that)
+		{
+			if(Number(that.value) > MaximoTiempo()+1)
+			{
+				CargarTiempo(Number(that.value));
+				CargarLineasdeTiempo();
+			}else
+			{
+				that.value = MaximoTiempo()+1;
+				CargarTiempo(Number(that.value));
+				CargarLineasdeTiempo();				
+			}
+		}
 	}
 	/**
 	 * Carga la animación Keyframe según un tiempo y una duración
@@ -407,7 +434,7 @@ function Timeline()
 		intervalo = window.setInterval(function()
 		{
 			tiempo_segundo = animationRunning[0].currentTime/1000;
-			document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
+			document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / <input id='MaximoTiempoInput' type='number' value='"+MaximoTiempo()+"' /> s";
 			if((tiempo_segundo.toFixed(2)) >= MaximoTiempo())
 			{
 				tiempo_segundo = 0;
@@ -487,11 +514,11 @@ function Timeline()
 		{
 			anims.currentTime = sec*1000;
 		}
-		document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / "+MaximoTiempo()+" s";
+		document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / <input type='number' id='MaximoTiempoInput' value='"+MaximoTiempo()+"'/> s";
 	}
 	function CambiarAnimacion(oldTime,start,end,elm)
 	{
-		let time = animationRunning[0].currentTime
+		let time = animationRunning[0].currentTime;
 		animationRunning = [];
 		for(let anims of animation)
 		{
@@ -511,23 +538,61 @@ function Timeline()
 		CargarAnimacion();
 		Tracker(time/1000,true);
 	}
+	function ResizeAnimation(oldTime,start,duration,elm)
+	{
+		let time = animationRunning[0].currentTime;
+		animationRunning = [];
+		for(let anims of animation)
+		{
+			let tag = elm.getAttribute("nodo").replace("target-","");
+			if(anims.targetName.replace("#","").replace(".","") == tag)
+			{
+				if(anims.propertyName == elm.getAttribute("property"))
+				{
+					if(anims.startTime > oldTime-0.1 && anims.startTime < oldTime+0.1)
+					{
+						anims.startTime = Number(start.toFixed(2));
+						anims.endTime = anims.startTime+Number(duration.toFixed(2));
+					}
+				}			
+			}
+		}
+		CargarAnimacion();
+		Tracker(time/1000,true);
+	}
 	function MoverSlide(elm,event)
 	{
 		let x = event.clientX;
 		let margen = Number(elm.style.marginLeft.replace("px",""));
+		let ancho = Number(elm.style.width.replace("px",""));
 		elm.style.outline = "solid 2px #eee";
 		document.body.onmousemove = function(event)
 		{
 			let old = Number(elm.style.marginLeft.replace("px",""));
 			let x2 = event.clientX;
 			let xFinal = x2-x;
-			if((margen+xFinal) > 0)
+
+			let start = Number(elm.style.marginLeft.replace("px",""))/151;
+			let end = (Number(elm.style.width.replace("px",""))+Number(elm.style.marginLeft.replace("px","")))/151;
+			if(!event.ctrlKey)
 			{
-				elm.style.marginLeft = margen+xFinal;
-				let start = Number(elm.style.marginLeft.replace("px",""))/151;
-				let end = (elm.offsetWidth+Number(elm.style.marginLeft.replace("px","")))/151;
-				CambiarAnimacion(Number((old/151).toFixed(2)),start,end,elm);
-			}	
+				if((margen+xFinal) > 0)
+				{
+					if(end < MaximoTiempo())
+					{
+						elm.style.marginLeft = margen+xFinal;
+						CambiarAnimacion(Number((old/151).toFixed(2)),start,end,elm);					
+					}
+				}				
+			}else
+			{
+				if(end < MaximoTiempo())
+				{
+					elm.style.width = (ancho+xFinal)+"px"; 
+					let resize = Number(elm.style.width.replace("px",""))/151
+					ResizeAnimation(Number((old/151).toFixed(2)),start,resize,elm);
+				}
+			}
 		}
 		document.body.onmouseup = function()
 		{

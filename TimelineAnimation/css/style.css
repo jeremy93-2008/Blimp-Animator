@@ -156,3 +156,26 @@ body
 	left:10px;
 	border:solid 1px #555;
 }
+#currentTime input[type=number]
+{
+	width:27px;
+	appearance: textfield;
+	-webkit-appearance: textfield;
+	border:none;
+	border-bottom: solid 1px #888;
+	background: transparent;
+	color:#888;
+	text-align: center;
+	outline:none;
+	transition: border-color .4s ease-in-out;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+#currentTime input[type=number]:focus
+{
+	border-color: rgb(21, 114, 201);
+}
