@@ -124,7 +124,6 @@ function addKeyFrame(obj, arr) {
 		else
 			json[prop] = valor;
 	}
-	//Añadimos este frame como clave
 	anim(identificador, obj.style, timelinegui).to(beginTo, json, duration);
 	obj.setAttribute("termina", parseFloat(arr[0]) + parseFloat(arr[1]));
 	obj.setAttribute("dura", "true");

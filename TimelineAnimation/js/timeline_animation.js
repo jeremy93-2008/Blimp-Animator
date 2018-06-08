@@ -1,125 +1,141 @@
-Timeline();
-function Timeline()
+class Timeline
 {
-	let cssEstilo = document.createElement("style");
-	let maxTime = 12;
-	let tiempo_segundo = 0;
-	let intervalo = null;
-	let animationRunning = [];
-	let elm_oculto = [];
-	let animation = 
-	[
-		{
-			"startValue":"20",
-			"endValue":"90",
-			"startTime":1.25,
-			"endTime":2.5,
-			"prefix":"px",
-			"propertyName":"margin-left",
-			"targetName":"div#elm65.default",
-			"target":document.querySelector("#elm65").style
-		},
-		{
-			"startValue":"0",
-			"endValue":"50",
-			"startTime":0,
-			"endTime":1,
-			"propertyName":"margin-top",
-			"prefix":"px",
-			"targetName":"div#elm65.default",
-			"target":document.querySelector("#elm65").style
-		},
-		{
-			"startValue":"#fff",
-			"endValue":"#333",
-			"startTime":4.5,
-			"endTime":5.5,
-			"propertyName":"background-color",
-			"targetName":"div#elm85.default",
-			"target":document.querySelector("#elm85").style     
-		},
-		{
-			"startValue":"0",
-			"endValue":"80",
-			"startTime":0,
-			"endTime":1,
-			"propertyName":"margin-left",
-			"prefix":"px",
-			"targetName":"div#elm65.default",
-			"target":document.querySelector("#elm65").style
-		},
-		{
-			"startValue":"25",
-			"endValue":"38",
-			"startTime":2,
-			"endTime":4,
-			"propertyName":"margin-top",
-			"prefix":"px",
-			"targetName":"div#elm85.default",
-			"target":document.querySelector("#elm85").style
-		},
-		{
-			"startValue":"84",
-			"endValue":"98",
-			"startTime":6,
-			"endTime":10,
-			"prefix":"px",
-			"propertyName":"margin-left",
-			"targetName":"div#elm85.default",
-			"target":document.querySelector("#elm85").style
-		},
-		{
-			"startValue":"0",
-			"endValue":"50",
-			"startTime":0,
-			"endTime":1.5,
-			"propertyName":"border-radius",
-			"targetName":"div#elm85.default",
-			"prefix":"px",
-			"target":document.querySelector("#elm85").style
-		},
-		{
-			"startValue":"84",
-			"endValue":"98",
-			"startTime":6,
-			"endTime":10,
-			"prefix":"px",
-			"propertyName":"margin-left",
-			"targetName":"div#elm105.default",
-			"target":document.querySelector("#elm105").style
-		},
-		{
-			"startValue":"0",
-			"endValue":"10",
-			"startTime":0,
-			"endTime":1.5,
-			"propertyName":"border-radius",
-			"targetName":"div#elm105.default",
-			"prefix":"px",
-			"target":document.querySelector("#elm105").style
-		}
-	];
-	CargarTimeline();
-	function CargarTimeline()
+	Cargar(json_anim)
 	{
-		maxTime = (Number(MaximoTiempo()+1)>maxTime)?Number(MaximoTiempo()+1):maxTime;
-		sortByNameAnimation();
-		CargarTiempo();
-		CargarLineasdeTiempo();
-		CargarScroll();
-		document.querySelector("#currentTime").innerHTML = "0.00 s / <input type='number' id='MaximoTiempoInput' value='"+MaximoTiempo()+"' /> s";
-		document.head.appendChild(cssEstilo)
-		CargarAnimacion();
-		CargarControles();
-		CargarTracker();
+		this.maxTime = 12;
+		this.tiempo_segundo = 0;
+		this.intervalo = null;
+		this.animationRunning = [];
+		this.elm_oculto = [];
+		if(json_anim != undefined)
+		{
+			this.animation = json_anim
+		}else
+		{
+			this.CargarElmPrueba();
+			this.animation = 
+		[
+			{
+				"startValue":"20",
+				"endValue":"90",
+				"startTime":1.25,
+				"endTime":2.5,
+				"prefix":"px",
+				"propertyName":"margin-left",
+				"targetName":"div#elm65.default",
+				"target":document.querySelector("#elm65").style
+			},
+			{
+				"startValue":"0",
+				"endValue":"50",
+				"startTime":0,
+				"endTime":1,
+				"propertyName":"margin-top",
+				"prefix":"px",
+				"targetName":"div#elm65.default",
+				"target":document.querySelector("#elm65").style
+			},
+			{
+				"startValue":"#fff",
+				"endValue":"#333",
+				"startTime":4.5,
+				"endTime":5.5,
+				"propertyName":"background-color",
+				"targetName":"div#elm85.default",
+				"target":document.querySelector("#elm85").style     
+			},
+			{
+				"startValue":"0",
+				"endValue":"80",
+				"startTime":0,
+				"endTime":1,
+				"propertyName":"margin-left",
+				"prefix":"px",
+				"targetName":"div#elm65.default",
+				"target":document.querySelector("#elm65").style
+			},
+			{
+				"startValue":"25",
+				"endValue":"38",
+				"startTime":2,
+				"endTime":4,
+				"propertyName":"margin-top",
+				"prefix":"px",
+				"targetName":"div#elm85.default",
+				"target":document.querySelector("#elm85").style
+			},
+			{
+				"startValue":"84",
+				"endValue":"98",
+				"startTime":6,
+				"endTime":10,
+				"prefix":"px",
+				"propertyName":"margin-left",
+				"targetName":"div#elm85.default",
+				"target":document.querySelector("#elm85").style
+			},
+			{
+				"startValue":"0",
+				"endValue":"50",
+				"startTime":0,
+				"endTime":1.5,
+				"propertyName":"border-radius",
+				"targetName":"div#elm85.default",
+				"prefix":"px",
+				"target":document.querySelector("#elm85").style
+			},
+			{
+				"startValue":"84",
+				"endValue":"98",
+				"startTime":6,
+				"endTime":10,
+				"prefix":"px",
+				"propertyName":"margin-left",
+				"targetName":"div#elm105.default",
+				"target":document.querySelector("#elm105").style
+			},
+			{
+				"startValue":"0",
+				"endValue":"10",
+				"startTime":0,
+				"endTime":1.5,
+				"propertyName":"border-radius",
+				"targetName":"div#elm105.default",
+				"prefix":"px",
+				"target":document.querySelector("#elm105").style
+			}
+		];
+		}
+		this.CargarTimeline();
 	}
-	function CargarTiempo(tiempo)
+	get animations()
+	{
+		return this.animation;
+	}
+	set animations(value)
+	{
+		this.animation = value;
+		this.refreshTimeline();
+	}
+	CargarTimeline()
+	{
+		this.maxTime = (Number(this.MaximoTiempo()+1)>this.maxTime)?Number(this.MaximoTiempo()+1):this.maxTime;
+		this.sortByNameAnimation();
+		this.CargarTiempo();
+		this.CargarLineasdeTiempo();
+		this.CargarScroll();
+		document.querySelector("#currentTime").innerHTML = "0.00 s / <input type='number' step='1' id='MaximoTiempoInput' value='"+this.MaximoTiempo()+"' /> s";
+		this.CargarAnimacion();
+		this.CargarControles();
+		this.CargarTracker();
+	}
+	CargarTiempo(tiempo)
 	{
 		let contenedor = document.querySelector("#timespan");
 		contenedor.innerHTML = "";
 		if(tiempo != undefined)
-			maxTime = tiempo;
-		for(let sec = 0;sec < maxTime;sec++)
+			this.maxTime = tiempo;
+		for(let sec = 0;sec < this.maxTime;sec++)
 		{
 			let segundo = document.createElement("div");
 			segundo.style.width="150px";
@@ -136,17 +152,17 @@ function Timeline()
 			texto.innerHTML = (sec+1)+"s";
 			contenedor.appendChild(texto);
 		}
-		document.querySelector("#timespan").style.width = (153*maxTime)+"px";
-		document.querySelector("#slidescrollcontain").style.width = (153*maxTime)+"px";
+		document.querySelector("#timespan").style.width = (153*this.maxTime)+"px";
+		document.querySelector("#slidescrollcontain").style.width = (153*this.maxTime)+"px";
 	}
-	function sortByNameAnimation()
+	sortByNameAnimation()
 	{
-		animation = animation.sort(function(a,b)
+		this.animation = this.animation.sort(function(a,b)
 		{
 			return (a.targetName.localeCompare(b.targetName)==0?(a.propertyName.localeCompare(b.propertyName)):(a.targetName.localeCompare(b.targetName)));
 		});
 	}
-	function sortAnimation(anims)
+	sortAnimation(anims)
 	{
 		return anims.sort(function(a,b)
 		{
@@ -155,14 +171,14 @@ function Timeline()
 			return (num>num2)?1:(num==num2)?0:-1;
 		});
 	}
-	function CargarLineasdeTiempo()
+	CargarLineasdeTiempo()
 	{
-		LimpiarLineadeTiempo()
+		this.LimpiarLineadeTiempo()
 		let currentTarget = "";
 		let sameTrack = "";
 		let top = 0;
 		let primero = false;
-		for(let anims of animation)
+		for(let anims of this.animation)
 		{
 			let nuevoHeader = false;
 			//Cargamos el encabezado si procede
@@ -183,7 +199,7 @@ function Timeline()
 				top += 34;
 				nuevoHeader = true;
 			}
-			if(elm_oculto.indexOf("target-"+anims.targetName.replace("#","").replace(".","")) == -1)
+			if(this.elm_oculto.indexOf("target-"+anims.targetName.replace("#","").replace(".","")) == -1)
 			{
 				//Cargamos todos los hijos a quienes le corresponden un atributo en conccreto en la linea de tiempo
 				if(sameTrack != anims.propertyName)
@@ -202,19 +218,19 @@ function Timeline()
 					if(!nuevoHeader)
 						top = 0;
 					//Creamos el track y añadimos el tiempo en el track del objeto JSON
-					CrearTrackSlide(top,anims,"target-"+currentTarget.replace("#","").replace(".",""))
+					this.CrearTrackSlide(top,anims,"target-"+currentTarget.replace("#","").replace(".",""))
 				}else
 				{
 					//Existe ya un track con esta propiedad asi que solo vamos a añadir el tiempo en el track que corresponde con el objeto
-					CrearTrackSlide(top,anims,"target-"+currentTarget.replace("#","").replace(".",""))
+					this.CrearTrackSlide(top,anims,"target-"+currentTarget.replace("#","").replace(".",""))
 				}
 			}
 		}
 		document.querySelector("#slide").style.minHeight = document.querySelector("#elements").scrollHeight;
-		CargarInteractividad();
+		this.CargarInteractividad();
 		document.querySelector("#slidescroll").scrollTop = document.querySelector("#elements").scrollTop;
 	}
-	function CrearTrackSlide(top,anims,tag)
+	CrearTrackSlide(top,anims,tag)
 	{
 		let num_color = parseInt((anims.propertyName.length/5)-1);
 		let ancho = document.querySelector("#timespan div").offsetWidth+6; //Este seis corresponde al margin del span que indica los segundos
@@ -235,12 +251,12 @@ function Timeline()
 		timeSlide.style.verticalAlign = "top";
 		timeSlide.style.marginRight = "10px";
 		timeSlide.style.marginBottom = "5px";
-		timeSlide.onmousedown = function(){MoverSlide(timeSlide,event)};
+		timeSlide.onmousedown = ()=>{this.MoverSlide(timeSlide,event)};
 		num_color = (num_color>4)?0:num_color;
 		timeSlide.style.backgroundColor = color[num_color]
 		document.querySelector("#slide").appendChild(timeSlide);
 	}
-	function CargarScroll()
+	CargarScroll()
 	{
 		document.querySelector("#slidescroll").addEventListener("scroll",function(event)
 		{
@@ -258,12 +274,12 @@ function Timeline()
 			document.querySelector("#slidescroll").scrollTop = this.scrollTop;
 		})
 	}
-	function LimpiarLineadeTiempo()
+	LimpiarLineadeTiempo()
 	{
 		document.querySelector("#slide").innerHTML = "";
 		document.querySelector("#elements").innerHTML = "";
 	}
-	function VerOcultarTarget(nombre)
+	VerOcultarTarget(nombre)
 	{
 		let posicion = elm_oculto.indexOf(nombre) 
 		if(posicion != -1)
@@ -275,7 +291,7 @@ function Timeline()
 		}
 		CargarLineasdeTiempo()
 	}
-	function CargarInteractividad()
+	CargarInteractividad()
 	{
 		document.querySelectorAll("#elements label.title").forEach((elm)=>
 		{
@@ -285,101 +301,104 @@ function Timeline()
 			})
 		});
 	}
-	function MaximoTiempo()
+	MaximoTiempo()
 	{
 		let res = 0;
-		for(let anims of animation)
+		for(let anims of this.animation)
 		{
 			res = (res<anims.endTime)?anims.endTime:res;
 		}
 		return res;
 	}
-	function CargarControles()
+	CargarControles()
 	{
-		document.querySelector("#play").addEventListener("click",function(){play();})
-		document.querySelector("#pause").addEventListener("click",function(){pause();})
-		document.querySelector("#stop").addEventListener("click",function(){stop();})
-		document.querySelector("#MaximoTiempoInput").addEventListener("keydown",function(event)
+		document.querySelector("#play").addEventListener("click",()=>{this.play();})
+		document.querySelector("#pause").addEventListener("click",()=>{this.pause();})
+		document.querySelector("#stop").addEventListener("click",()=>{this.stop();})
+		this.CargarControlTiempo();
+	}
+	CargarControlTiempo()
+	{
+		document.querySelector("#MaximoTiempoInput").addEventListener("keydown",(event)=>
 		{
 			if(event.key == "Enter")
 			{
-				CambiarTiempo(this);
+				this.CambiarTiempo(document.querySelector("#MaximoTiempoInput"));
 			}
 		});
-		document.querySelector("#MaximoTiempoInput").addEventListener("blur",function()
+		document.querySelector("#MaximoTiempoInput").addEventListener("blur",()=>
 		{
-			CambiarTiempo(this);
+			this.CambiarTiempo(document.querySelector("#MaximoTiempoInput"));
 		});
-		function CambiarTiempo(that)
+	}
+	CambiarTiempo(that)
+	{
+		if(Number(that.value) > this.MaximoTiempo()+1)
 		{
-			if(Number(that.value) > MaximoTiempo()+1)
-			{
-				CargarTiempo(Number(that.value));
-				CargarLineasdeTiempo();
-			}else
-			{
-				that.value = MaximoTiempo()+1;
-				CargarTiempo(Number(that.value));
-				CargarLineasdeTiempo();				
-			}
+			that.value = Math.round(that.value);
+			this.CargarTiempo(Number(that.value));
+			this.CargarLineasdeTiempo();
+		}else
+		{
+			that.value = this.MaximoTiempo()+1;
+			this.CargarTiempo(Number(parseInt(that.value)));
+			this.CargarLineasdeTiempo();				
 		}
 	}
 	/**
 	 * Carga la animación Keyframe según un tiempo y una duración
 	 */
-	function CargarAnimacion()
+	CargarAnimacion()
 	{
-		let animate = convertInKeyframeModule();
-		animate = sortAnimation(animate);
+		let animate = this.convertInKeyframeModule();
+		animate = this.sortAnimation(animate);
 		let propertyChange = {};
 		let oldElm = null;
 		let conf = 
 		{
-			duration: MaximoTiempo()*1000,
+			duration: this.MaximoTiempo()*1000,
 			iterations:Infinity
 		}
 		for(let anims of animate)
 		{
 			let obj = {};
 			let prefijo = (anims.prefix==undefined)?"":anims.prefix;
-			obj[convertInJavascript(anims.propertyName)] = anims.value+prefijo;
-			obj["offset"] = anims.time/MaximoTiempo();			
+			obj[this.convertInJavascript(anims.propertyName)] = anims.value+prefijo;
+			obj["offset"] = anims.time/this.MaximoTiempo();			
 			if(propertyChange[anims.targetName] == null)
 			{
 				propertyChange[anims.targetName] = [];
-				propertyChange[anims.targetName].push(addCommonLineInAnim());
+				propertyChange[anims.targetName].push(this.addCommonLineInAnim());
 			}
 			propertyChange[anims.targetName].push(obj);
 		}
-		console.log(propertyChange);
 		for(let elm in propertyChange)
 		{
-			propertyChange[elm].push(addCommonLineInAnim());
+			propertyChange[elm].push(this.addCommonLineInAnim());
 			let obj = document.querySelector(elm);
 			let json = propertyChange[elm];
 			let anim = obj.animate(json,conf);
 			anim.id = elm;
 			anim.pause();
-			animationRunning.push(anim);
-			console.log(anim);
+			this.animationRunning.push(anim);
 		}
 	}
-	function addCommonLineInAnim()
+	addCommonLineInAnim()
 	{
 		let ob = {};
-		let arr = getStyleModifierOfAnimation()
+		let arr = this.getStyleModifierOfAnimation()
 		for(let str of arr)
 		{
 			if(str.indexOf("color") != -1)
-				ob[convertInJavascript(str)] = "#fff";
+				ob[this.convertInJavascript(str)] = "#fff";
 			else if(str.indexOf("transform") != -1 || str.indexOf("box-shadow") != -1 || str.indexOf("text-shadow") != -1)
-				ob[convertInJavascript(str)] = "none";
+				ob[this.convertInJavascript(str)] = "none";
 			else
-				ob[convertInJavascript(str)] = "0";
+				ob[this.convertInJavascript(str)] = "0";
 		}
 		return ob;
 	}
-	function convertInJavascript(name)
+	convertInJavascript(name)
 	{
 		let txt = "";
 		let tabla = name.split("-")
@@ -396,21 +415,24 @@ function Timeline()
 		}
 		return txt;
 	}
-	function convertInKeyframeModule()
+	convertInKeyframeModule()
 	{
 		let time = 0;
 		let animationKey = [];
-		for(anims of animation)
+		for(let anims of this.animation)
 		{
 			if(anims.startTime >= time)
 			{
-				animationKey.push({
-					"value":anims.startValue,
-					"time":(anims.startTime-time).toFixed(2),
-					"propertyName":anims.propertyName,
-					"targetName":anims.targetName,
-					"prefix":anims.prefix,
-					"target":anims.target});
+				if(anims.startValue != "")
+				{
+					animationKey.push({
+						"value":anims.startValue,
+						"time":(anims.startTime-time).toFixed(2),
+						"propertyName":anims.propertyName,
+						"targetName":anims.targetName,
+						"prefix":anims.prefix,
+						"target":anims.target});					
+				}
 			}
 			if(anims.endTime >= time)
 			{
@@ -425,72 +447,73 @@ function Timeline()
 		}
 		return animationKey;
 	}
-	function play()
+	play()
 	{
-		for(let anims of animationRunning)
+		for(let anims of this.animationRunning)
 		{
 			anims.play();
 		}
-		intervalo = window.setInterval(function()
+		this.intervalo = window.setInterval(()=>
 		{
-			tiempo_segundo = animationRunning[0].currentTime/1000;
-			document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / <input id='MaximoTiempoInput' type='number' value='"+MaximoTiempo()+"' /> s";
-			if((tiempo_segundo.toFixed(2)) >= MaximoTiempo())
+			this.tiempo_segundo = this.animationRunning[0].currentTime/1000;
+			document.querySelector("#currentTime").innerHTML = (this.tiempo_segundo.toFixed(2))+" s / <input id='MaximoTiempoInput' step='1' type='number' value='"+this.MaximoTiempo()+"' /> s";
+			this.CargarControlTiempo();
+			if((this.tiempo_segundo.toFixed(2)) >= this.MaximoTiempo())
 			{
-				tiempo_segundo = 0;
+				this.tiempo_segundo = 0;
 			}
-			Tracker(tiempo_segundo);
+			this.Tracker(this.tiempo_segundo);
 		},10);
-		playing = true;
+		this.playing = true;
 	}
-	function pause()
+	pause()
 	{
-		for(let anims of animationRunning)
+		for(let anims of this.animationRunning)
 		{
 			anims.pause();
 		}
-		clearInterval(intervalo);
-		playing = false;
+		clearInterval(this.intervalo);
+		this.playing = false;
 	}
-	function stop()
+	stop()
 	{
-		for(let anims of animationRunning)
+		for(let anims of this.animationRunning)
 		{
 			anims.currentTime = 0;
 			anims.pause();
 		}
-		clearInterval(intervalo);
-		playing = false;
+		clearInterval(this.intervalo);
+		this.Tracker(0);
+		this.playing = false;
 	}
-	function getStyleModifierOfAnimation()
+	getStyleModifierOfAnimation()
 	{
 		let res = [];
-		for(let anims of animation)
+		for(let anims of this.animation)
 			if(res.indexOf(anims.propertyName) == -1)
 				res.push(anims.propertyName)
 		return res;
 	}
-	function CargarTracker()
+	CargarTracker()
 	{
-		document.querySelector("#slide-tracker").addEventListener("mousedown",function(event)
+		document.querySelector("#slide-tracker").addEventListener("mousedown",()=>
 		{
-			document.body.onmousemove = function(ev)
+			document.body.onmousemove = (ev)=>
 			{
 				let x2 = (ev.clientX-175)+document.querySelector("#slidescroll").scrollLeft;
 				if(x2 > 0)
 					document.querySelector("#slide-tracker").style.left = x2+"px"
-				ActualizarAnimacion((x2/151));
+				this.ActualizarAnimacion((x2/151));
 			}
-			document.body.onmouseup = function()
+			document.body.onmouseup = ()=>
 			{
 				document.body.onmousemove = null;
 				document.body.onmouseup = null;
 			}
 		})
 	}
-	function Tracker(sec,actualiza)
+	Tracker(sec,actualiza)
 	{
-		console.log(sec);
 		document.querySelector("#slide-tracker").style.left = (151*sec)+"px"
 		if(((151*sec)-20) > document.querySelector("#slidescroll").offsetWidth-80)
 		{
@@ -502,32 +525,32 @@ function Timeline()
 			document.querySelector("#slidescroll").scrollLeft = 0;
 		}
 		if(actualiza)
-			ActualizarAnimacion(sec);
+			this.ActualizarAnimacion(sec);
 	}
-	function ActualizarAnimacion(sec)
+	ActualizarAnimacion(sec)
 	{
 		if(sec < 0)
 			sec = 0;
-		tiempo_segundo = sec;
-		console.log(tiempo_segundo);
-		for(let anims of animationRunning)
+		this.tiempo_segundo = sec;
+		for(let anims of this.animationRunning)
 		{
 			anims.currentTime = sec*1000;
 		}
-		document.querySelector("#currentTime").innerHTML = (tiempo_segundo.toFixed(2))+" s / <input type='number' id='MaximoTiempoInput' value='"+MaximoTiempo()+"'/> s";
+		document.querySelector("#currentTime").innerHTML = (this.tiempo_segundo.toFixed(2))+" s / <input type='number' id='MaximoTiempoInput' step='1' value='"+this.MaximoTiempo()+"'/> s";
+		this.CargarControlTiempo();
 	}
-	function CambiarAnimacion(oldTime,start,end,elm)
+	CambiarAnimacion(oldTime,start,end,elm)
 	{
-		let time = animationRunning[0].currentTime;
-		animationRunning = [];
-		for(let anims of animation)
+		let time = this.animationRunning[0].currentTime;
+		this.animationRunning = [];
+		for(let anims of this.animation)
 		{
 			let tag = elm.getAttribute("nodo").replace("target-","");
 			if(anims.targetName.replace("#","").replace(".","") == tag)
 			{
 				if(anims.propertyName == elm.getAttribute("property"))
 				{
-					if(anims.startTime > oldTime-0.1 && anims.startTime < oldTime+0.1)
+					if(anims.startTime > oldTime-0.3 && anims.startTime < oldTime+0.3)
 					{
 						anims.startTime = Number(start.toFixed(2));
 						anims.endTime = Number(end.toFixed(2));
@@ -535,38 +558,38 @@ function Timeline()
 				}			
 			}
 		}
-		CargarAnimacion();
-		Tracker(time/1000,true);
+		this.CargarAnimacion();
+		this.Tracker(time/1000,true);
 	}
-	function ResizeAnimation(oldTime,start,duration,elm)
+	ResizeAnimation(oldTime,start,duration,elm)
 	{
-		let time = animationRunning[0].currentTime;
-		animationRunning = [];
-		for(let anims of animation)
+		let time = this.animationRunning[0].currentTime;
+		this.animationRunning = [];
+		for(let anims of this.animation)
 		{
 			let tag = elm.getAttribute("nodo").replace("target-","");
 			if(anims.targetName.replace("#","").replace(".","") == tag)
 			{
 				if(anims.propertyName == elm.getAttribute("property"))
 				{
-					if(anims.startTime > oldTime-0.1 && anims.startTime < oldTime+0.1)
+					if(anims.startTime > oldTime-0.3 && anims.startTime < oldTime+0.3)
 					{
-						anims.startTime = Number(start.toFixed(2));
 						anims.endTime = anims.startTime+Number(duration.toFixed(2));
 					}
 				}			
 			}
 		}
-		CargarAnimacion();
-		Tracker(time/1000,true);
+		this.CargarAnimacion();
+		this.Tracker(time/1000,true);
 	}
-	function MoverSlide(elm,event)
+	MoverSlide(elm,event)
 	{
 		let x = event.clientX;
 		let margen = Number(elm.style.marginLeft.replace("px",""));
+		let posmargen = margen;
 		let ancho = Number(elm.style.width.replace("px",""));
 		elm.style.outline = "solid 2px #eee";
-		document.body.onmousemove = function(event)
+		document.body.onmousemove = (event)=>
 		{
 			let old = Number(elm.style.marginLeft.replace("px",""));
 			let x2 = event.clientX;
@@ -576,29 +599,70 @@ function Timeline()
 			let end = (Number(elm.style.width.replace("px",""))+Number(elm.style.marginLeft.replace("px","")))/151;
 			if(!event.ctrlKey)
 			{
-				if((margen+xFinal) > 0)
+				if(old >= 0)
 				{
-					if(end < MaximoTiempo())
+					if(end < this.MaximoTiempo()+1)
 					{
 						elm.style.marginLeft = margen+xFinal;
-						CambiarAnimacion(Number((old/151).toFixed(2)),start,end,elm);					
+						this.CambiarAnimacion(Number((posmargen/151).toFixed(2)),start,end,elm);	
+						posmargen = Number(elm.style.marginLeft.replace("px",""));				
 					}
 				}				
 			}else
 			{
-				if(end < MaximoTiempo())
+				if(end < this.MaximoTiempo())
 				{
 					elm.style.width = (ancho+xFinal)+"px"; 
 					let resize = Number(elm.style.width.replace("px",""))/151
-					ResizeAnimation(Number((old/151).toFixed(2)),start,resize,elm);
+					this.ResizeAnimation(Number((posmargen/151).toFixed(2)),start,resize,elm);
 				}
 			}
 		}
-		document.body.onmouseup = function()
+		document.body.onmouseup = ()=>
 		{
 			elm.style.outline = "none";
 			document.body.onmousemove = null;
 			document.body.onmouseup = null;
 		}
 	}
+	addKeyframe(identificador,json,beginTo,duration)
+	{
+		let elm = document.querySelector(identificador);
+		for(let key in json)
+		{
+			let newFrame = {};
+			newFrame["startTime"] = beginTo;
+			newFrame["endTime"] = beginTo+duration;
+			newFrame["targetName"] = identificador;
+			newFrame["target"] = elm.style;
+			newFrame["propertyName"] = key;
+			newFrame["startValue"] = "";
+			newFrame["endValue"] = json[key];
+			this.animation.push(newFrame);
+		}
+		this.refreshTimeline();
+	}
+	refreshTimeline()
+	{
+		this.maxTime = (Number(this.MaximoTiempo()+1)>this.maxTime)?Number(this.MaximoTiempo()+1):this.maxTime;
+		this.sortByNameAnimation();
+		this.CargarTiempo();
+		this.CargarLineasdeTiempo();
+		this.CargarAnimacion();
+	}
+	CargarElmPrueba()
+	{
+		let estilo = document.createElement("style");
+		let doc = document.createElement("div");
+		doc.id = "test"
+		doc.innerHTML = '<div id="elm65" class="default"></div><div id="elm85" class="default"></div><div id="elm105" class="default"></div>';
+		estilo.innerHTML = ".default{position: relative;border:solid 1px black;width:50px; height: 50px;margin: 10px;}";
+		if(document.querySelector("#test") == undefined)
+		{
+			document.body.appendChild(doc);
+			document.head.appendChild(estilo);
+		}
+	};
 }
+let time = new Timeline();
+time.Cargar();
