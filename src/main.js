@@ -16,9 +16,9 @@ function createWindow () {
   mainWindow = new BrowserWindow(
     {
       width: 1076, 
-      height: 660,
+      height: 680,
       minWidth: 1076,
-      minHeight: 660,
+      minHeight: 680,
       title:"Blimp Animator",
       icon:"img/logo-32.png",
       backgroundColor: "#343a40",

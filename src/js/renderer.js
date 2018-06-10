@@ -98,7 +98,6 @@ window.addEventListener("load", function () {
     document.querySelector("#add_frame").addEventListener("click", function (evt) { AnnadirFrame(evt) });
     document.querySelector("#del_frame").addEventListener("click", function (evt) { DelFrame() });
     // Se inicia la timeline
-    init();
 	CargarMultiSeleccion();
 	CargarDrop();
 	// Ponemos un nombre nuevo de proyecto

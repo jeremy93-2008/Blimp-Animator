@@ -148,7 +148,7 @@ class Timeline
 			texto.className = "sec";
 			texto.style.display = "inline-block";
 			texto.style.cursor = "pointer";
-			texto.onclick = function(){Tracker((sec+1),true);};
+			texto.onclick = function(){this.Tracker((sec+1),true);};
 			texto.innerHTML = (sec+1)+"s";
 			contenedor.appendChild(texto);
 		}
@@ -188,7 +188,7 @@ class Timeline
 				let parent = document.createElement("div");
 				parent.id = "target-"+currentTarget.replace("#","").replace(".","");
 				parent.innerHTML = "<label class='title'>"+currentTarget+"</label>";
-				parent.style.height="28px";
+				parent.style.height="33px";
 				document.querySelector("#elements").appendChild(parent);
 				sameTrack = "";
 				if(!primero)
@@ -207,7 +207,7 @@ class Timeline
 					let children = document.createElement("div");
 					children.className = "property";
 					children.setAttribute("target-"+currentTarget.replace("#","").replace(".",""),"");
-					children.style.height = "24px";
+					children.style.height = "29px";
 					children.innerHTML = "<label>"+anims.propertyName+"</label>";
 					document.querySelector("#elements").appendChild(children);
 					sameTrack = anims.propertyName;
@@ -246,6 +246,11 @@ class Timeline
 		timeSlide.style.marginLeft = (ancho*anims.startTime)+"px";
 		timeSlide.style.borderRadius = "10px";
 		timeSlide.style.cursor = "move";
+		timeSlide.style.minWidth = "2px";
+		if(anims.endTime == 0)
+		{
+			timeSlide.style.pointerEvents = "none";
+		}
 		timeSlide.style.display="inline-block";
 		timeSlide.style.marginTop = top+"px";
 		timeSlide.style.verticalAlign = "top";
@@ -281,15 +286,15 @@ class Timeline
 	}
 	VerOcultarTarget(nombre)
 	{
-		let posicion = elm_oculto.indexOf(nombre) 
+		let posicion = this.elm_oculto.indexOf(nombre) 
 		if(posicion != -1)
 		{
-			elm_oculto.splice(posicion,1)
+			this.elm_oculto.splice(posicion,1)
 		}else
 		{
-			elm_oculto.push(nombre);
+			this.elm_oculto.push(nombre);
 		}
-		CargarLineasdeTiempo()
+		this.CargarLineasdeTiempo()
 	}
 	CargarInteractividad()
 	{
@@ -297,7 +302,7 @@ class Timeline
 		{
 			elm.addEventListener("click",()=>
 			{
-				VerOcultarTarget("target-"+elm.innerHTML.replace("#","").replace(".",""));
+				this.VerOcultarTarget("target-"+elm.innerHTML.replace("#","").replace(".",""));
 			})
 		});
 	}
@@ -364,7 +369,8 @@ class Timeline
 			let obj = {};
 			let prefijo = (anims.prefix==undefined)?"":anims.prefix;
 			obj[this.convertInJavascript(anims.propertyName)] = anims.value+prefijo;
-			obj["offset"] = anims.time/this.MaximoTiempo();			
+			if(!isNaN(parseFloat(anims.time)/this.MaximoTiempo()))
+				obj["offset"] = parseFloat(anims.time)/this.MaximoTiempo();			
 			if(propertyChange[anims.targetName] == null)
 			{
 				propertyChange[anims.targetName] = [];
@@ -393,6 +399,8 @@ class Timeline
 				ob[this.convertInJavascript(str)] = "#fff";
 			else if(str.indexOf("transform") != -1 || str.indexOf("box-shadow") != -1 || str.indexOf("text-shadow") != -1)
 				ob[this.convertInJavascript(str)] = "none";
+			else if(str == "font-weight")
+				ob[this.convertInJavascript(str)] = "400";
 			else
 				ob[this.convertInJavascript(str)] = "0";
 		}
@@ -605,10 +613,10 @@ class Timeline
 					{
 						if(margen+xFinal >= 0)
 						{
-							elm.style.marginLeft = margen+xFinal;
+							elm.style.marginLeft = (margen+xFinal)+"px";
 							this.CambiarAnimacion(Number((posmargen/151).toFixed(2)),start,end,elm);	
 							posmargen = Number(elm.style.marginLeft.replace("px",""));		
-						}	
+						}					
 					}
 				}				
 			}else
@@ -645,6 +653,25 @@ class Timeline
 		}
 		this.refreshTimeline();
 	}
+	removeKeyframe(elmTimeline)
+	{
+		let segundo = Number(elmTimeline.style.marginLeft.replace("px",""))/151;
+		let identificador = elmTimeline.getAttribute("nodo");
+		let propiedad = elmTimeline.getAttribute("property");
+		for(let clave in this.animation)
+		{
+			let anims = this.animation[clave];
+			if(anims.targetName == identificador)
+				if(anims.propertyName == propiedad)
+					if(anims.startTime > segundo-0.3 && anims.startTime < segundo - 0.3)
+						delete this.animation[clave];
+		}
+		this.CargarAnimacion();
+		this.CargarLineasdeTiempo();
+	}
+	loadFile(dataString)
+	{
+	}
 	refreshTimeline()
 	{
 		this.maxTime = (Number(this.MaximoTiempo()+1)>this.maxTime)?Number(this.MaximoTiempo()+1):this.maxTime;
@@ -667,5 +694,5 @@ class Timeline
 		}
 	};
 }
-let time = new Timeline();
-time.Cargar();
+let timelinecss = new Timeline();
+timelinecss.Cargar([]);

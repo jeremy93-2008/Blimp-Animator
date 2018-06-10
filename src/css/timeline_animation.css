@@ -1,0 +1,186 @@
+body
+{
+    user-select: none;
+}
+#timeline-span
+{
+    width:100%;
+    height:240px;
+    font-family: "Open Sans";
+    background: #343a40;
+}
+#left
+{
+    padding:10px 5px;
+    width:150px;
+    display:inline-block;
+    height: 100%;
+}
+#controller button
+{
+    background: #555;
+    padding: 1px 8px;
+    border: solid 1px #2a2a2a;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #eee;
+    height: 24.8px;
+    width: 28.48px;
+    font-size: 13px;
+    outline: none;
+    transition: all .4s ease-in-out;
+}
+#controller button:hover
+{
+    box-shadow:0 0 5px rgb(21, 114, 201);
+    border-color: rgb(21, 114, 201);
+}
+#linespan
+{
+    background: #555;
+    width: calc(100% - 165px);
+    height: calc(100% - 20px);
+    vertical-align: top;
+    overflow: hidden;
+    display: inline-block;
+}
+#line-container
+{
+    height: 100%;
+}
+#slidescroll::-webkit-scrollbar,#elements::-webkit-scrollbar
+{
+    background: #343a40;
+}
+#slidescroll::-webkit-scrollbar-thumb,#elements::-webkit-scrollbar-thumb
+{
+    background: #464646;
+}
+#slidescroll::-webkit-scrollbar-track,#elements::-webkit-scrollbar-track
+{
+    background: #505961;
+}
+#slidescroll::-webkit-scrollbar-corner,#elements::-webkit-scrollbar-corner
+{
+    background: #343a40;
+}
+#timespan
+{
+    width: 100%;
+    height: 40px;
+    background: #343a40;
+}
+#timespan .sec
+{
+    color: #888;
+	font-size: 12px;
+	position: absolute;
+    margin-left: -6px;
+    display: inline-block;
+    margin-top: 21px;
+}
+#elements
+{
+    margin-top: 5px;
+    margin-left: -5px;
+    margin-right: -8px;
+    height: calc(100% - 52px);
+    overflow:hidden;
+}
+#elements div
+{
+    width: 100%;
+    padding-left: 10px;
+    font-size: 14px;
+    padding-top: 5px;
+    height: 32px;
+    background: #2d3238;
+    color: #888;
+}
+#elements div label.title
+{
+    cursor: pointer;    
+    font-size: 12px;
+}
+#elements div.property label
+{
+    cursor: default;
+}
+#elements div.property
+{
+    font-size:12px;
+    background-color: #555;
+}
+#slidescroll
+{
+	width:100%;
+    overflow: auto;
+    height: 82%;
+}
+#slide
+{
+    width:100%;
+}
+#slidescrollcontain
+{
+	height: 100%;
+	position: relative;
+}
+#currentTime
+{
+    position: absolute;
+    color: #888;
+    margin-left: 50%;
+    margin-top: 0px;
+    background: #343a40;
+    padding: 1px 10px;
+    font-size: 11.5px;
+    z-index: 25;
+}
+#slide-tracker::before
+{
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-left: -7.5px;
+    border-top: solid 1px #3a3a3a;
+    border-left: solid 1px #3a3a3a;
+    border-right: solid 1px #3a3a3a;
+    background-color: #eee;
+    position: absolute;
+	cursor:move;
+}
+#slide-tracker
+{
+	width:3px;
+	height:100%;
+	background-color: #eee;
+	position: absolute;
+	left:10px;
+	border:solid 1px #555;
+}
+#currentTime input[type=number]
+{
+	width:27px;
+	appearance: textfield;
+	-webkit-appearance: textfield;
+	border:none;
+	border-bottom: solid 1px #888;
+	background: transparent;
+	color:#888;
+	text-align: center;
+	outline:none;
+	transition: border-color .4s ease-in-out;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+#currentTime input[type=number]:focus
+{
+	border-color: rgb(21, 114, 201);
+}

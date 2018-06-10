@@ -168,14 +168,13 @@ function AbrirBlimp(pathFiles, deleteFolderRecursive) {
 	try {
 		localStorage.cssCode = extra.readJsonSync(app.getPath("temp") + "\\BlimpTemp\\code.bl");
 	} catch (ex) { }
-	timelinegui.anims = [];
+	timelinecss.animations = [];
 	timelinegui.loadFile(extra.readJsonSync(app.getPath("temp") + "\\BlimpTemp\\timeline.bl"));
-	timelinegui.stop(endTimeline);
 	document.title = path.win32.basename(rutaArch) + " - Blimp Animator";
 }
 
 function Deshacer() {
-	if (endTimeline == timelinegui.time && !timelinegui.playing) {
+	if (endTimeline == timelinecss.animationRunning[0].currentTime && !timelinecss.playing) {
 		let jsonAnterior = undoList[numUndo];
 		const webview = document.querySelector("#webview")
 		if (undoList[numUndo]["timeline"] != undefined) {
@@ -184,27 +183,27 @@ function Deshacer() {
 			if (modificar) {
 				let arrTiempo = undoList[numUndo]["timeline"]["tiempos"];
 				let endTime = 0;
-				for (var a = 0; a < timelinegui.anims.length; a++) {
-					if (arrTiempo.indexOf(timelinegui.anims[a]) != -1) {
-						timelinegui.anims[a] = arrTiempo[a]
-						if (endTimeline < timelinegui.anims[a].endTime) {
-							endTimeline = timelinegui.anims[a].endTime
+				for (var a = 0; a < timelinecss.animation.length; a++) {
+					if (arrTiempo.indexOf(timelinecss.animations[a]) != -1) {
+						timelinecss.animations[a] = arrTiempo[a]
+						if (endTimeline < timelinecss.animations[a].endTime) {
+							endTimeline = timelinecss.animations[a].endTime
 						}
 					}
 				}
 			} else {
 				let arrTiempo = undoList[numUndo]["timeline"]["tiempos"];
 				let endTime = 0;
-				for (var a = 0; a < timelinegui.anims.length; a++) {
-					if (arrTiempo.indexOf(timelinegui.anims[a]) != -1) {
-						endTime = timelinegui.anims[a].startTime
-						let id = timelinegui.anims[a].targetName.match(/#[a-z|0-9|\-|\_]+/g)[0];
+				for (var a = 0; a < timelinecss.animations.length; a++) {
+					if (arrTiempo.indexOf(timelinecss.animations[a]) != -1) {
+						endTime = timelinecss.animations[a].startTime
+						let id = timelinecss.animations[a].targetName.match(/#[a-z|0-9|\-|\_]+/g)[0];
 						document.querySelector(id).setAttribute("termina", endTime);
-						timelinegui.anims.splice(a, 1);
+						timelinecss.animations.splice(a, 1);
 						a--;
 					} else {
-						if (endTimeline < timelinegui.anims[a].endTime) {
-							endTimeline = timelinegui.anims[a].endTime
+						if (endTimeline < timelinecss.animations[a].endTime) {
+							endTimeline = timelinecss.animations[a].endTime
 						}
 					}
 				}
@@ -226,9 +225,9 @@ function Deshacer() {
 					Creacion(container);
 					// Reasignamos las timeline quepodia tener en referencia
 					let identificador = container.nodeName.toLowerCase() + "#" + container.id + "." + container.className;
-					for (let a = 0; a < timelinegui.anims.length; a++) {
-						if (timelinegui.anims[a].targetName == identificador)
-							timelinegui.anims[a].target = container.style;
+					for (let a = 0; a < timelinecss.animations.length; a++) {
+						if (timelinecss.animations[a].targetName == identificador)
+							timelinecss.animations[a].target = container.style;
 					}
 				}
 				for (let estilo in jsonAnterior[elm]) {
@@ -269,12 +268,12 @@ function Rehacer() {
 			if (modificar) {
 				let arrTiempo = undoList[numRedo]["timeline"]["tiempos"];
 				let endTime = 0;
-				for (var a = 0; a < timelinegui.anims.length; a++) {
-					if (arrTiempo.indexOf(timelinegui.anims[a]) != -1) {
-						timelinegui.anims[a] = arrTiempo[a]
+				for (var a = 0; a < timelinecss.animations.length; a++) {
+					if (arrTiempo.indexOf(timelinecss.animations[a]) != -1) {
+						timelinecss.animations[a] = arrTiempo[a]
 					}
-					if (endTimeline < timelinegui.anims[a].endTime) {
-						endTimeline = timelinegui.anims[a].endTime
+					if (endTimeline < timelinecss.animations[a].endTime) {
+						endTimeline = timelinecss.animations[a].endTime
 					}
 				}
 			} else {
@@ -284,7 +283,7 @@ function Rehacer() {
 					endTime = arrTiempo[a].startTime
 					let id = arrTiempo[a].targetName.match(/#[a-z|0-9|\-|\_]+/g)[0];
 					document.querySelector(id).setAttribute("termina", endTime);
-					timelinegui.anims.push(arrTiempo[a]);
+					timelinecss.animations.push(arrTiempo[a]);
 					if (endTimeline < arrTiempo[a].endTime) {
 						endTimeline = arrTiempo[a].endTime
 					}
@@ -342,8 +341,8 @@ function Rehacer() {
 }
 function recordUndoTimeLine(modifica) {
 	let times = [];
-	for (let i = timelinegui.anims.length - 1; i > (timelinegui.anims.length - 1) - 15; i--) {
-		times.push(timelinegui.anims[i]);
+	for (let i = timelinecss.animations.length - 1; i > (timelinecss.animations.length - 1) - 15; i--) {
+		times.push(timelinecss.animations[i]);
 	}
 	let json = {}
 	if (modifica) {
@@ -367,7 +366,7 @@ function recordUndoTimeLine(modifica) {
 		document.title = "● " + document.title;
 }
 function recordUndo() {
-	if (endTimeline == timelinegui.time && !timelinegui.playing) {
+	if (endTimeline == timelinecss.time && !timelinegui.playing) {
 		// Crear uno propio
 		const webview = document.querySelectorAll("#webview *")
 		let json = {};
@@ -397,7 +396,7 @@ function Cortar() {
 		let id_for_elm = elmSeleccionado.nodeName.toLowerCase() + "#" + elmSeleccionado.id + "." + elmSeleccionado.className;
 
 		let hadAnimation = false;
-		for (let obj of timelinegui.anims)
+		for (let obj of timelinecss.animations)
 			if (id_for_elm == obj.targetName)
 				hadAnimation = true
 		if (hadAnimation && options["copyAnimationtoo"]) {
@@ -413,7 +412,7 @@ function Copiar() {
 		let id_for_elm = elmSeleccionado.nodeName.toLowerCase() + "#" + elmSeleccionado.id + "." + elmSeleccionado.className;
 
 		let hadAnimation = false;
-		for (let obj of timelinegui.anims)
+		for (let obj of timelinecss.animations)
 			if (id_for_elm == obj.targetName)
 				hadAnimation = true
 		if (hadAnimation && options["copyAnimationtoo"]) {
@@ -489,8 +488,8 @@ function Construir(rutaPredefinida) {
 }
 function MakeAnimationFromTimeline() {
 	let tabla = [];
-	for (let clave in timelinegui.anims) {
-		tabla[clave] = timelinegui.anims[clave]
+	for (let clave in timelinecss.animations) {
+		tabla[clave] = timelinecss.animations[clave]
 	}
 	return tabla;
 }

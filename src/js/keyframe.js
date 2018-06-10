@@ -70,8 +70,7 @@ function AnnadirFrame()
 						// Ponemos el timeline en pausa
 						beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
 						if(beginTo>endTimeline)
-							endTimeline = beginTo 
-						timelinegui.stop(endTimeline);
+							endTimeline = beginTo
 						recordUndoTimeLine();	
 					}else
 					{
@@ -81,7 +80,6 @@ function AnnadirFrame()
 						beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);		
 						if (beginTo > endTimeline)
 							endTimeline = beginTo;
-						timelinegui.stop(endTimeline);
 						recordUndoTimeLine();			
 					}     
         }
@@ -106,7 +104,7 @@ function addKeyFrame(obj, arr) {
 		else if (prop == "transform")
 			json[prop] = (valor == "") ? "rotate(0deg)" : valor;
 		else if (prop == "height")
-			json[prop] = (valor == "") ? devolverNumeroTexto(obj, prop) : Number(valor.replace("px", ""));
+			json[prop] = (valor == "") ? devolverNumeroTexto(obj, prop) : valor;
 		else if (valor == "black")
 			json[prop] = "rgb(0,0,0)";
 		else if (valor == "" && prop.indexOf("-shadow") != -1)
@@ -119,12 +117,10 @@ function addKeyFrame(obj, arr) {
 			json[prop] = 400;
 		else if (valor == "")
 			json[prop] = devolverNumeroTexto(obj, prop);
-		else if (valor.indexOf("px") != -1)
-			json[prop] = Number(valor.replace("px", ""));
 		else
 			json[prop] = valor;
 	}
-	anim(identificador, obj.style, timelinegui).to(beginTo, json, duration);
+	timelinecss.addKeyframe(identificador,json,beginTo,duration);
 	obj.setAttribute("termina", parseFloat(arr[0]) + parseFloat(arr[1]));
 	obj.setAttribute("dura", "true");
 	// Sumamos uno al contador de Frame
@@ -132,7 +128,7 @@ function addKeyFrame(obj, arr) {
 }
 function timelineSortByTime()
 {
-	timelinegui.anims.sort(function(a, b)
+	timelinecss.animations.sort(function(a, b)
 	{
 		return a.endTime > b.endTime;
 	});
@@ -140,11 +136,7 @@ function timelineSortByTime()
 function devolverNumeroTexto(obj,prop)
 {
   let b = window.getComputedStyle(obj,null).getPropertyValue(prop);
-  b = b.replace("px","");
-  if(isNaN(b))
-    return b
-  else
-    return Number(b)
+  return b
 }
 function DelFrame()
 {
@@ -179,7 +171,7 @@ function DelFrame()
 function duracionAnimationMax(identificador)
 {
 	let ret = 0;
-	for(let obj of timelinegui.anims)
+	for(let obj of timelinecss.animations)
 	{
 		if(obj.targetName == identificador && ret < obj.endTime)
 		{
@@ -196,9 +188,9 @@ function duracionAnimationMax(identificador)
 function BorrarFrame(time,identificador)
 {
 	let endNum = -1
-	for(var num = 0;num < timelinegui.anims.length;num++)
+	for(var num = 0;num < timelinecss.animations.length;num++)
 	{
-		obj = timelinegui.anims[num];
+		obj = timelinecss.animations[num];
 		if(obj.targetName == identificador)
 		{
 			if(endNum > -1)
@@ -211,7 +203,7 @@ function BorrarFrame(time,identificador)
 			}
 			if(obj.endTime == time)
 			{
-				timelinegui.anims.splice(num,1)
+				timelinecss.animations.splice(num,1)
 				endNum = obj.startTime;
 				num--;
 			}
@@ -271,9 +263,9 @@ function ModificarFrame()
 		  if(webview.innerHTML.trim() != "")
 		  {
 			let futuro = false;
-			for(let a = 0;a < timelinegui.anims.length;a++)
+			for(let a = 0;a < timelinecss.animations.length;a++)
 			{
-			  let obj = timelinegui.anims[a];
+			  let obj = timelinecss.animations[a];
 			  if(obj.targetName == identifiador)
 			  {
 				if(obj.endTime == time)
@@ -349,7 +341,7 @@ function CambiarIdentificador(newname)
 		let elmnt = document.querySelector("#outline *[identificador='"+elm+"']")
 		elmnt.setAttribute("identificador",elm.replace(/#[a-z|0-9|\-|\_]*/g,"#"+newname));
 		elmnt.querySelector("b").innerHTML = elm.replace(/#[a-z|0-9|\-|\_]*/g,"#"+newname)
-		for(let obj of timelinegui.anims)
+		for(let obj of timelinecss.animations)
 		{
 			if(elm == obj.targetName)
 			{
@@ -372,7 +364,7 @@ function CambiarClase(newname)
 				let elmnt = document.querySelector("#outline *[identificador='"+elm+"']")
 				elmnt.setAttribute("identificador",elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname));
 				elmnt.querySelector("b").innerHTML = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname)
-				for(let obj of timelinegui.anims)
+				for(let obj of timelinecss.animations)
 				{
 					if(elm == obj.targetName)
 					{
@@ -388,7 +380,7 @@ function CambiarClase(newname)
 			let elmnt = document.querySelector("#outline *[identificador='"+elm+"']")
 			elmnt.setAttribute("identificador",elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname));
 			elmnt.querySelector("b").innerHTML = elm.replace(/\.[a-z|0-9|\-|\_]*/g,"."+newname)
-			for(let obj of timelinegui.anims)
+			for(let obj of timelinecss.animations)
 			{
 				if(elm == obj.targetName)
 				{

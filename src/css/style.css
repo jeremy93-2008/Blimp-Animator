@@ -131,7 +131,7 @@ ul li
 #timeline-control
 {
     display: block;
-    padding: 4% 0 0 45px;
+    padding: 0;
     width: 100%;
     height: 100%;
     background: #343a40;
@@ -400,11 +400,11 @@ ul li
 {
     position: fixed;
     z-index: 20;
-    top: calc(100% - 214px);
-    right: 0px;
+    top: calc(100% - 240px);
+    right: 0;
     padding: 1px 10px;
     width: 110px;
-    height: 29px;
+    height: 20px;
     text-align: right;
     background: #343a40;
 }
@@ -416,15 +416,13 @@ ul li
 }
 #add_frame,#del_frame,#save_frame
 {   
-    width: 28px;
     outline: none;
-    height: 28px;
     padding: 0px 8px;
-    margin-top: -2px;
-    font-size: 13px;
+    margin-top: -5px;
+    font-size: 11px;
     background: transparent;
     border: none;
-    color: white;
+    color: #888;
 }
 #add_frame:hover,#del_frame:hover,#save_frame:hover
 {

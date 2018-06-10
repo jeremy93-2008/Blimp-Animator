@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="UTF-8">
     <title>Blimp Animator</title>
-    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
     <script>if (window.module) module = window.module;</script>
@@ -11,277 +12,430 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script type="text/javascript" src="js/renderer.js"></script>
     <script type="text/javascript" src="js/webview.js"></script>
-    <script type="text/javascript" src="js/timeline.js"></script>
-    <script type="text/javascript" src="js/timeline-gui.js"></script>
     <script type="text/javascript" src="js/keyframe.js"></script>
-	<script type="text/javascript" src="js/menu.js"></script>
-	<script defer type="text/javascript" src="i18n/local.js"></script>
-    <link rel="stylesheet" href="css/style.css"/>
-	<link rel="stylesheet" href="css/font.css"/>
-	<!--<link rel="stylesheet" href="css/theme/white.css"/>-->
+    <script type="text/javascript" src="js/menu.js"></script>
+    <script defer type="text/javascript" src="js/timeline_animation.js"></script>
+    <script defer type="text/javascript" src="i18n/local.js"></script>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/font.css" />
+    <link rel="stylesheet" href="css/timeline_animation.css" />
+    <!--<link rel="stylesheet" href="css/theme/white.css"/>-->
     <style>
-    html,body
-    {
-      height:100%;
-      font-family: "Open Sans";
-      overflow: hidden;
-    }
+        html,
+        body {
+            height: 100%;
+            font-family: "Open Sans";
+            overflow: hidden;
+        }
     </style>
-  </head>
-  <body>
-      <div class="container-fluid" style="height:100%;overflow: hidden;">
+</head>
+
+<body>
+    <div class="container-fluid" style="height:100%;overflow: hidden;">
         <div class="row top bg-dark" style="position: relative;z-index:10;height:27px;">
-          <ul>
-            <li>
-              <span>Archivo</span>
-              <ul class="bg-dark">
-                <li onclick="NuevoArchivo()"><span>Nuevo</span></li>
-				<li onclick="AbrirArchivo()"><span>Abrir</span></li>
-				<li onclick="Guardar()"><span>Guardar</span></li>
-				<li onclick="Guardar(true)"><span>Guardar como...</span></li>
-				<li class="separator"></li>
-				<li onclick="Opciones()"><span>Preferencias</span></li>
-                <li onclick="Cerrar()"><span>Cerrar</span></li>
-              </ul>
-            </li>
-            <li>
-                <span>Editar</span>
-                <ul class="bg-dark">
-					<li onclick="Deshacer()"><span>Deshacer</span></li>
-					<li onclick="Rehacer()"><span>Rehacer</span></li>
-					<li class="separator"></li>
-					<li onclick="Cortar()"><span>Cortar</span></li>
-					<li onclick="Copiar()"><span>Copiar</span></li>
-					<li onclick="PegarSoloEstilo()"><span>Pegar solo estilo</span></li>
-					<li onclick="Pegar()"><span>Pegar</span></li>
-                </ul>
-            </li>
-            <li>
-                <span>Ver</span>
-                <ul class="bg-dark">
-                  <li onclick="Ventana('min')"><span>Minimizar</span></li>
-				  <li onclick="Ventana('max')"><span>Maximizar</span></li>
-				  <li class="separator"></li>
-				  <li onclick="Ventana('full')"><span>Pantalla completa</span></li>
-				  <li class="separator"></li>
-                  <li onclick="CambiarPanel('inspector')"><span>Inspector</span></li>
-				  <li onclick="CambiarPanel('outline')"><span>Elementos</span></li>		
-				  <li onclick="CambiarPanel('libreria')"><span>Librería</span></li>				  
-                </ul>
-			</li>
-			<li>
-                <span>Animación</span>
-                <ul class="bg-dark">
-                  	<li onclick="Reproducir()"><span>Reproducir en navegador</span></li>
-					<li onclick="Construir()"><span>Construir la animación</span></li>
-					<li class="separator"></li>
-                  	<li onclick="Opciones('animation')"><span>Opciones de Construcción</span></li>			  
-                </ul>
-			</li>
-			<li>
-                <span>Ayuda</span>
-                <ul class="bg-dark">
-				  <li><span>Ayuda de Blimp Animator</span></li> <!-- Se necesita una documentación md -->
-				  <li class="separator"></li>
-				  <li onclick="BuscarActualizaciones()"><span>Buscar Actualizaciones...</span></li>	<!-- Se necesita un servidor -->
-				  <li onclick="Visitar()"><span>Visita nuestro Sitio Web</span></li> <!-- Se necesita una web -->					  
-				  <li class="separator"></li>
- 				  <li onclick="Report()"><span>Reportar un Problema</span></li> <!-- Se necesita un servidor -->
-				  <li class="separator"></li>
-				  <li onclick="Licencia()"><span>Ver la licencia</span></li>	
-				  <li onclick="Acerca()"><span>Acerca de Blimp Animator</span></li>		  
-                </ul>
-            </li>
-          </ul>
+            <ul>
+                <li>
+                    <span>Archivo</span>
+                    <ul class="bg-dark">
+                        <li onclick="NuevoArchivo()">
+                            <span>Nuevo</span>
+                        </li>
+                        <li onclick="AbrirArchivo()">
+                            <span>Abrir</span>
+                        </li>
+                        <li onclick="Guardar()">
+                            <span>Guardar</span>
+                        </li>
+                        <li onclick="Guardar(true)">
+                            <span>Guardar como...</span>
+                        </li>
+                        <li class="separator"></li>
+                        <li onclick="Opciones()">
+                            <span>Preferencias</span>
+                        </li>
+                        <li onclick="Cerrar()">
+                            <span>Cerrar</span>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span>Editar</span>
+                    <ul class="bg-dark">
+                        <li onclick="Deshacer()">
+                            <span>Deshacer</span>
+                        </li>
+                        <li onclick="Rehacer()">
+                            <span>Rehacer</span>
+                        </li>
+                        <li class="separator"></li>
+                        <li onclick="Cortar()">
+                            <span>Cortar</span>
+                        </li>
+                        <li onclick="Copiar()">
+                            <span>Copiar</span>
+                        </li>
+                        <li onclick="PegarSoloEstilo()">
+                            <span>Pegar solo estilo</span>
+                        </li>
+                        <li onclick="Pegar()">
+                            <span>Pegar</span>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span>Ver</span>
+                    <ul class="bg-dark">
+                        <li onclick="Ventana('min')">
+                            <span>Minimizar</span>
+                        </li>
+                        <li onclick="Ventana('max')">
+                            <span>Maximizar</span>
+                        </li>
+                        <li class="separator"></li>
+                        <li onclick="Ventana('full')">
+                            <span>Pantalla completa</span>
+                        </li>
+                        <li class="separator"></li>
+                        <li onclick="CambiarPanel('inspector')">
+                            <span>Inspector</span>
+                        </li>
+                        <li onclick="CambiarPanel('outline')">
+                            <span>Elementos</span>
+                        </li>
+                        <li onclick="CambiarPanel('libreria')">
+                            <span>Librería</span>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span>Animación</span>
+                    <ul class="bg-dark">
+                        <li onclick="Reproducir()">
+                            <span>Reproducir en navegador</span>
+                        </li>
+                        <li onclick="Construir()">
+                            <span>Construir la animación</span>
+                        </li>
+                        <li class="separator"></li>
+                        <li onclick="Opciones('animation')">
+                            <span>Opciones de Construcción</span>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <span>Ayuda</span>
+                    <ul class="bg-dark">
+                        <li>
+                            <span>Ayuda de Blimp Animator</span>
+                        </li>
+                        <!-- Se necesita una documentación md -->
+                        <li class="separator"></li>
+                        <li onclick="BuscarActualizaciones()">
+                            <span>Buscar Actualizaciones...</span>
+                        </li>
+                        <!-- Se necesita un servidor -->
+                        <li onclick="Visitar()">
+                            <span>Visita nuestro Sitio Web</span>
+                        </li>
+                        <!-- Se necesita una web -->
+                        <li class="separator"></li>
+                        <li onclick="Report()">
+                            <span>Reportar un Problema</span>
+                        </li>
+                        <!-- Se necesita un servidor -->
+                        <li class="separator"></li>
+                        <li onclick="Licencia()">
+                            <span>Ver la licencia</span>
+                        </li>
+                        <li onclick="Acerca()">
+                            <span>Acerca de Blimp Animator</span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
         <div class="inspector_menu">
-          <button class="selected" id="btn-inspector">Propiedades</button>
-          <button id="btn-outline">Elementos</button>
-          <button id="btn-libreria">Librería</button>
+            <button class="selected" id="btn-inspector">Propiedades</button>
+            <button id="btn-outline">Elementos</button>
+            <button id="btn-libreria">Librería</button>
         </div>
-          <div id="menu" class="row bg-dark" style="position: relative;z-index:2">
-             <button id="seleccionar" class="stay selected" title="Selecciona los elementos"><i class="fa fa-mouse-pointer"></i></button>
-             <button id="mover" class="stay" title="Mueve los elementos (Mantener pulsado)"><i class="fa fa-hand-paper-o"></i></button>
-             <button id="redimensionar" class="stay" title="Redimensiona los elementos (Ctrl+Mantener pulsado)"><i class="fa fa-arrows-alt"></i></button>
-             <button id="rotar" class="stay" title="Rota los elementos (Ctrl+Shift+Mantener pulsado)"><i class="fa fa-repeat" aria-hidden="true"></i></button>
-             <div class="separator"></div>
-             <button onclick="circleView()" title="Crear un circulo"><i class="fa fa-circle-thin"></i></button>
-             <button onclick="rectangleView()" title="Crear un cuadrado"><i class="fa fa-square-o"></i></button>
-             <button onclick="imageView()" title="Importar una imagen"><i class="fa fa-picture-o"></i></button>
-             <button onclick="textView()" title="Insertar una caja de texto"><i class="fa fa-font"></i></button>
-             <button onclick="multimediaView('audio')" title="Inserta un audio"><i class="fa fa-music"></i></button>
-             <button onclick="multimediaView('video')" title="Inserta un video"><i class="fa fa-film"></i></button>
-             <button onclick="htmlView()" title="Insertar un trozo de código personalizado"><i class="fa fa-code"></i></button>
-             <div class="separator"></div>
-             <button onclick="Reproducir()" title="Reproducir en navegador"><i class="fa fa-play"></i></button>
-			 <button onclick="Construir()" title="Construir la animación"><i class="fa fa-cog"></i></button>
-			 <div class="separator"></div>
-			 <span ondblclick="SetTamanio()" title="Esta es la resolución con la cual se trabaja la animación" id="resolucion">w:1024px h:320px</span>
-             <div class="right">
-                <button id="elm-relative" title="Posición relativa al cuerpo del documento"><i class="fa fa-th" aria-hidden="true"></i></button>
-                <button id="elm-absolute" title="Posición absoluta al cuerpo del documento"><i class="fa fa-dot-circle-o" aria-hidden="true"></i></button>
-                <button id="elm-fixed" title="Posición fija a la ventana del documento"><i class="fa fa-thumb-tack" aria-hidden="true"></i></button>
-             </div>
-             <div class="right-elemento" style="display:none;">
-               <!--<i class="fa fa-eye-slash" aria-hidden="true"></i>-->
-              <button id="elm-visible" title="Visible/Invisible el elemento"><i class="fa fa-eye" aria-hidden="true"></i></button>
-             </div>
-             <div class="right-library" style="display:none;">
-               <input type="hidden" id="import_media" />
-               <button id="elm-import" title="Importar un contenido multimedia" onclick="PonerImagen('#import_media','todo');"><i class="fa fa-upload" aria-hidden="true"></i><span style="font-size:11px;margin-left:5px;">Importar Medio</span></button>
-             </div>
-          </div>
-          <div class="row" style="height: calc(100% - 278px);">
-			<div id="renderer" class="col-sm">  
-              <div id="webview" style="position: relative;z-index:1">
+        <div id="menu" class="row bg-dark" style="position: relative;z-index:2">
+            <button id="seleccionar" class="stay selected" title="Selecciona los elementos">
+                <i class="fa fa-mouse-pointer"></i>
+            </button>
+            <button id="mover" class="stay" title="Mueve los elementos (Mantener pulsado)">
+                <i class="fa fa-hand-paper-o"></i>
+            </button>
+            <button id="redimensionar" class="stay" title="Redimensiona los elementos (Ctrl+Mantener pulsado)">
+                <i class="fa fa-arrows-alt"></i>
+            </button>
+            <button id="rotar" class="stay" title="Rota los elementos (Ctrl+Shift+Mantener pulsado)">
+                <i class="fa fa-repeat" aria-hidden="true"></i>
+            </button>
+            <div class="separator"></div>
+            <button onclick="circleView()" title="Crear un circulo">
+                <i class="fa fa-circle-thin"></i>
+            </button>
+            <button onclick="rectangleView()" title="Crear un cuadrado">
+                <i class="fa fa-square-o"></i>
+            </button>
+            <button onclick="imageView()" title="Importar una imagen">
+                <i class="fa fa-picture-o"></i>
+            </button>
+            <button onclick="textView()" title="Insertar una caja de texto">
+                <i class="fa fa-font"></i>
+            </button>
+            <button onclick="multimediaView('audio')" title="Inserta un audio">
+                <i class="fa fa-music"></i>
+            </button>
+            <button onclick="multimediaView('video')" title="Inserta un video">
+                <i class="fa fa-film"></i>
+            </button>
+            <button onclick="htmlView()" title="Insertar un trozo de código personalizado">
+                <i class="fa fa-code"></i>
+            </button>
+            <div class="separator"></div>
+            <button onclick="Reproducir()" title="Reproducir en navegador">
+                <i class="fa fa-play"></i>
+            </button>
+            <button onclick="Construir()" title="Construir la animación">
+                <i class="fa fa-cog"></i>
+            </button>
+            <div class="separator"></div>
+            <span ondblclick="SetTamanio()" title="Esta es la resolución con la cual se trabaja la animación" id="resolucion">w:1024px h:320px</span>
+            <div class="right">
+                <button id="elm-relative" title="Posición relativa al cuerpo del documento">
+                    <i class="fa fa-th" aria-hidden="true"></i>
+                </button>
+                <button id="elm-absolute" title="Posición absoluta al cuerpo del documento">
+                    <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                </button>
+                <button id="elm-fixed" title="Posición fija a la ventana del documento">
+                    <i class="fa fa-thumb-tack" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="right-elemento" style="display:none;">
+                <!--<i class="fa fa-eye-slash" aria-hidden="true"></i>-->
+                <button id="elm-visible" title="Visible/Invisible el elemento">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="right-library" style="display:none;">
+                <input type="hidden" id="import_media" />
+                <button id="elm-import" title="Importar un contenido multimedia" onclick="PonerImagen('#import_media','todo');">
+                    <i class="fa fa-upload" aria-hidden="true"></i>
+                    <span style="font-size:11px;margin-left:5px;">Importar Medio</span>
+                </button>
+            </div>
+        </div>
+        <div class="row" style="height: calc(100% - 303px);">
+            <div id="renderer" class="col-sm">
+                <div id="webview" style="position: relative;z-index:1">
 
-              </div>
+                </div>
             </div>
             <div id="inspector" style="max-width:262px;position: relative;z-index:5;" class="col-sm-3 back-black">
-              <div class="nothing" style="display:block;"><span>No hay ningún elemento seleccionado</span></div>
-              <div class="elemento" style="display: none;padding: 0 16% 0 7%;">
-                <span id="titulo" class="nombre">div#nombre.espacio</span>
-                <span>ID</span><input class="elm id_elm" type="text" />
-                <span>Clase</span><input class="elm class_elm" class="end" type="text" />
-                <div class="elm-imagen"><span>Fuente</span><input class="elm src_elm" type="text" />
-                <button class="smallbtn" onclick="PonerImagen('.src_elm','todo')">...</button></div>
-                <div class="elm-audio elm-video">
-                  <span>Controles</span>
-                  <select>
-                    <option value="true" class="elm controls_elm">Sí</option>
-                    <option value="false" class="elm controls_elm">No</option>
-                  </select>
-                  <span>Autoplay</span>
-                  <select>
-                    <option value="true" class="elm autoplay_elm">Sí</option>
-                    <option value="false" class="elm autoplay_elm">No</option>
-                  </select>
-                  <span>Bucle</span>
-                  <select>
-                    <option value="true" class="elm loop_elm">Sí</option>
-                    <option value="false" class="elm loop_elm">No</option>
-                  </select>
+                <div class="nothing" style="display:block;">
+                    <span>No hay ningún elemento seleccionado</span>
                 </div>
-                <span>Orden</span>
-				<input type="number" min="0" max="999" class="elm z-index_elm" />
-				<span style="font-size:10px;">Desborde</span>
-				<select>
-					<option value="visible" class="elm overflow_elm">Sí</option>
-					<option value="auto" class="elm overflow_elm">Con Scroll</option>
-					<option value="hidden" class="elm overflow_elm">No</option>
-				</select>
-                <span>Visible</span>
-                <select>
-                  <option class="elm visibility_elm">visible</option>
-                  <option class="elm visibility_elm">hidden</option>
-                  <option value="hidden" class="elm visibility_elm">none</option>
-                </select>
-                <span class="nombre small">Posición</span>
-                <span>Eje X</span><input class="elm left_elm" type="number" />
-                <select class="hidden">
-                  <option class="elm left_elm post">px</option>
-                  <option class="elm left_elm post">%</option>
-                </select>
-                <span>Eje Y</span><input class="elm top_elm" type="number" />
-                <select class="hidden">
-                  <option class="elm top_elm post">px</option>
-                  <option class="elm top_elm post">%</option>
-                </select>
-                <span class="nombre small">Dimensiones</span>
-                <span>Ancho</span><input class="elm width_elm" min="0" type="number" />
-                <select class="hidden">
-                  <option class="elm width_elm post">px</option>
-                  <option class="elm width_elm post">%</option>
-                </select>
-                <span>Alto</span><input class="elm height_elm" min="0" type="number" />
-                <select class="hidden">
-                  <option class="elm height_elm post">px</option>
-                  <option class="elm height_elm post">%</option>
-                </select>
-                <span class="nombre small">Fondo</span>
-                <span>Color</span><input class="elm background-color_elm" type="color" />
-                <button onclick="pickerColor(this)" title="Selecccionar un color del lienzo" class="eyedropper background-color"><i class="fa fa-eyedropper" aria-hidden="true"></i></button>
-                <span>Imagen</span><input pre="url('" post="')" class="elm background-image_elm" type="text" />
-                <button class="smallbtn" onclick="PonerImagen('.background-image_elm')">...</button>
-                <span class="nombre small">Bordes</span>
-                <span>Estilo</span>
-                <select>
-                  <option class="elm border-style_elm">none</option>
-                  <option class="elm border-style_elm">solid</option>
-                  <option class="elm border-style_elm">dotted</option>
-                  <option class="elm border-style_elm">dashed</option>
-                  <option class="elm border-style_elm">double</option>
-                </select>
-                <span>Grosor</span>
-                <input min="0" post="px" class="elm border-width_elm" type="number" /><span style="width:12px;">px</span>
-                <span>Color</span>
-                <input class="elm border-color_elm" type="color" />
-                <button onclick="pickerColor(this)" title="Selecccionar un color del lienzo" class="eyedropper border-color"><i class="fa fa-eyedropper" aria-hidden="true"></i></button>
-                <span>Curva</span>
-                <input class="elm border-radius_elm" min="0" type="number" />
-                <select class="hidden">
-                  <option class="elm border-radius_elm post">px</option>
-                  <option class="elm border-radius_elm post">%</option>
-                </select>
-                <span class="nombre small">Tipografía</span>
-                <span>Fuente</span>
-                <select>
-                  <option class="elm font-family_elm">Arial</option>
-                  <option class="elm font-family_elm">Verdana</option>
-                  <option class="elm font-family_elm">Helvetica</option>
-                  <option class="elm font-family_elm">Georgia</option>
-                  <option class="elm font-family_elm">sans-serif</option>
-                  <option class="elm font-family_elm">serif</option>
-                </select>
-                <span>Tamaño</span>
-                <input post="px" class="elm font-size_elm" min="1" type="number" />
-                <span style="width:12px;">px</span>
-                <span>Color</span>
-                <input class="elm color_elm" type="color" />
-                <button onclick="pickerColor(this)" title="Selecccionar un color del lienzo" class="eyedropper color"><i class="fa fa-eyedropper" aria-hidden="true"></i></button>
-                <span>Negrita</span>
-                <select>
-                  <option value="400" class="elm font-weight_elm">No</option>
-                  <option value="700" class="elm font-weight_elm">Sí</option>
-                </select>
-                <span>Itálica</span>
-                <select>
-                  <option value="normal" class="elm font-style_elm">No</option>
-                  <option value="italic" class="elm font-style_elm">Sí</option>
-                </select>
-                <span class="nombre small">Efectos</span>
-                <span>Sombra</span>
-                <input pre="0 0 " post="px black" class="elm box-shadow_elm" min="0" type="number" />
-                <span style="width:12px;">px</span>
-                <span>Texto Sombra</span>
-                <input pre="0 0 " post="px black" class="elm text-shadow_elm" min="0" type="number" />
-                <span style="width:12px;">px</span>
-                <span>Opacidad</span>
-				<input class="elm opacity_elm" min="0" max="1" step="0.1" type="number" />
-				<span>Rotación</span>
-				<input pre="rotate(" post="deg)" class="elm transform_elm" min="0" type="number" />
-				<span style="width:20px;">deg</span>
-              </div>
+                <div class="elemento" style="display: none;padding: 0 16% 0 7%;">
+                    <span id="titulo" class="nombre">div#nombre.espacio</span>
+                    <span>ID</span>
+                    <input class="elm id_elm" type="text" />
+                    <span>Clase</span>
+                    <input class="elm class_elm" class="end" type="text" />
+                    <div class="elm-imagen">
+                        <span>Fuente</span>
+                        <input class="elm src_elm" type="text" />
+                        <button class="smallbtn" onclick="PonerImagen('.src_elm','todo')">...</button>
+                    </div>
+                    <div class="elm-audio elm-video">
+                        <span>Controles</span>
+                        <select>
+                            <option value="true" class="elm controls_elm">Sí</option>
+                            <option value="false" class="elm controls_elm">No</option>
+                        </select>
+                        <span>Autoplay</span>
+                        <select>
+                            <option value="true" class="elm autoplay_elm">Sí</option>
+                            <option value="false" class="elm autoplay_elm">No</option>
+                        </select>
+                        <span>Bucle</span>
+                        <select>
+                            <option value="true" class="elm loop_elm">Sí</option>
+                            <option value="false" class="elm loop_elm">No</option>
+                        </select>
+                    </div>
+                    <span>Orden</span>
+                    <input type="number" min="0" max="999" class="elm z-index_elm" />
+                    <span style="font-size:10px;">Desborde</span>
+                    <select>
+                        <option value="visible" class="elm overflow_elm">Sí</option>
+                        <option value="auto" class="elm overflow_elm">Con Scroll</option>
+                        <option value="hidden" class="elm overflow_elm">No</option>
+                    </select>
+                    <span>Visible</span>
+                    <select>
+                        <option class="elm visibility_elm">visible</option>
+                        <option class="elm visibility_elm">hidden</option>
+                        <option value="hidden" class="elm visibility_elm">none</option>
+                    </select>
+                    <span class="nombre small">Posición</span>
+                    <span>Eje X</span>
+                    <input class="elm left_elm" type="number" />
+                    <select class="hidden">
+                        <option class="elm left_elm post">px</option>
+                        <option class="elm left_elm post">%</option>
+                    </select>
+                    <span>Eje Y</span>
+                    <input class="elm top_elm" type="number" />
+                    <select class="hidden">
+                        <option class="elm top_elm post">px</option>
+                        <option class="elm top_elm post">%</option>
+                    </select>
+                    <span class="nombre small">Dimensiones</span>
+                    <span>Ancho</span>
+                    <input class="elm width_elm" min="0" type="number" />
+                    <select class="hidden">
+                        <option class="elm width_elm post">px</option>
+                        <option class="elm width_elm post">%</option>
+                    </select>
+                    <span>Alto</span>
+                    <input class="elm height_elm" min="0" type="number" />
+                    <select class="hidden">
+                        <option class="elm height_elm post">px</option>
+                        <option class="elm height_elm post">%</option>
+                    </select>
+                    <span class="nombre small">Fondo</span>
+                    <span>Color</span>
+                    <input class="elm background-color_elm" type="color" />
+                    <button onclick="pickerColor(this)" title="Selecccionar un color del lienzo" class="eyedropper background-color">
+                        <i class="fa fa-eyedropper" aria-hidden="true"></i>
+                    </button>
+                    <span>Imagen</span>
+                    <input pre="url('" post="')" class="elm background-image_elm" type="text" />
+                    <button class="smallbtn" onclick="PonerImagen('.background-image_elm')">...</button>
+                    <span class="nombre small">Bordes</span>
+                    <span>Estilo</span>
+                    <select>
+                        <option class="elm border-style_elm">none</option>
+                        <option class="elm border-style_elm">solid</option>
+                        <option class="elm border-style_elm">dotted</option>
+                        <option class="elm border-style_elm">dashed</option>
+                        <option class="elm border-style_elm">double</option>
+                    </select>
+                    <span>Grosor</span>
+                    <input min="0" post="px" class="elm border-width_elm" type="number" />
+                    <span style="width:12px;">px</span>
+                    <span>Color</span>
+                    <input class="elm border-color_elm" type="color" />
+                    <button onclick="pickerColor(this)" title="Selecccionar un color del lienzo" class="eyedropper border-color">
+                        <i class="fa fa-eyedropper" aria-hidden="true"></i>
+                    </button>
+                    <span>Curva</span>
+                    <input class="elm border-radius_elm" min="0" type="number" />
+                    <select class="hidden">
+                        <option class="elm border-radius_elm post">px</option>
+                        <option class="elm border-radius_elm post">%</option>
+                    </select>
+                    <span class="nombre small">Tipografía</span>
+                    <span>Fuente</span>
+                    <select>
+                        <option class="elm font-family_elm">Arial</option>
+                        <option class="elm font-family_elm">Verdana</option>
+                        <option class="elm font-family_elm">Helvetica</option>
+                        <option class="elm font-family_elm">Georgia</option>
+                        <option class="elm font-family_elm">sans-serif</option>
+                        <option class="elm font-family_elm">serif</option>
+                    </select>
+                    <span>Tamaño</span>
+                    <input post="px" class="elm font-size_elm" min="1" type="number" />
+                    <span style="width:12px;">px</span>
+                    <span>Color</span>
+                    <input class="elm color_elm" type="color" />
+                    <button onclick="pickerColor(this)" title="Selecccionar un color del lienzo" class="eyedropper color">
+                        <i class="fa fa-eyedropper" aria-hidden="true"></i>
+                    </button>
+                    <span>Negrita</span>
+                    <select>
+                        <option value="400" class="elm font-weight_elm">No</option>
+                        <option value="700" class="elm font-weight_elm">Sí</option>
+                    </select>
+                    <span>Itálica</span>
+                    <select>
+                        <option value="normal" class="elm font-style_elm">No</option>
+                        <option value="italic" class="elm font-style_elm">Sí</option>
+                    </select>
+                    <span class="nombre small">Efectos</span>
+                    <span>Sombra</span>
+                    <input pre="0 0 " post="px black" class="elm box-shadow_elm" min="0" type="number" />
+                    <span style="width:12px;">px</span>
+                    <span>Texto Sombra</span>
+                    <input pre="0 0 " post="px black" class="elm text-shadow_elm" min="0" type="number" />
+                    <span style="width:12px;">px</span>
+                    <span>Opacidad</span>
+                    <input class="elm opacity_elm" min="0" max="1" step="0.1" type="number" />
+                    <span>Rotación</span>
+                    <input pre="rotate(" post="deg)" class="elm transform_elm" min="0" type="number" />
+                    <span style="width:20px;">deg</span>
+                </div>
             </div>
             <div id="outline" style="max-width:262px;position: relative;z-index:5;display:none" class="col-sm-3 back-black">
-              <ul style="padding: 0;font-size: 12px;list-style-type: circle;"></ul>
+                <ul style="padding: 0;font-size: 12px;list-style-type: circle;"></ul>
             </div>
             <div id="libreria" style="max-width:262px;position: relative;z-index:5;display:none;border-top:solid 1px black" class="col-sm-3 back-black">
-              <ul style="padding: 0;font-size: 12px;list-style-type: circle;"></ul>
+                <ul style="padding: 0;font-size: 12px;list-style-type: circle;"></ul>
             </div>
-          </div>
-          <div id="timeline" class="row back-black" style="position: relative;z-index:5;">
+        </div>
+        <div id="timeline" class="row back-black" style="position: relative;z-index:5;">
             <div id="timeline-control">
                 <div class="keyframe_control">
-                    <button id="del_frame" title="Eliminar fotograma clave a uno o varios elementos"><i class="fa fa-times"></i></button>
-                    <button id="add_frame" title="Añadir fotograma clave a uno o varios elementos"><i class="fa fa-plus"></i></button>
+                    <button id="del_frame" title="Eliminar fotograma clave a uno o varios elementos">
+                        <i class="fa fa-times"></i>
+                    </button>
+                    <button id="add_frame" title="Añadir fotograma clave a uno o varios elementos">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                </div>
+                <div id="timeline-span">
+                    <div id="control-time">
+                        <div id="currentTime">0s</div>
+                    </div>
+                    <div id="left">
+                        <div id="controller">
+                            <button id="play">
+                                <i class="fa fa-play"></i>
+                            </button>
+                            <button id="pause">
+                                <i class="fa fa-pause"></i>
+                            </button>
+                            <button id="stop">
+                                <i class="fa fa-stop"></i>
+                            </button>
+                            <button>
+                                <i class="fa fa-bars"></i>
+                            </button>
+                        </div>
+                        <div id="elements"></div>
+                    </div>
+                    <div id="linespan">
+                        <div id="line-container">
+                            <div id="timespan"></div>
+                            <div id="slidescroll">
+                                <div id="slidescrollcontain">
+                                    <div id="slide-tracker"></div>
+                                    <div id="slide"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="status">
-				
+
             </div>
-          </div>
-		</div>
-        <canvas style="display:none;" id="canvas"></canvas>
-  </body>
+        </div>
+    </div>
+</body>
+
 </html>
