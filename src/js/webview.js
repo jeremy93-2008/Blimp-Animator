@@ -516,11 +516,30 @@ function ActivaInspector(that, evt) {
         }
     } else {
         elementos.querySelector("#titulo").innerHTML = that.nodeName.toLowerCase() + "#" + that.id + "." + that.className;
-    }
+	}
+	CambiarIconoSegunKeyframe(that);
+	EliminarAnimacion();
 	GenerarInspector(that, elementos, (tabla.length > 0) ? tabla : false);
 	Geti18nForElm(inspector);
 	Geti18nForElm(elementos);
     evt.stopPropagation();
+}
+function EliminarAnimacion()
+{
+	for(let anima of timelinecss.animationRunning)
+	{
+		anima.cancel();
+	}
+}
+function CambiarIconoSegunKeyframe(that)
+{
+	if(that.getAttribute("dura") == "true")
+	{
+		document.querySelector("#add_frame i").className = "fa fa-plus";
+	}else
+	{
+		document.querySelector("#add_frame i").className = "fa fa-window-maximize";
+	}
 }
 function GenerarInspector(that, list, tabla) {
     let computed = window.getComputedStyle(that, null)

@@ -162,6 +162,49 @@ class Timeline
 			return (a.targetName.localeCompare(b.targetName)==0?(a.propertyName.localeCompare(b.propertyName)):(a.targetName.localeCompare(b.targetName)));
 		});
 	}
+	sortByTimeAndNameAnimation()
+	{
+		this.animation = this.animation.sort(function(a,b)
+		{
+			if(a.targetName > b.targetName)
+			{
+				return 1;
+			}else
+			{
+				if(a.targetName == b.targetName)
+				{
+					if(a.propertyName > b.propertyName)
+					{
+						return 1;
+					}else
+					{
+						if(a.propertyName == b.propertyName)
+						{
+							if(a.startTime > b.startTime)
+							{
+								return 1;
+							}else
+							{
+								if(a.startTime == b.startTime)
+								{
+									return 0;
+								}else
+								{
+									return -1;
+								}
+							}				
+						}else
+						{
+							return -1;
+						}
+					}
+				}else
+				{
+					return -1;
+				}
+			}
+		});		
+	}
 	sortAnimation(anims)
 	{
 		return anims.sort(function(a,b)
@@ -177,6 +220,7 @@ class Timeline
 		let currentTarget = "";
 		let sameTrack = "";
 		let top = 0;
+		let current = 0;
 		let primero = false;
 		for(let anims of this.animation)
 		{
@@ -197,6 +241,7 @@ class Timeline
 					primero = true;
 				}
 				top += 34;
+				current = 0;
 				nuevoHeader = true;
 			}
 			if(this.elm_oculto.indexOf("target-"+anims.targetName.replace("#","").replace(".","")) == -1)
@@ -218,11 +263,12 @@ class Timeline
 					if(!nuevoHeader)
 						top = 0;
 					//Creamos el track y añadimos el tiempo en el track del objeto JSON
-					this.CrearTrackSlide(top,anims,"target-"+currentTarget.replace("#","").replace(".",""))
+					current = 0;
+					current = this.CrearTrackSlide(top,anims,"target-"+currentTarget.replace("#","").replace(".",""),0)
 				}else
 				{
 					//Existe ya un track con esta propiedad asi que solo vamos a añadir el tiempo en el track que corresponde con el objeto
-					this.CrearTrackSlide(top,anims,"target-"+currentTarget.replace("#","").replace(".",""))
+					current = this.CrearTrackSlide(top,anims,"target-"+currentTarget.replace("#","").replace(".",""),current)
 				}
 			}
 		}
@@ -230,7 +276,7 @@ class Timeline
 		this.CargarInteractividad();
 		document.querySelector("#slidescroll").scrollTop = document.querySelector("#elements").scrollTop;
 	}
-	CrearTrackSlide(top,anims,tag)
+	CrearTrackSlide(top,anims,tag,current)
 	{
 		let num_color = parseInt((anims.propertyName.length/5)-1);
 		let ancho = document.querySelector("#timespan div").offsetWidth+6; //Este seis corresponde al margin del span que indica los segundos
@@ -243,23 +289,23 @@ class Timeline
 		timeSlide.setAttribute(tag,"")
 		timeSlide.setAttribute("nodo",tag)
 		timeSlide.setAttribute("property",anims.propertyName)
-		timeSlide.style.marginLeft = (ancho*anims.startTime)+"px";
+		timeSlide.style.marginLeft = ((ancho*anims.startTime)-current)+"px";
 		timeSlide.style.borderRadius = "10px";
 		timeSlide.style.cursor = "move";
-		timeSlide.style.minWidth = "2px";
-		if(anims.endTime == 0)
-		{
-			timeSlide.style.pointerEvents = "none";
-		}
 		timeSlide.style.display="inline-block";
 		timeSlide.style.marginTop = top+"px";
 		timeSlide.style.verticalAlign = "top";
-		timeSlide.style.marginRight = "10px";
+		if((ancho*duration) > 0)
+		{
+			timeSlide.style.marginRight = "2px";
+		}
 		timeSlide.style.marginBottom = "5px";
 		timeSlide.onmousedown = ()=>{this.MoverSlide(timeSlide,event)};
 		num_color = (num_color>4)?0:num_color;
 		timeSlide.style.backgroundColor = color[num_color]
 		document.querySelector("#slide").appendChild(timeSlide);
+		current = (ancho*anims.startTime)+(ancho*duration);
+		return current;
 	}
 	CargarScroll()
 	{
@@ -294,7 +340,7 @@ class Timeline
 		{
 			this.elm_oculto.push(nombre);
 		}
-		this.CargarLineasdeTiempo()
+		this.refreshTimeline()
 	}
 	CargarInteractividad()
 	{
@@ -487,11 +533,11 @@ class Timeline
 	{
 		for(let anims of this.animationRunning)
 		{
-			anims.currentTime = 0;
+			anims.currentTime = (this.MaximoTiempo()*1000)-10;
 			anims.pause();
 		}
 		clearInterval(this.intervalo);
-		this.Tracker(0);
+		this.Tracker(this.MaximoTiempo());
 		this.playing = false;
 	}
 	getStyleModifierOfAnimation()
@@ -509,9 +555,12 @@ class Timeline
 			document.body.onmousemove = (ev)=>
 			{
 				let x2 = (ev.clientX-175)+document.querySelector("#slidescroll").scrollLeft;
-				if(x2 > 0)
-					document.querySelector("#slide-tracker").style.left = x2+"px"
-				this.ActualizarAnimacion((x2/151));
+				if(x2/151 <= this.MaximoTiempo())
+				{
+					if(x2 > 0)
+						document.querySelector("#slide-tracker").style.left = x2+"px"
+					this.ActualizarAnimacion((x2/151));					
+				}
 			}
 			document.body.onmouseup = ()=>
 			{
@@ -615,7 +664,8 @@ class Timeline
 						{
 							elm.style.marginLeft = (margen+xFinal)+"px";
 							this.CambiarAnimacion(Number((posmargen/151).toFixed(2)),start,end,elm);	
-							posmargen = Number(elm.style.marginLeft.replace("px",""));		
+							posmargen = Number(elm.style.marginLeft.replace("px",""));
+							CambiarTiempo(this.MaximoTiempo())		
 						}					
 					}
 				}				
@@ -626,6 +676,7 @@ class Timeline
 					elm.style.width = (ancho+xFinal)+"px"; 
 					let resize = Number(elm.style.width.replace("px",""))/151
 					this.ResizeAnimation(Number((posmargen/151).toFixed(2)),start,resize,elm);
+					CambiarTiempo(this.MaximoTiempo())
 				}
 			}
 		}
@@ -652,6 +703,11 @@ class Timeline
 			this.animation.push(newFrame);
 		}
 		this.refreshTimeline();
+		this.Tracker(this.MaximoTiempo());
+		for(let anims of this.animationRunning)
+		{
+			anims.currentTime = this.MaximoTiempo()-10;
+		}
 	}
 	removeKeyframe(elmTimeline)
 	{
@@ -675,7 +731,7 @@ class Timeline
 	refreshTimeline()
 	{
 		this.maxTime = (Number(this.MaximoTiempo()+1)>this.maxTime)?Number(this.MaximoTiempo()+1):this.maxTime;
-		this.sortByNameAnimation();
+		this.sortByTimeAndNameAnimation();
 		this.CargarTiempo();
 		this.CargarLineasdeTiempo();
 		this.CargarAnimacion();

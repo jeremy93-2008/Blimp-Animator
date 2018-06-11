@@ -421,7 +421,8 @@ ul li
     margin-top: -5px;
     font-size: 11px;
     background: transparent;
-    border: none;
+	border: none;
+	border:solid 1px transparent;
     color: #888;
 }
 #add_frame:hover,#del_frame:hover,#save_frame:hover

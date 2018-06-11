@@ -9,6 +9,7 @@ var endTimeline = 0;
 var txtStyle = ["z-index","top","left","width","height","background-color","border-color","border-radius","font-size","color","font-weight","box-shadow","text-shadow","opacity","transform"];
 function AnnadirFrame()
 {
+	let noContinuar = false;
   if(elmSeleccionado!=null)
   {
     // Recuperamos el puntero hacia el elemento DOM
@@ -22,6 +23,19 @@ function AnnadirFrame()
 			{
 				html += obj.nodeName.toLowerCase()+"#"+obj.id+"."+obj.className+"<br>";
 			}
+			let iniciados = false;
+			for(let obj of elmSeleccionado)
+			{
+				if(obj.getAttribute("dura") == "true")
+					iniciados = true;
+				else
+					iniciados = false;
+			}
+			if(!iniciados)
+			{
+				MessageBox("Información","No se puede crear un fotograma clave sobre elementos con fotograma base con otros sin fotograma base.","info",["OK"],()=>{});
+				noContinuar = true;
+			}
 			beginTo = parseFloat((elmSeleccionado[elmSeleccionado.length-1].getAttribute("termina")==undefined?0:elmSeleccionado[elmSeleccionado.length-1].getAttribute("termina")))
 			duration = parseFloat((elmSeleccionado[elmSeleccionado.length-1].getAttribute("dura")==undefined)?0:1)
 			localStorage.timeFrame = beginTo+";"+duration+";"+ html;
@@ -31,68 +45,82 @@ function AnnadirFrame()
 			duration = parseFloat((elmSeleccionado.getAttribute("dura")==undefined)?0:1)
 			localStorage.timeFrame = beginTo+";"+duration+";"+ elmSeleccionado.nodeName.toLowerCase()+"#"+elmSeleccionado.id+"."+elmSeleccionado.className;
 		}
-    
-    let AddWindow = new BrowserWindow(
-      {
-        width: 380,
-        height: 240,
-        minWidth: 380,
-        minHeight: 240,
-        modal:true,
-        icon:"img/logo-32.png",
-        resizable:false,
-        minimizable:false,
-        parent:BrowserWindow.getAllWindows()[0],
-				backgroundColor: "#333",
-				title:__("Añadir fotograma clave"),
-        nativeWindowOpen: true,
-      })
-    AddWindow.loadURL(path.join(__dirname,"/newFrame.html"))
-    AddWindow.setMenu(null);
-    AddWindow.on('closed', function () {
-      if(localStorage.timeFrame != "null")
-      {
-        // Recuperamos las variables
-        var arr = localStorage.timeFrame.split(";");
-        beginTo = parseFloat(arr[0]);
-		duration = parseFloat(arr[1]);
-        // Guardamos el estado del frame actual
-        if(webview.innerHTML.trim() != "")
-        {
-          // Grabamos el objeto seleccionado en su movimiento
-					el = elmSeleccionado;
-					if(Array.isArray(elmSeleccionado))
-					{
-						for(let obj of elmSeleccionado)
-						{
-							addKeyFrame(obj,arr)
-						}
-						// Ponemos el timeline en pausa
-						beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
-						if(beginTo>endTimeline)
-							endTimeline = beginTo
-						recordUndoTimeLine();	
-					}else
-					{
-						let obj = el;
-						addKeyFrame(obj, arr);
-						// Ponemos el timeline en pausa
-						beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);		
-						if (beginTo > endTimeline)
-							endTimeline = beginTo;
-						recordUndoTimeLine();			
-					}     
-        }
-        beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
-		duration = 1;
-		timelineSortByTime();
-      }
-      AddWindow = null
-    })
+	if(!noContinuar)
+	{
+		  if(beginTo == 0 && duration == 0)
+		  {
+			  localStorage.timeFrame = "0;0";
+			  MessageBox("Nueva animación","Se ha creado el fotograma base para la animación de este objeto","info",["OK"],function(){completarAnnadidoKeyframe(webview);});
+		  }else
+		  {
+			let AddWindow = new BrowserWindow(
+				{
+				  width: 380,
+				  height: 240,
+				  minWidth: 380,
+				  minHeight: 240,
+				  modal:true,
+				  icon:"img/logo-32.png",
+				  resizable:false,
+				  minimizable:false,
+				  parent:BrowserWindow.getAllWindows()[0],
+						  backgroundColor: "#333",
+						  title:__("Añadir fotograma clave"),
+				  nativeWindowOpen: true,
+				})
+			  AddWindow.loadURL(path.join(__dirname,"/newFrame.html"))
+			  AddWindow.setMenu(null);
+			  AddWindow.on('closed', function () {
+				completarAnnadidoKeyframe(webview, AddWindow);
+				})
+		  }
+	}
   }else
   {
 	MessageBox(__("Información"),__("No se ha seleccionado ningún elemento para crear el fotograma clave."),"info",["OK"],function(){});
   }
+
+	function completarAnnadidoKeyframe(webview, AddWindow) {
+		if (localStorage.timeFrame != "null") {
+			// Recuperamos las variables
+			var arr = localStorage.timeFrame.split(";");
+			beginTo = parseFloat(arr[0]);
+			duration = parseFloat(arr[1]);
+			// Guardamos el estado del frame actual
+			if (webview.innerHTML.trim() != "") {
+				// Grabamos el objeto seleccionado en su movimiento
+				el = elmSeleccionado;
+				if (Array.isArray(elmSeleccionado)) {
+					for (let obj of elmSeleccionado) {
+						addKeyFrame(obj, arr);
+					}
+					// Ponemos el timeline en pausa
+					beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
+					if (beginTo > endTimeline)
+						endTimeline = beginTo;
+					recordUndoTimeLine();
+				}
+				else {
+					let obj = el;
+					addKeyFrame(obj, arr);
+					// Ponemos el timeline en pausa
+					beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
+					if (beginTo > endTimeline)
+						endTimeline = beginTo;
+					recordUndoTimeLine();
+				}
+			}
+			beginTo = parseFloat(arr[0]) + parseFloat(arr[1]);
+			duration = 1;
+			timelineSortByTime();
+			document.querySelector("#add_frame i").className = "fa fa-plus";
+		}
+		if(AddWindow != undefined)
+		{
+			AddWindow = null;
+			return AddWindow;
+		}
+	}
 }
 function addKeyFrame(obj, arr) {
 	let identificador = "div#" + obj.id + "." + obj.className;
